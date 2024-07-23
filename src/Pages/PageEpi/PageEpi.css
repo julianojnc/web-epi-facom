@@ -1,0 +1,51 @@
+section{
+    display: flex;
+}
+
+.content-page-epi{
+    width: 100%;
+
+    padding: 80px 94px 0px 94px;
+}
+
+.title{
+    display: flex;
+    justify-content: space-between;
+    
+    margin-bottom: 20px;
+}
+
+.title h1{
+    font-size: 25px;
+}
+
+.title span{
+    display: flex;
+    gap: 10px;
+}
+
+.title span img{
+    padding-top: 8px;
+    position: absolute;
+}
+
+.title span .input{
+    width: 300px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    font-size: 20px;
+    padding: 8px;
+}
+
+.button-cadastrar{
+    position: absolute;
+    bottom: 15px;
+    right: 20px;
+    padding: 10px 20px;
+    color: white;
+    background-color: #31884B;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 5px;
+}
