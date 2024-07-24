@@ -24,7 +24,7 @@ section{
     gap: 10px;
 }
 
-.title span img{
+.title .search-icon img{
     padding-top: 8px;
     position: absolute;
 }

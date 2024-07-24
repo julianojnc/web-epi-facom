@@ -1,5 +1,7 @@
 import MenuBar from "../../../componentes/MenuBar";
 import { Link } from "react-router-dom";
+import iconLink from "../../../assets/icon-link.png"
+import iconManutencao from "../../../assets/icon-manutencao.png"
 
 const CadastrarUsers = () => {
     return (
@@ -9,6 +11,27 @@ const CadastrarUsers = () => {
 
                 <div className="title">
                     <h1>Cadastro de Usuários</h1>
+
+                    <div className="link-manutencao">
+                        <ul>
+                            <li>
+                                <Link to="/" title='Vincular Periférico'>
+                                    <span>
+                                        <img src={iconLink} alt="icon"></img>
+                                    </span>
+                                </Link>
+                            </li>
+
+                            <li>
+                                <Link to='/' title='Registros de Manutenção'>
+                                    <span>
+                                        <img src={iconManutencao} alt="icon"></img>
+                                    </span>
+                                </Link>
+                            </li>
+
+                        </ul>
+                    </div>
                 </div>
 
                 <form>

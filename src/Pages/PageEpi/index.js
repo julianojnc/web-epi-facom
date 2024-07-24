@@ -14,7 +14,7 @@ const PageEpi = () => {
 
                     <span>
                         <input className="input" placeholder="Pesquisar..." />
-                        <span>
+                        <span className="search-icon">
                             <img src={iconSearch} alt="icon"></img>
                         </span>
                     </span>
