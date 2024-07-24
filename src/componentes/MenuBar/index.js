@@ -19,7 +19,7 @@ const MenuBar = () => {
                     </li>
                 </Link>
 
-                <MenuLink to='/'>
+                <MenuLink to='/' title='Equipamentos'>
                         <span>
                             <img src={iconEpi} alt="icon"></img>
                         </span>
