@@ -4,12 +4,14 @@ import iconEpi from "../../assets/icon-equipamento.png"
 import iconUser from "../../assets/icon-user.png"
 import iconMarca from "../../assets/icon-marca.png"
 import { Link } from 'react-router-dom'
+import MenuLink from './MenuLink'
 
 const MenuBar = () => {
     return (
         <nav>
             <ul>
-                <Link to="/">
+
+                <Link to="/" title='Voltar para a HomePage'>
                     <li className='icon icon-logo'>
                         <span>
                             <img src={iconLogo} alt="icon"></img>
@@ -17,29 +19,23 @@ const MenuBar = () => {
                     </li>
                 </Link>
 
-                <Link to="/">
-                    <li className='icon icon-menu'>
+                <MenuLink to='/'>
                         <span>
                             <img src={iconEpi} alt="icon"></img>
                         </span>
-                    </li>
-                </Link>
+                </MenuLink>
 
-                <Link to="/usuarios">
-                    <li className='icon icon-menu'>
+                <MenuLink to="/usuarios" title='Usuários'>
                         <span>
                             <img src={iconUser} alt="icon"></img>
                         </span>
-                    </li>
-                </Link>
+                </MenuLink>
 
-                <Link to="marcas icon-menu">
-                    <li className='icon'>
+                <MenuLink to="/marcas" title='Marcas'>
                         <span>
                             <img src={iconMarca} alt="icon"></img>
                         </span>
-                    </li>
-                </Link>
+                </MenuLink>
 
             </ul>
         </nav>

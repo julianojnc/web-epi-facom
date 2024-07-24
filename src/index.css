@@ -1,3 +1,7 @@
+@import url('styles/Tables.css');
+@import url('styles/Pages.css');
+@import url('styles/PagesCadastro.css');
+
 *{
     margin: 0;
     padding: 0;

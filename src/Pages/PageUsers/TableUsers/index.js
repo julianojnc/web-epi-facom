@@ -1,29 +1,25 @@
-const TableEpi = () => {
+const TableUsers = () => {
     return (
         <table>
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>NOME</th>
-                    <th>PATRIMONIO</th>
-                    <th>LOCAL</th>
-                    <th>SETOR</th>
-                    <th>USUARIO</th>
+                    <th>EMAIL</th>
+                    <th>CONTATO</th>
                 </tr>
             </thead>
 
             <tbody>
                 <tr>
                     <td>1</td>
-                    <td>Computador</td>
-                    <td>002026</td>
-                    <td>sede</td>
-                    <td>cpd</td>
                     <td>fulano</td>
+                    <td>fulano@facom.com.br</td>
+                    <td>27 999999999</td>
                 </tr>
             </tbody>
         </table>
     )
 }
 
-export default TableEpi;
+export default TableUsers;

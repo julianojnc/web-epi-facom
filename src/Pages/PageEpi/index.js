@@ -1,5 +1,4 @@
 import MenuBar from "../../componentes/MenuBar";
-import './PageEpi.css'
 import TableEpi from "./TableEpi";
 import iconSearch from "../../assets/icon-search.png"
 import { Link } from "react-router-dom";
@@ -21,9 +20,9 @@ const PageEpi = () => {
                     </span>
                 </div>
 
-                <TableEpi></TableEpi>
-                
-                <Link to='/cadastro-epi' className="button-cadastrar">Cadastrar</Link>
+                <TableEpi />
+
+                <Link to='/cadastro-epi' className="button">Cadastrar</Link>
             </div>
         </section>
     )

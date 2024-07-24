@@ -1,0 +1,67 @@
+form {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.marca-checkbox {
+    display: flex;
+    width: 318px;
+    justify-content: space-between;
+}
+
+form .service-express {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+form .label {
+    display: grid;
+    margin-bottom: 10px;
+}
+
+form .label-details {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form .input {
+    width: 300px;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 5px;
+    font-size: 20px;
+    padding: 8px;
+}
+
+form .input-marca {
+    width: 150px;
+}
+
+form .input-details {
+    width: 20px;
+}
+
+.button-cadastrar {
+    position: initial;
+    margin-top: 10px;
+    bottom: 0px;
+    right: 0px;
+    height: 27px;
+}
+
+.alterar{
+    background-color: #CC9329;
+}
+
+.excluir{
+    background-color: #8D2E2E;
+}
+
+.container-buttons{
+    display: flex;
+    min-width: 318px;
+    justify-content: space-between;
+}

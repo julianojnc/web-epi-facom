@@ -31,13 +31,13 @@ section{
 
 .title span .input{
     width: 300px;
-    border: 1px solid lightgrey;
+    border: 1px solid black;
     border-radius: 5px;
     font-size: 20px;
     padding: 8px;
 }
 
-.button-cadastrar{
+.button{
     position: absolute;
     bottom: 15px;
     right: 20px;

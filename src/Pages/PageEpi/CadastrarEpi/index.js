@@ -1,6 +1,5 @@
 import MenuBar from "../../../componentes/MenuBar";
 import { Link } from "react-router-dom";
-import './CadastrarEpi.css'
 
 const CadastrarEpi = () => {
     return (
@@ -26,8 +25,9 @@ const CadastrarEpi = () => {
                             <input className="input input-marca" type="text" placeholder="Marca" />
                         </label>
 
-                        <label className="label label-details"> Mais Detalhes:
+                        <label className="label label-details">
                             <input className="input input-details" type="checkbox" />
+                            Mais Detalhes
                         </label>
                     </div>
 
@@ -67,10 +67,14 @@ const CadastrarEpi = () => {
                         <input className="input" type="text" placeholder="Contato" />
                     </label>
 
+                    <div className="container-buttons">
+                        <Link to='/cadastro-epi' className="button button-cadastrar">Cadastrar</Link>
+                        <Link to='/cadastro-epi' hidden className="button button-cadastrar alterar">Alterar</Link>
+                        <Link to='/cadastro-epi' hidden className="button button-cadastrar excluir">Excluir</Link>
+                    </div>
+
                 </form>
 
-
-                <Link to='/cadastro-epi' className="button-cadastrar">Cadastrar</Link>
             </div>
         </section>
     )
