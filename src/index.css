@@ -1,6 +1,8 @@
 @import url('styles/Tables.css');
 @import url('styles/Pages.css');
 @import url('styles/PagesCadastro.css');
+@import url('styles/Modal.css');
+@import url('styles/ModalContent.css');
 
 *{
     margin: 0;

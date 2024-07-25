@@ -1,0 +1,22 @@
+.overlay {
+    background-color: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* PopUp Body */
+.dialog {
+    background: white;
+    color: black;
+    border-radius: 10px;
+    box-shadow: 0 0 1em rgb(0 0 0 / 0.3);
+    transition: all 0.5s ease;
+    padding: 20px 50px 20px 50px;
+}
