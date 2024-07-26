@@ -1,4 +1,4 @@
-const TableMarcas = () => {
+const TableMarcas = ({ vetor }) => {
     return (
         <table>
             <thead>
@@ -9,10 +9,12 @@ const TableMarcas = () => {
             </thead>
 
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Dell</td>
-                </tr>
+                {vetor.map(obj => (
+                    <tr key={obj.id}>
+                        <td>{obj.id}</td>
+                        <td>{obj.nome}</td>
+                    </tr>
+                ))}
             </tbody>
         </table>
     )

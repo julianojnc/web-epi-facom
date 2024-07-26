@@ -1,4 +1,4 @@
-const TableEpi = () => {
+const TableEpi = ({vetor}) => {
     return (
         <table>
             <thead>
@@ -8,19 +8,23 @@ const TableEpi = () => {
                     <th>PATRIMONIO</th>
                     <th>LOCAL</th>
                     <th>SETOR</th>
-                    <th>USUARIO</th>
+                    <th>DATA COMPRAR</th>
+                    <th>DATA GARANTIA</th>
                 </tr>
             </thead>
 
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Computador</td>
-                    <td>002026</td>
-                    <td>sede</td>
-                    <td>cpd</td>
-                    <td>fulano</td>
-                </tr>
+            {vetor.map(obj => (
+                        <tr key={obj.id}>
+                            <td>{obj.id}</td>
+                            <td>{obj.nome}</td>
+                            <td>{obj.patrimonio}</td>
+                            <td>{obj.local}</td>
+                            <td>{obj.setor}</td>            
+                            <td>{obj.dataCompra}</td>
+                            <td>{obj.dataGarantia}</td>
+                        </tr>
+                    ))}
             </tbody>
         </table>
     )
