@@ -29,11 +29,11 @@ const ModalManutencaoEpi = ({ onClose }) => {
                     </label>
 
                     <label className="label"> Data Inicio:
-                        <input className="input" type="text" placeholder="Data de incio" />
+                        <input className="input" type="date" placeholder="Data de incio" />
                     </label>
 
                     <label className="label"> Data Retorno:
-                        <input className="input" type="text" placeholder="Data de Retorno" />
+                        <input className="input" type="date" placeholder="Data de Retorno" />
                     </label>
 
                     <div className="container-buttons">

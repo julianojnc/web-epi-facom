@@ -8,7 +8,6 @@
     z-index: 9999;
     display: flex;
     justify-content: center;
-    align-items: center;
 }
 
 /* PopUp Body */
@@ -19,4 +18,5 @@
     box-shadow: 0 0 1em rgb(0 0 0 / 0.3);
     transition: all 0.5s ease;
     padding: 20px 50px 20px 50px;
+    margin: 80px;
 }
