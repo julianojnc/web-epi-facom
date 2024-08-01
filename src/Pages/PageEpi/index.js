@@ -5,6 +5,7 @@ import iconSearch from "../../assets/icon-search.png";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchEpi } from "./api/apiEpi";
+import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 
 const PageEpi = () => {
     const [epi, setEpi] = useState([]);
@@ -35,7 +36,14 @@ const PageEpi = () => {
                         </span>
                     </span>
                 </div>
-                <TableEpi vetor={epi} />
+
+                {carregandoEpi ? (
+                    <LargeLoading />
+                ) : (
+                    <TableEpi vetor={epi} />
+                )
+                }
+
                 <Link to='/cadastro-epi' className="button">Cadastrar</Link>
             </div>
         </section>

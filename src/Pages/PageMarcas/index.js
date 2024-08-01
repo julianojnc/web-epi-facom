@@ -4,6 +4,7 @@ import iconSearch from "../../assets/icon-search.png"
 import TableMarcas from './TableMarcas';
 import { useEffect, useState } from 'react';
 import { fetchMarcas } from "./api/apiMarca";
+import LargeLoading from '../../componentes/LoadingAnimation/LargeLoading';
 
 const PageMarcas = () => {
 
@@ -39,7 +40,12 @@ const PageMarcas = () => {
           </span>
         </div>
 
-        <TableMarcas vetor={marcas} />
+        {carregandoMarcas ? (
+          <LargeLoading />
+        ) : (
+          <TableMarcas vetor={marcas} />
+        )
+        }
 
         <Link to='/cadastro-marcas' className="button">Cadastrar</Link>
       </div>

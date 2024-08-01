@@ -4,6 +4,7 @@ import iconSearch from "../../assets/icon-search.png";
 import TableUsers from "./TableUsers";
 import { useEffect, useState } from "react";
 import { fetchUsers } from "./api/apiUser";
+import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 
 const PageUsers = () => {
 
@@ -39,7 +40,12 @@ const PageUsers = () => {
           </span>
         </div>
 
-        <TableUsers vetor={users} />
+        {carregandoUsers ? (
+          <LargeLoading />
+        ) : (
+          <TableUsers vetor={users} />
+        )
+        }
 
         <Link to='/cadastro-usuarios' className="button">Cadastrar</Link>
       </div>

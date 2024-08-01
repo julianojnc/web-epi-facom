@@ -7,6 +7,7 @@ import iconLink from "../../../assets/icon-link.png"
 import iconManutencao from "../../../assets/icon-manutencao.png"
 import { cadastrarEpi } from "../api/apiEpi";
 import { fetchMarcas } from "../../PageMarcas/api/apiMarca"
+import SmallLoading from "../../../componentes/LoadingAnimation/SmallLoading";
 
 const CadastrarEpi = () => {
 
@@ -163,17 +164,23 @@ const CadastrarEpi = () => {
                                 type="text"
                                 placeholder="Marca" />
 
+
                             {searchMarcaOpen && (
-                                <div className="search-bar-curso">
-                                    {filterData(marcas, searchMarca, ['nome']).map((obj, indice) => (
-                                        <ul key={indice} onClick={() => handleSelection('marca', obj)}>
-                                            <li>
-                                                <p>{obj.nome}</p>
-                                            </li>
-                                        </ul>
-                                    ))}
-                                </div>
+                                carregandoMarcas ? (
+                                    <SmallLoading />
+                                ) : (
+                                    <div className="search-bar-curso">
+                                        {filterData(marcas, searchMarca, ['nome']).map((obj, indice) => (
+                                            <ul key={indice} onClick={() => handleSelection('marca', obj)}>
+                                                <li>
+                                                    <p>{obj.nome}</p>
+                                                </li>
+                                            </ul>
+                                        ))}
+                                    </div>
+                                )
                             )}
+
                         </label>
 
                         <label className="label label-details">

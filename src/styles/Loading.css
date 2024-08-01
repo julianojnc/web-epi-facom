@@ -1,0 +1,10 @@
+.loading-content{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 150px;
+}
+
+.small{
+    padding-top: 10px;
+}
