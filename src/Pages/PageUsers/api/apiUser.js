@@ -2,9 +2,9 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:4000/api';
 
-export const fetchEpi = async () => {
+export const fetchUsers = async () => {
     try {
-        const response = await axios.get(`${API_URL}/epi`);
+        const response = await axios.get(`${API_URL}/usuarios`);
         if (Array.isArray(response.data.lista)) {
             return response.data.lista;
         } else {
@@ -17,9 +17,9 @@ export const fetchEpi = async () => {
     }
 };
 
-export const cadastrarEpi = async (epi) => {
+export const cadastrarUsers = async (user) => {
     try {
-        const response = await axios.post(`${API_URL}/epi`, epi, {
+        const response = await axios.post(`${API_URL}/usuarios`, user, {
             headers: {
                 'Content-type': 'application/json',
                 'Accept': 'application/json',

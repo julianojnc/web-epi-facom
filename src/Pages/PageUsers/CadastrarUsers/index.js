@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import iconLink from "../../../assets/icon-link.png"
 import iconManutencao from "../../../assets/icon-manutencao.png"
 import { useState } from "react";
+import { cadastrarUsers } from "../api/apiUser";
 
 const CadastrarUsers = () => {
 
@@ -15,36 +16,20 @@ const CadastrarUsers = () => {
     const [users, setUsers] = useState([]);
     const [objUser, setObjUser] = useState(user);// Funcao para o cadastro de Usuarios
 
-    const cadastrar = () => {
-        console.log('Objeto a ser enviado:', objUser); // Adicione esta linha para verificar o objeto
-
-        fetch('http://localhost:4000/api/usuarios', {
-            method: 'post',
-            body: JSON.stringify(objUser),
-            headers: {
-                'Content-type': 'application/json',
-                'Accept': 'application/json'
+    const cadastrar = async () => {
+        console.log('Objeto a ser enviado:', objUser);
+        try {
+            const response = await cadastrarUsers(objUser);
+            console.log('Resposta da API:', response);
+            if (response.mensagem) {
+                alert(response.mensagem);
+            } else {
+                setUsers([...users, response]);
             }
-        })
-            .then(retorno => {
-                if (!retorno.ok) {
-                    throw new Error(`HTTP error! status: ${retorno.status}`);
-                }
-                return retorno.json();
-            })
-            .then(retorno_convertido => {
-                console.log('Resposta da API:', retorno_convertido); // Adicione esta linha para verificar a resposta
-
-                if (retorno_convertido.mensagem !== undefined) {
-                    alert(retorno_convertido.mensagem);
-                } else {
-                    setUsers([...users, retorno_convertido]);
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao cadastrar a marca:', error);
-                alert('Ocorreu um erro ao tentar cadastrar Usuario.');
-            });
+        } catch (error) {
+            console.error('Erro ao cadastrar Usuario:', error);
+            alert('Ocorreu um erro ao tentar cadastrar Usuario. Confira se não há duplicidade!');
+        }
     };
 
     const aoDigitar = (e) => {

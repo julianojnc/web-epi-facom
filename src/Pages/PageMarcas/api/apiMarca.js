@@ -17,6 +17,21 @@ export const fetchMarcas = async () => {
     }
 };
 
+export const cadastrarMarcas = async (marca) => {
+    try {
+        const response = await axios.post(`${API_URL}/marca`, marca, {
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        throw error;
+    }
+};
+
 const handleApiError = (error) => {
     if (error.response) {
         console.error('Erro na resposta da API:', error.response);

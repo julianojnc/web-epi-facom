@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import iconLink from "../../../assets/icon-link.png"
 import iconManutencao from "../../../assets/icon-manutencao.png"
 import { useState } from "react";
+import { cadastrarMarcas } from "../api/apiMarca";
 
 const CadastrarMarcas = () => {
 
@@ -12,37 +13,21 @@ const CadastrarMarcas = () => {
 
     const [marcas, setMarcas] = useState([]);
     const [objMarca, setObjMarca] = useState(marca);// Funcao para o cadastro de Marca
-    
-    const cadastrar = () => {
-        console.log('Objeto a ser enviado:', objMarca); // Adicione esta linha para verificar o objeto
 
-        fetch('http://localhost:4000/api/marca', {
-            method: 'post',
-            body: JSON.stringify(objMarca),
-            headers: {
-                'Content-type': 'application/json',
-                'Accept': 'application/json'
+    const cadastrar = async () => {
+        console.log('Objeto a ser enviado:', objMarca);
+        try {
+            const response = await cadastrarMarcas(objMarca);
+            console.log('Resposta da API:', response);
+            if (response.mensagem) {
+                alert(response.mensagem);
+            } else {
+                setMarcas([...marcas, response]);
             }
-        })
-            .then(retorno => {
-                if (!retorno.ok) {
-                    throw new Error(`HTTP error! status: ${retorno.status}`);
-                }
-                return retorno.json();
-            })
-            .then(retorno_convertido => {
-                console.log('Resposta da API:', retorno_convertido); // Adicione esta linha para verificar a resposta
-
-                if (retorno_convertido.mensagem !== undefined) {
-                    alert(retorno_convertido.mensagem);
-                } else {
-                    setMarcas([...marcas, retorno_convertido]);
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao cadastrar a marca:', error);
-                alert('Ocorreu um erro ao tentar cadastrar a marca.');
-            });
+        } catch (error) {
+            console.error('Erro ao cadastrar Marca:', error);
+            alert('Ocorreu um erro ao tentar cadastrar Marca!');
+        }
     };
 
     const aoDigitar = (e) => {

@@ -5,7 +5,8 @@ import ModalManutencaoEpi from "./ModalManutencaoEpi";
 import ModalVincularPeriferico from "./ModalVincularPeriferico";
 import iconLink from "../../../assets/icon-link.png"
 import iconManutencao from "../../../assets/icon-manutencao.png"
-import { fetchMarcas, cadastrarEpi } from "../api/apiEpi";
+import { cadastrarEpi } from "../api/apiEpi";
+import { fetchMarcas } from "../../PageMarcas/api/apiMarca"
 
 const CadastrarEpi = () => {
 
