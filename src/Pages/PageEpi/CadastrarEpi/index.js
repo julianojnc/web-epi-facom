@@ -34,7 +34,7 @@ const CadastrarEpi = () => {
     const [objMarca, setObjMarca] = useState(objMarcas);
     const [searchMarca, setSearchMarca] = useState('');
     const [searchMarcaOpen, setSearchMarcaOpen] = useState(false);
-    const [carregandoMarcas, setCarregandoMarcas] = useState(true);
+    const [carregando, setCarregando] = useState(true);
 
     useEffect(() => {
         const fetchAndSetMarcas = async () => {
@@ -45,7 +45,7 @@ const CadastrarEpi = () => {
     }, []);
 
     useEffect(() => {
-        setCarregandoMarcas(marcas.length === 0);
+        setCarregando(marcas.length === 0);
     }, [marcas]);
 
     const filterData = (data, searchTerm, fields) => {
@@ -166,7 +166,7 @@ const CadastrarEpi = () => {
 
 
                             {searchMarcaOpen && (
-                                carregandoMarcas ? (
+                                carregando ? (
                                     <SmallLoading />
                                 ) : (
                                     <div className="search-bar-curso">

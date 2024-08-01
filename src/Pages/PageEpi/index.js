@@ -9,7 +9,7 @@ import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 
 const PageEpi = () => {
     const [epi, setEpi] = useState([]);
-    const [carregandoEpi, setCarregandoEpi] = useState(true);
+    const [carregando, setCarregando] = useState(true);
 
     useEffect(() => {
         const fetchAndSetEpi = async () => {
@@ -20,7 +20,7 @@ const PageEpi = () => {
     }, []);
 
     useEffect(() => {
-        setCarregandoEpi(epi.length === 0);
+        setCarregando(epi.length === 0);
     }, [epi]);
 
     return (
@@ -28,7 +28,7 @@ const PageEpi = () => {
             <MenuBar />
             <div className="content-page-epi">
                 <div className="title">
-                    <h1>Equipamentos</h1>
+                    <h1>EQUIPAMENTOS</h1>
                     <span>
                         <input className="input" placeholder="Pesquisar..." />
                         <span className="search-icon">
@@ -37,7 +37,7 @@ const PageEpi = () => {
                     </span>
                 </div>
 
-                {carregandoEpi ? (
+                {carregando ? (
                     <LargeLoading />
                 ) : (
                     <TableEpi vetor={epi} />

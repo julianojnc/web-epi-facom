@@ -2,6 +2,7 @@ import './MenuBar.css'
 import iconLogo from "../../assets/icon-logo.png"
 import iconEpi from "../../assets/icon-equipamento.png"
 import iconUser from "../../assets/icon-user.png"
+import iconPeriferico from "../../assets/icon-periferico.png"
 import iconMarca from "../../assets/icon-marca.png"
 import { Link } from 'react-router-dom'
 import MenuLink from './MenuLink'
@@ -22,6 +23,12 @@ const MenuBar = () => {
                 <MenuLink to='/' title='Equipamentos'>
                         <span>
                             <img src={iconEpi} alt="icon"></img>
+                        </span>
+                </MenuLink>
+
+                <MenuLink to="/perifericos" title='Perifericos'>
+                        <span>
+                            <img src={iconPeriferico} alt="icon"></img>
                         </span>
                 </MenuLink>
 

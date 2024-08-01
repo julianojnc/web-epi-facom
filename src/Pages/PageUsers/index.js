@@ -10,7 +10,7 @@ const PageUsers = () => {
 
   //Hook 
   const [users, setUsers] = useState([]);
-  const [carregandoUsers, setCarregandoUsers] = useState(true);
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
     const fetchAndSetUser = async () => {
@@ -21,7 +21,7 @@ const PageUsers = () => {
   }, []);
 
   useEffect(() => {
-    setCarregandoUsers(users.length === 0);
+    setCarregando(users.length === 0);
   }, [users]);
 
   return (
@@ -30,7 +30,7 @@ const PageUsers = () => {
       <div className="content-page-epi">
 
         <div className="title">
-          <h1>Usuários</h1>
+          <h1>USUÁRIOS</h1>
 
           <span>
             <input className="input" placeholder="Pesquisar..." />
@@ -40,7 +40,7 @@ const PageUsers = () => {
           </span>
         </div>
 
-        {carregandoUsers ? (
+        {carregando ? (
           <LargeLoading />
         ) : (
           <TableUsers vetor={users} />

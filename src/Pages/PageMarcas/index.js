@@ -10,7 +10,7 @@ const PageMarcas = () => {
 
   //Hook 
   const [marcas, setMarcas] = useState([]);
-  const [carregandoMarcas, setCarregandoMarcas] = useState(true);
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
     const fetchAndSetMarcas = async () => {
@@ -21,7 +21,7 @@ const PageMarcas = () => {
   }, []);
 
   useEffect(() => {
-    setCarregandoMarcas(marcas.length === 0);
+    setCarregando(marcas.length === 0);
   }, [marcas]);
 
   return (
@@ -30,7 +30,7 @@ const PageMarcas = () => {
       <div className="content-page-epi">
 
         <div className="title">
-          <h1>Marcas</h1>
+          <h1>MARCAS</h1>
 
           <span>
             <input className="input" placeholder="Pesquisar..." />
@@ -40,7 +40,7 @@ const PageMarcas = () => {
           </span>
         </div>
 
-        {carregandoMarcas ? (
+        {carregando ? (
           <LargeLoading />
         ) : (
           <TableMarcas vetor={marcas} />
