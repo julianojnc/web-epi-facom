@@ -17,7 +17,7 @@ export const fetchPerifericos = async () => {
     }
 };
 
-export const cadastrarPeriferico = async (periferico) => {
+export const cadastrarPerifericos = async (periferico) => {
     try {
         const response = await axios.post(`${API_URL}/periferico`, periferico, {
             headers: {

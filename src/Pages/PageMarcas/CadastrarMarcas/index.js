@@ -1,11 +1,12 @@
 import MenuBar from "../../../componentes/MenuBar";
 import { Link } from "react-router-dom";
-import iconLink from "../../../assets/icon-link.png"
-import iconManutencao from "../../../assets/icon-manutencao.png"
 import { useState } from "react";
 import { cadastrarMarcas } from "../api/apiMarca";
+import ModalSucess from "../../../componentes/Modal/ModalSucess";
 
 const CadastrarMarcas = () => {
+
+    const [sucessAnimation, setSucessAnimation] = useState(false);
 
     const marca = {
         nome: ''
@@ -23,6 +24,10 @@ const CadastrarMarcas = () => {
                 alert(response.mensagem);
             } else {
                 setMarcas([...marcas, response]);
+                setSucessAnimation(true);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
             }
         } catch (error) {
             console.error('Erro ao cadastrar Marca:', error);
@@ -33,8 +38,6 @@ const CadastrarMarcas = () => {
     const aoDigitar = (e) => {
         setObjMarca({ ...objMarca, [e.target.name]: e.target.value });
     }
-
-
 
     return (
         <section>
@@ -68,6 +71,10 @@ const CadastrarMarcas = () => {
                 </form>
 
             </div>
+
+            {sucessAnimation && (
+                <ModalSucess />
+            )}
         </section>
     )
 }

@@ -1,11 +1,12 @@
 import MenuBar from "../../../componentes/MenuBar";
 import { Link } from "react-router-dom";
-import iconLink from "../../../assets/icon-link.png"
-import iconManutencao from "../../../assets/icon-manutencao.png"
 import { useState } from "react";
 import { cadastrarUsers } from "../api/apiUser";
+import ModalSucess from "../../../componentes/Modal/ModalSucess";
 
 const CadastrarUsers = () => {
+
+    const [sucessAnimation, setSucessAnimation] = useState(false);
 
     const user = {
         nome: '',
@@ -25,6 +26,10 @@ const CadastrarUsers = () => {
                 alert(response.mensagem);
             } else {
                 setUsers([...users, response]);
+                setSucessAnimation(true);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
             }
         } catch (error) {
             console.error('Erro ao cadastrar Usuario:', error);
@@ -84,6 +89,10 @@ const CadastrarUsers = () => {
                 </form>
 
             </div>
+
+            {sucessAnimation && (
+                <ModalSucess />
+            )}
         </section>
     )
 }

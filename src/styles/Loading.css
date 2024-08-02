@@ -1,10 +1,52 @@
-.loading-content{
+.loading-content {
     width: 100%;
     display: flex;
     justify-content: center;
     padding-top: 150px;
 }
 
-.small{
+/*Loading pequeno, usado na listagem de cadastro abaixo de inputs como Marca, Usuario e Periferico*/
+.small {
     padding-top: 10px;
+}
+
+/*Sucess Animation*/
+.content {
+    top: 0;
+    left: 0;
+}
+
+.circle {
+    stroke-dasharray: 1194;
+    stroke-dashoffset: 1194;
+    animation: dc 1s ease-in-out;
+    animation-fill-mode: forwards;
+}
+
+.tick {
+    stroke-dasharray: 350;
+    stroke-dashoffset: 350;
+    animation: dt 0.8s ease-out;
+    animation-fill-mode: forwards;
+    animation-delay: 0.95s;
+}
+
+@keyframes dc {
+    from {
+        stroke-dashoffset: 1194;
+    }
+
+    to {
+        stroke-dashoffset: 2388;
+    }
+}
+
+@keyframes dt {
+    from {
+        stroke-dashoffset: 350;
+    }
+
+    to {
+        stroke-dashoffset: 0;
+    }
 }

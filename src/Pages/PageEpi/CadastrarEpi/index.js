@@ -8,11 +8,13 @@ import iconManutencao from "../../../assets/icon-manutencao.png"
 import { cadastrarEpi } from "../api/apiEpi";
 import { fetchMarcas } from "../../PageMarcas/api/apiMarca"
 import SmallLoading from "../../../componentes/LoadingAnimation/SmallLoading";
+import ModalSucess from "../../../componentes/Modal/ModalSucess";
 
 const CadastrarEpi = () => {
 
     const [manutencaoOpen, setManutencaoOpen] = useState(false);
     const [perifericoOpen, setPerifericoOpen] = useState(false);
+    const [sucessAnimation, setSucessAnimation] = useState(false);
 
     const epi = {
         nome: '',
@@ -35,6 +37,35 @@ const CadastrarEpi = () => {
     const [searchMarca, setSearchMarca] = useState('');
     const [searchMarcaOpen, setSearchMarcaOpen] = useState(false);
     const [carregando, setCarregando] = useState(true);
+
+    const cadastrar = async () => {
+        console.log('Objeto a ser enviado:', objEpi);
+        try {
+            const response = await cadastrarEpi(objEpi);
+            console.log('Resposta da API:', response);
+            if (response.mensagem) {
+                alert(response.mensagem);
+            } else {
+                setEpis([...epis, response]);
+                setSucessAnimation(true);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('Erro ao cadastrar Epi:', error);
+            alert('Ocorreu um erro ao tentar cadastrar Epi. Confira se não há duplicidade!');
+        }
+    };
+
+    const aoDigitar = (e) => {
+        setObjEpi({ ...objEpi, [e.target.name]: e.target.value });
+    };
+
+    const closeModal = () => {
+        setManutencaoOpen(false);
+        setPerifericoOpen(false);
+    };
 
     useEffect(() => {
         const fetchAndSetMarcas = async () => {
@@ -64,31 +95,6 @@ const CadastrarEpi = () => {
                 idMarca: item
             }));
         }
-    };
-
-    const cadastrar = async () => {
-        console.log('Objeto a ser enviado:', objEpi);
-        try {
-            const response = await cadastrarEpi(objEpi);
-            console.log('Resposta da API:', response);
-            if (response.mensagem) {
-                alert(response.mensagem);
-            } else {
-                setEpis([...epis, response]);
-            }
-        } catch (error) {
-            console.error('Erro ao cadastrar Epi:', error);
-            alert('Ocorreu um erro ao tentar cadastrar Epi. Confira se não há duplicidade!');
-        }
-    };
-
-    const aoDigitar = (e) => {
-        setObjEpi({ ...objEpi, [e.target.name]: e.target.value });
-    };
-
-    const closeModal = () => {
-        setManutencaoOpen(false);
-        setPerifericoOpen(false);
     };
 
     return (
@@ -279,6 +285,9 @@ const CadastrarEpi = () => {
             )}
             {perifericoOpen && (
                 <ModalVincularPeriferico onClose={closeModal} />
+            )}
+            {sucessAnimation && (
+                <ModalSucess />
             )}
         </section>
 
