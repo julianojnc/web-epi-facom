@@ -1,4 +1,3 @@
-// src/pages/PageEpi.js
 import MenuBar from "../../componentes/MenuBar";
 import TableEpi from "./TableEpi";
 import iconSearch from "../../assets/icon-search.png";
@@ -10,18 +9,34 @@ import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 const PageEpi = () => {
     const [epi, setEpi] = useState([]);
     const [carregando, setCarregando] = useState(true);
+    const [totalRegistros, setTotalRegistros] = useState(0);
+    const [totalPaginas, setTotalPaginas] = useState(0);
+    const [paginaAtual, setPaginaAtual] = useState(0);
+    const [tamanhoPagina] = useState(10);
 
     useEffect(() => {
         const fetchAndSetEpi = async () => {
-            const fetchedEpi = await fetchEpi();
-            setEpi(fetchedEpi);
+            setCarregando(true);
+            const { lista, totalRegistros, totalPaginas } = await fetchEpi(paginaAtual, tamanhoPagina);
+            setEpi(lista);
+            setTotalRegistros(totalRegistros);
+            setTotalPaginas(totalPaginas);
+            setCarregando(false);
         };
         fetchAndSetEpi();
-    }, []);
+    }, [paginaAtual, tamanhoPagina]);
 
-    useEffect(() => {
-        setCarregando(epi.length === 0);
-    }, [epi]);
+    const handlePreviousPage = () => {
+        if (paginaAtual > 0) {
+            setPaginaAtual(paginaAtual - 1);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (paginaAtual < totalPaginas - 1) {
+            setPaginaAtual(paginaAtual + 1);
+        }
+    };
 
     return (
         <section>
@@ -40,9 +55,20 @@ const PageEpi = () => {
                 {carregando ? (
                     <LargeLoading />
                 ) : (
-                    <TableEpi vetor={epi} />
-                )
-                }
+                    <>
+                        <TableEpi vetor={epi} />
+                        <div>
+                            <p>Total de Registros: {totalRegistros}</p>
+                            <p>Página {paginaAtual + 1} de {totalPaginas}</p>
+                            <button onClick={handlePreviousPage} disabled={paginaAtual === 0}>
+                                Página Anterior
+                            </button>
+                            <button onClick={handleNextPage} disabled={paginaAtual >= totalPaginas - 1}>
+                                Próxima Página
+                            </button>
+                        </div>
+                    </>
+                )}
 
                 <Link to='/cadastro-epi' className="button">Cadastrar</Link>
             </div>
