@@ -19,6 +19,8 @@ const CadastrarEpi = () => {
     const epi = {
         nome: '',
         patrimonio: '',
+        serviceTag: '',
+        expressCode: '',
         local: '',
         setor: '',
         dataCompra: '',
@@ -201,6 +203,9 @@ const CadastrarEpi = () => {
 
                     <label className="label"> Service Tag:
                         <input
+                            value={objEpi.serviceTag}
+                            onChange={aoDigitar}
+                            name='serviceTag'
                             className="input"
                             type="text"
                             placeholder="Service Tag" />
@@ -208,6 +213,9 @@ const CadastrarEpi = () => {
 
                     <label className="label"> Express Code:
                         <input
+                            value={objEpi.expressCode}
+                            onChange={aoDigitar}
+                            name='expressCode'
                             className="input"
                             type="text"
                             placeholder="Express Code" />
