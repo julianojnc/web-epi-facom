@@ -5,24 +5,33 @@ import MenuBar from "../../componentes/MenuBar";
 import { fetchPerifericos } from "./api";
 import TablePeriferico from "./TablePeriferico";
 import { Link } from "react-router-dom";
+import Paginacao from "../../componentes/Paginacao";
 
 
 const PagePeriferico = () => {
 
     const [perifericos, setPerifericos] = useState([]);
     const [carregando, setCarregando] = useState(true);
+    const [totalRegistros, setTotalRegistros] = useState(0);
+    const [totalPaginas, setTotalPaginas] = useState(0);
+    const [paginaAtual, setPaginaAtual] = useState(0);
+    const [tamanhoPagina] = useState(10);
 
     useEffect(() => {
         const fetchAndSetPeriferico = async () => {
-          const fetchedPerifericos = await fetchPerifericos();
-          setPerifericos(fetchedPerifericos);
+            setCarregando(true);
+            const { lista, totalRegistros, totalPaginas } = await fetchPerifericos(paginaAtual, tamanhoPagina);
+            setPerifericos(lista);
+            setTotalRegistros(totalRegistros);
+            setTotalPaginas(totalPaginas);
+            setCarregando(false);
         };
         fetchAndSetPeriferico();
-      }, []);
-    
-      useEffect(() => {
-        setCarregando(perifericos.length === 0);
-      }, [perifericos]);
+    }, [paginaAtual, tamanhoPagina]);
+
+    const handlePageChange = (newPage) => {
+        setPaginaAtual(newPage);
+    };
 
     return (
         <section>
@@ -44,7 +53,15 @@ const PagePeriferico = () => {
                 {carregando ? (
                     <LargeLoading />
                 ) : (
-                    <TablePeriferico vetor={perifericos} />
+                    <>
+                        <TablePeriferico vetor={perifericos} />
+                        <Paginacao
+                            paginaAtual={paginaAtual}
+                            totalPaginas={totalPaginas}
+                            totalRegistros={totalRegistros}
+                            onPageChange={handlePageChange}
+                        />
+                    </>
                 )
                 }
 

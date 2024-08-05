@@ -5,24 +5,33 @@ import TableUsers from "./TableUsers";
 import { useEffect, useState } from "react";
 import { fetchUsers } from "./api/apiUser";
 import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
+import Paginacao from "../../componentes/Paginacao";
 
 const PageUsers = () => {
 
   //Hook 
   const [users, setUsers] = useState([]);
   const [carregando, setCarregando] = useState(true);
+  const [totalRegistros, setTotalRegistros] = useState(0);
+  const [totalPaginas, setTotalPaginas] = useState(0);
+  const [paginaAtual, setPaginaAtual] = useState(0);
+  const [tamanhoPagina] = useState(10);
 
   useEffect(() => {
     const fetchAndSetUser = async () => {
-      const fetchedUser = await fetchUsers();
-      setUsers(fetchedUser);
+      setCarregando(true);
+      const { lista, totalRegistros, totalPaginas } = await fetchUsers(paginaAtual, tamanhoPagina);
+      setUsers(lista);
+      setTotalRegistros(totalRegistros);
+      setTotalPaginas(totalPaginas);
+      setCarregando(false);
     };
     fetchAndSetUser();
-  }, []);
+  }, [paginaAtual, tamanhoPagina]);
 
-  useEffect(() => {
-    setCarregando(users.length === 0);
-  }, [users]);
+  const handlePageChange = (newPage) => {
+    setPaginaAtual(newPage);
+  };
 
   return (
     <section>
@@ -43,7 +52,15 @@ const PageUsers = () => {
         {carregando ? (
           <LargeLoading />
         ) : (
-          <TableUsers vetor={users} />
+          <>
+            <TableUsers vetor={users} />
+            <Paginacao
+              paginaAtual={paginaAtual}
+              totalPaginas={totalPaginas}
+              totalRegistros={totalRegistros}
+              onPageChange={handlePageChange}
+            />
+          </>
         )
         }
 

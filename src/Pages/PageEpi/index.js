@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchEpi } from "./api/apiEpi";
 import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
+import Paginacao from "../../componentes/Paginacao";
 
 const PageEpi = () => {
     const [epi, setEpi] = useState([]);
@@ -26,16 +27,8 @@ const PageEpi = () => {
         fetchAndSetEpi();
     }, [paginaAtual, tamanhoPagina]);
 
-    const handlePreviousPage = () => {
-        if (paginaAtual > 0) {
-            setPaginaAtual(paginaAtual - 1);
-        }
-    };
-
-    const handleNextPage = () => {
-        if (paginaAtual < totalPaginas - 1) {
-            setPaginaAtual(paginaAtual + 1);
-        }
+    const handlePageChange = (newPage) => {
+        setPaginaAtual(newPage);
     };
 
     return (
@@ -57,16 +50,12 @@ const PageEpi = () => {
                 ) : (
                     <>
                         <TableEpi vetor={epi} />
-                        <div>
-                            <p>Total de Registros: {totalRegistros}</p>
-                            <p>Página {paginaAtual + 1} de {totalPaginas}</p>
-                            <button onClick={handlePreviousPage} disabled={paginaAtual === 0}>
-                                Página Anterior
-                            </button>
-                            <button onClick={handleNextPage} disabled={paginaAtual >= totalPaginas - 1}>
-                                Próxima Página
-                            </button>
-                        </div>
+                        <Paginacao
+                            paginaAtual={paginaAtual}
+                            totalPaginas={totalPaginas}
+                            totalRegistros={totalRegistros}
+                            onPageChange={handlePageChange}
+                        />
                     </>
                 )}
 

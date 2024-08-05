@@ -5,24 +5,33 @@ import TableMarcas from './TableMarcas';
 import { useEffect, useState } from 'react';
 import { fetchMarcas } from "./api/apiMarca";
 import LargeLoading from '../../componentes/LoadingAnimation/LargeLoading';
+import Paginacao from '../../componentes/Paginacao';
 
 const PageMarcas = () => {
 
   //Hook 
   const [marcas, setMarcas] = useState([]);
   const [carregando, setCarregando] = useState(true);
+  const [totalRegistros, setTotalRegistros] = useState(0);
+  const [totalPaginas, setTotalPaginas] = useState(0);
+  const [paginaAtual, setPaginaAtual] = useState(0);
+  const [tamanhoPagina] = useState(10);
 
   useEffect(() => {
     const fetchAndSetMarcas = async () => {
-      const fetchedMarcas = await fetchMarcas();
-      setMarcas(fetchedMarcas);
+      setCarregando(true);
+      const { lista, totalRegistros, totalPaginas } = await fetchMarcas(paginaAtual, tamanhoPagina);
+      setMarcas(lista);
+      setTotalRegistros(totalRegistros);
+      setTotalPaginas(totalPaginas);
+      setCarregando(false);
     };
     fetchAndSetMarcas();
-  }, []);
+  }, [paginaAtual, tamanhoPagina]);
 
-  useEffect(() => {
-    setCarregando(marcas.length === 0);
-  }, [marcas]);
+  const handlePageChange = (newPage) => {
+    setPaginaAtual(newPage);
+  };
 
   return (
     <section>
@@ -43,7 +52,15 @@ const PageMarcas = () => {
         {carregando ? (
           <LargeLoading />
         ) : (
-          <TableMarcas vetor={marcas} />
+          <>
+            <TableMarcas vetor={marcas} />
+            <Paginacao
+              paginaAtual={paginaAtual}
+              totalPaginas={totalPaginas}
+              totalRegistros={totalRegistros}
+              onPageChange={handlePageChange}
+            />
+          </>
         )
         }
 

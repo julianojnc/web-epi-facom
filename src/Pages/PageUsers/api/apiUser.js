@@ -2,18 +2,22 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:4000/api';
 
-export const fetchUsers = async () => {
+export const fetchUsers = async (page = 0, size = 10) => {
     try {
-        const response = await axios.get(`${API_URL}/usuarios`);
-        if (Array.isArray(response.data.lista)) {
-            return response.data.lista;
+        const response = await axios.get(`${API_URL}/usuarios?p=${page}&s=${size}`);
+        if (response.data && Array.isArray(response.data.lista)) {
+            return {
+                lista: response.data.lista,
+                totalRegistros: response.data.totalRegistros,
+                totalPaginas: response.data.totalPaginas
+            };
         } else {
-            console.error('A resposta da API não contém a estrutura esperada:', response.data.lista);
-            return [];
+            console.error('A resposta da API não contém a estrutura esperada:', response.data);
+            return { lista: [], totalRegistros: 0, totalPaginas: 0 };
         }
     } catch (error) {
         handleApiError(error);
-        return [];
+        return { lista: [], totalRegistros: 0, totalPaginas: 0 };
     }
 };
 

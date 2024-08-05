@@ -6,7 +6,7 @@ import ModalVincularPeriferico from "./ModalVincularPeriferico";
 import iconLink from "../../../assets/icon-link.png"
 import iconManutencao from "../../../assets/icon-manutencao.png"
 import { cadastrarEpi } from "../api/apiEpi";
-import { fetchMarcas } from "../../PageMarcas/api/apiMarca"
+import { fetchMarca } from "../../PageMarcas/api/apiMarca"
 import SmallLoading from "../../../componentes/LoadingAnimation/SmallLoading";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
 
@@ -69,7 +69,7 @@ const CadastrarEpi = () => {
 
     useEffect(() => {
         const fetchAndSetMarcas = async () => {
-            const fetchedMarcas = await fetchMarcas();
+            const fetchedMarcas = await fetchMarca();
             setMarcas(fetchedMarcas);
         };
         fetchAndSetMarcas();

@@ -18,7 +18,7 @@ th {
 }
 
 tr:nth-child(even) {
-  background-color: #ffd072;
+  background-color: lightgray;
 }
 
 .table-manutencao{

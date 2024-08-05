@@ -1,0 +1,42 @@
+.paginacao {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.paginacao div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.paginacao div a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    width: 20px;
+    height: 20px;
+    padding: 5px;
+    background-color: darkgray;
+    color: black;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.paginacao div a svg {
+    width: 100%;
+}
+
+.pagination-button.active {
+    background-color: gray;
+    color: white;
+    border: 1px solid black;
+}
+
+.pagination-icon.disabled {
+    pointer-events: none;
+    background-color: lightgrey;
+    color: white;
+}

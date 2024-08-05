@@ -3,7 +3,7 @@ import { cadastrarPerifericos } from "../api";
 import MenuBar from "../../../componentes/MenuBar";
 import { Link } from "react-router-dom";
 import iconManutencao from "../../../assets/icon-manutencao.png"
-import { fetchMarcas } from "../../PageMarcas/api/apiMarca";
+import { fetchMarca } from "../../PageMarcas/api/apiMarca";
 import SmallLoading from "../../../componentes/LoadingAnimation/SmallLoading";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
 
@@ -60,7 +60,7 @@ const CadastrarPeriferico = () => {
 
     useEffect(() => {
         const fetchAndSetMarcas = async () => {
-            const fetchedMarcas = await fetchMarcas();
+            const fetchedMarcas = await fetchMarca();
             setMarcas(fetchedMarcas);
         };
         fetchAndSetMarcas();
