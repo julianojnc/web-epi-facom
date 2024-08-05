@@ -17,7 +17,9 @@ const PageEpi = () => {
 
     useEffect(() => {
         const fetchAndSetEpi = async () => {
-            setCarregando(true);
+            if (epi.length === 0) {
+                setCarregando(true);
+            }
             const { lista, totalRegistros, totalPaginas } = await fetchEpi(paginaAtual, tamanhoPagina);
             setEpi(lista);
             setTotalRegistros(totalRegistros);

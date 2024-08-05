@@ -1,16 +1,15 @@
-import { useEffect, useState } from "react";
-import iconSearch from "../../assets/icon-search.png"
-import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import MenuBar from "../../componentes/MenuBar";
-import { fetchPerifericos } from "./api";
-import TablePeriferico from "./TablePeriferico";
+// import TableEpi from "./TableEpi";
+import iconSearch from "../../assets/icon-search.png";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import Paginacao from "../../componentes/Paginacao";
+import { fetchEpiUsuario } from "./api";
+import TableEpiUsuario from "./TableEpiUsuario";
 
-
-const PagePeriferico = () => {
-
-    const [perifericos, setPerifericos] = useState([]);
+const PageHome = () => {
+    const [epiUsuario, setEpiUsuario] = useState([]);
     const [carregando, setCarregando] = useState(true);
     const [totalRegistros, setTotalRegistros] = useState(0);
     const [totalPaginas, setTotalPaginas] = useState(0);
@@ -18,17 +17,17 @@ const PagePeriferico = () => {
     const [tamanhoPagina] = useState(10);
 
     useEffect(() => {
-        const fetchAndSetPeriferico = async () => {
-            if (perifericos.length === 0) {
+        const fetchAndSetEpiUsuario = async () => {
+            if (epiUsuario.length === 0) {
                 setCarregando(true);
             }
-            const { lista, totalRegistros, totalPaginas } = await fetchPerifericos(paginaAtual, tamanhoPagina);
-            setPerifericos(lista);
+            const { lista, totalRegistros, totalPaginas } = await fetchEpiUsuario(paginaAtual, tamanhoPagina);
+            setEpiUsuario(lista);
             setTotalRegistros(totalRegistros);
             setTotalPaginas(totalPaginas);
             setCarregando(false);
         };
-        fetchAndSetPeriferico();
+        fetchAndSetEpiUsuario();
     }, [paginaAtual, tamanhoPagina]);
 
     const handlePageChange = (newPage) => {
@@ -38,12 +37,9 @@ const PagePeriferico = () => {
     return (
         <section>
             <MenuBar />
-
             <div className="content-page-epi">
-
                 <div className="title">
-                    <h1>PERIFÉRICOS</h1>
-
+                    <h1>HOME</h1>
                     <span>
                         <input className="input" placeholder="Pesquisar..." />
                         <span className="search-icon">
@@ -56,7 +52,7 @@ const PagePeriferico = () => {
                     <LargeLoading />
                 ) : (
                     <>
-                        <TablePeriferico vetor={perifericos} />
+                        <TableEpiUsuario vetor={epiUsuario} />
                         <Paginacao
                             paginaAtual={paginaAtual}
                             totalPaginas={totalPaginas}
@@ -64,13 +60,12 @@ const PagePeriferico = () => {
                             onPageChange={handlePageChange}
                         />
                     </>
-                )
-                }
+                )}
 
-                <Link to='/cadastro-perifericos' className="button">Cadastrar</Link>
+                <Link to='/cadastro-epi' className="button">Cadastrar</Link>
             </div>
         </section>
-    )
-}
+    );
+};
 
-export default PagePeriferico;
+export default PageHome;

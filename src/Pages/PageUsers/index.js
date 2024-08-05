@@ -19,7 +19,9 @@ const PageUsers = () => {
 
   useEffect(() => {
     const fetchAndSetUser = async () => {
-      setCarregando(true);
+      if (users.length === 0) {
+        setCarregando(true);
+      }
       const { lista, totalRegistros, totalPaginas } = await fetchUsers(paginaAtual, tamanhoPagina);
       setUsers(lista);
       setTotalRegistros(totalRegistros);

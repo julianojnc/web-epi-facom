@@ -19,7 +19,9 @@ const PageMarcas = () => {
 
   useEffect(() => {
     const fetchAndSetMarcas = async () => {
-      setCarregando(true);
+      if (marcas.length === 0) {
+        setCarregando(true);
+      }
       const { lista, totalRegistros, totalPaginas } = await fetchMarcas(paginaAtual, tamanhoPagina);
       setMarcas(lista);
       setTotalRegistros(totalRegistros);

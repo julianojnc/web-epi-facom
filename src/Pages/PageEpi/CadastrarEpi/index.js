@@ -33,9 +33,13 @@ const CadastrarEpi = () => {
 
     const objMarcas = { id: "" };
     const [marcas, setMarcas] = useState([]);
+    // const [usuario, setUsuario] = useState([]);
     const [objMarca, setObjMarca] = useState(objMarcas);
+    // const [objUsuario, setObjUsuario] = useState(objUsuarios)
     const [searchMarca, setSearchMarca] = useState('');
+    // const [searchUsuario, setSearchUsuario] = useState('');
     const [searchMarcaOpen, setSearchMarcaOpen] = useState(false);
+    // const [searchUsuarioOpen, setSearchUsuarioOpen] = useState(false);
     const [carregando, setCarregando] = useState(true);
 
     const cadastrar = async () => {
