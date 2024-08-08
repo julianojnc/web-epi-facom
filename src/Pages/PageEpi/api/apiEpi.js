@@ -2,6 +2,19 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:4000/api';
 
+// Lista Apenas um elemento com base no ID
+export const fetchEpiById = async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/epi/${id}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Erro ao buscar Epi:', error);
+        throw error;
+    }
+};
+
+// Listar todos os elementos e tambem a pagina do mesmo e quantos por pagina
 export const fetchEpi = async (page = 0, size = 10) => {
     try {
         const response = await axios.get(`${API_URL}/epi?p=${page}&s=${size}`);
@@ -21,6 +34,7 @@ export const fetchEpi = async (page = 0, size = 10) => {
     }
 };
 
+// cadastrar
 export const cadastrarEpi = async (epi) => {
     try {
         const response = await axios.post(`${API_URL}/epi`, epi, {
@@ -36,6 +50,7 @@ export const cadastrarEpi = async (epi) => {
     }
 };
 
+// tratativa de erros
 const handleApiError = (error) => {
     if (error.response) {
         console.error('Erro na resposta da API:', error.response);

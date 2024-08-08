@@ -1,11 +1,11 @@
 import MenuBar from "../../../componentes/MenuBar";
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import { cadastrarMarcas } from "../api/apiMarca";
+import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { cadastrarMarcas, fetchMarcaById } from "../api/apiMarca";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
 
 const CadastrarMarcas = () => {
-
+    const { id } = useParams(); // Obtenha o ID da URL
     const [sucessAnimation, setSucessAnimation] = useState(false);
 
     const marca = {
@@ -35,6 +35,16 @@ const CadastrarMarcas = () => {
         }
     };
 
+    useEffect(() => {
+        if (id) {
+            const fetchMarca = async () => {
+                const marcaData = await fetchMarcaById(id); // Fetch Epi data by ID
+                setObjMarca(marcaData);
+            };
+            fetchMarca();
+        }
+    }, [id]);
+
     const aoDigitar = (e) => {
         setObjMarca({ ...objMarca, [e.target.name]: e.target.value });
     }
@@ -45,7 +55,7 @@ const CadastrarMarcas = () => {
             <div className="content-page-epi">
 
                 <div className="title">
-                    <h1>Cadastro de Marcas</h1>
+                    <h1>{id ? 'Editar Marca' : 'Cadastro de Marca'}</h1>
                 </div>
 
                 <form>
@@ -63,9 +73,14 @@ const CadastrarMarcas = () => {
 
 
                     <div className="container-buttons">
-                        <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar</Link>
-                        <Link to='/cadastro-epi' hidden className="button button-cadastrar alterar">Alterar</Link>
-                        <Link to='/cadastro-epi' hidden className="button button-cadastrar excluir">Excluir</Link>
+                        {id ? (
+                            <>
+                                <Link to='/cadastro-marcas' className="button button-cadastrar alterar">Alterar</Link>
+                                <Link to='/cadastro-marcas' className="button button-cadastrar excluir">Excluir</Link>
+                            </>
+                        ) : (
+                            <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar</Link>
+                        )}
                     </div>
 
                 </form>

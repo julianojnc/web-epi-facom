@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import MenuBar from "../../../componentes/MenuBar";
 import ModalManutencaoEpi from "./ModalManutencaoEpi";
 import ModalVincularPeriferico from "./ModalVincularPeriferico";
 import iconLink from "../../../assets/icon-link.png"
 import iconManutencao from "../../../assets/icon-manutencao.png"
-import { cadastrarEpi } from "../api/apiEpi";
+import { cadastrarEpi, fetchEpiById } from "../api/apiEpi"; // Importe a função fetchEpiById
 import { fetchMarca } from "../../PageMarcas/api/apiMarca"
 import SmallLoading from "../../../componentes/LoadingAnimation/SmallLoading";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
 
 const CadastrarEpi = () => {
-
+    const { id } = useParams(); // Obtenha o ID da URL
     const [manutencaoOpen, setManutencaoOpen] = useState(false);
     const [perifericoOpen, setPerifericoOpen] = useState(false);
     const [sucessAnimation, setSucessAnimation] = useState(false);
@@ -31,18 +31,37 @@ const CadastrarEpi = () => {
     };
 
     const [epis, setEpis] = useState([]);
-    const [objEpi, setObjEpi] = useState(epi);// Funcao para o cadastro de Epi
+    const [objEpi, setObjEpi] = useState(epi);
 
     const objMarcas = { id: "" };
     const [marcas, setMarcas] = useState([]);
-    // const [usuario, setUsuario] = useState([]);
     const [objMarca, setObjMarca] = useState(objMarcas);
-    // const [objUsuario, setObjUsuario] = useState(objUsuarios)
     const [searchMarca, setSearchMarca] = useState('');
-    // const [searchUsuario, setSearchUsuario] = useState('');
     const [searchMarcaOpen, setSearchMarcaOpen] = useState(false);
-    // const [searchUsuarioOpen, setSearchUsuarioOpen] = useState(false);
     const [carregando, setCarregando] = useState(true);
+
+    useEffect(() => {
+        const fetchAndSetMarcas = async () => {
+            const fetchedMarcas = await fetchMarca();
+            setMarcas(fetchedMarcas);
+        };
+        fetchAndSetMarcas();
+    }, []);
+
+    useEffect(() => {
+        setCarregando(marcas.length === 0);
+    }, [marcas]);
+
+    useEffect(() => {
+        if (id) {
+            const fetchEpi = async () => {
+                const epiData = await fetchEpiById(id); // Fetch Epi data by ID
+                setObjEpi(epiData);
+                setSearchMarca(epiData.idMarca.nome); // Preencha o campo da marca
+            };
+            fetchEpi();
+        }
+    }, [id]);
 
     const cadastrar = async () => {
         console.log('Objeto a ser enviado:', objEpi);
@@ -73,18 +92,6 @@ const CadastrarEpi = () => {
         setPerifericoOpen(false);
     };
 
-    useEffect(() => {
-        const fetchAndSetMarcas = async () => {
-            const fetchedMarcas = await fetchMarca();
-            setMarcas(fetchedMarcas);
-        };
-        fetchAndSetMarcas();
-    }, []);
-
-    useEffect(() => {
-        setCarregando(marcas.length === 0);
-    }, [marcas]);
-
     const filterData = (data, searchTerm, fields) => {
         return data.filter(item =>
             fields.some(field => item[field].toLowerCase().includes(searchTerm.toLowerCase()))
@@ -107,10 +114,8 @@ const CadastrarEpi = () => {
         <section>
             <MenuBar />
             <div className="content-page-epi">
-
                 <div className="title">
-                    <h1>Cadastro de Equipamentos</h1>
-
+                    <h1>{id ? 'Editar Equipamento' : 'Cadastro de Equipamentos'}</h1>
                     <div className="link-manutencao">
                         <ul>
                             <li>
@@ -120,7 +125,6 @@ const CadastrarEpi = () => {
                                     </span>
                                 </Link>
                             </li>
-
                             <li>
                                 <Link onClick={() => setManutencaoOpen(true)} title='Registros de Manutenção'>
                                     <span>
@@ -128,7 +132,6 @@ const CadastrarEpi = () => {
                                     </span>
                                 </Link>
                             </li>
-
                         </ul>
                     </div>
                 </div>
@@ -156,7 +159,6 @@ const CadastrarEpi = () => {
                     </label>
 
                     <div className="marca-checkbox">
-
                         <input
                             value={objMarca.codMarca}
                             onChange={aoDigitar}
@@ -165,7 +167,6 @@ const CadastrarEpi = () => {
                             type="text"
                             placeholder="ID Marca"
                             hidden />
-
                         <label className="label"> Marca:
                             <input
                                 value={searchMarca}
@@ -175,8 +176,6 @@ const CadastrarEpi = () => {
                                 className="input input-marca"
                                 type="text"
                                 placeholder="Marca" />
-
-
                             {searchMarcaOpen && (
                                 carregando ? (
                                     <SmallLoading />
@@ -192,7 +191,6 @@ const CadastrarEpi = () => {
                                     </div>
                                 )
                             )}
-
                         </label>
 
                         <label className="label label-details">
@@ -283,13 +281,16 @@ const CadastrarEpi = () => {
                     </label>
 
                     <div className="container-buttons">
-                        <Link to='/cadastro-epi' onClick={cadastrar} className="button button-cadastrar">Cadastrar</Link>
-                        <Link to='/cadastro-epi' hidden className="button button-cadastrar alterar">Alterar</Link>
-                        <Link to='/cadastro-epi' hidden className="button button-cadastrar excluir">Excluir</Link>
+                        {id ? (
+                            <>
+                                <Link to='/cadastro-perifericos' className="button button-cadastrar alterar">Alterar</Link>
+                                <Link to='/cadastro-perifericos' className="button button-cadastrar excluir">Excluir</Link>
+                            </>
+                        ) : (
+                            <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar</Link>
+                        )}
                     </div>
-
                 </form>
-
             </div>
 
             {manutencaoOpen && (
@@ -302,8 +303,7 @@ const CadastrarEpi = () => {
                 <ModalSucess />
             )}
         </section>
-
-    )
-}
+    );
+};
 
 export default CadastrarEpi;

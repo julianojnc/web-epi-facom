@@ -2,6 +2,18 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:4000/api';
 
+// Lista Apenas um elemento com base no ID
+export const fetchPerifericoById = async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/periferico/${id}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Erro ao buscar Epi:', error);
+        throw error;
+    }
+};
+
 export const fetchPerifericos = async (page = 0, size = 10) => {
     try {
         const response = await axios.get(`${API_URL}/periferico?p=${page}&s=${size}`);

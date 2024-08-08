@@ -1,4 +1,12 @@
+import { useNavigate } from "react-router-dom";
+
 const TableUsers = ({ vetor }) => {
+    const navigate = useNavigate();
+
+    const handleClick = (usuario) => {
+        navigate(`/cadastro-usuarios/${usuario.id}`);
+    };
+
     return (
         <table>
             <thead>
@@ -12,7 +20,7 @@ const TableUsers = ({ vetor }) => {
 
             <tbody>
                 {vetor.map(obj => (
-                    <tr key={obj.id}>
+                    <tr key={obj.id} onClick={() => handleClick(obj)}>
                         <td>{obj.id}</td>
                         <td>{obj.nome}</td>
                         <td>{obj.telContato}</td>

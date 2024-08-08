@@ -2,6 +2,18 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:4000/api';
 
+// Lista Apenas um elemento com base no ID
+export const fetchMarcaById = async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/marca/${id}`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Erro ao buscar Epi:', error);
+        throw error;
+    }
+};
+
 //Fecth para a listagem na Table
 export const fetchMarcas = async (page = 0, size = 10) => {
     try {

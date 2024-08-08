@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import MenuBar from "../../componentes/MenuBar";
-import iconSearch from "../../assets/icon-search.png";
 import TableUsers from "./TableUsers";
 import { useEffect, useState } from "react";
 import { fetchUsers } from "./api/apiUser";
 import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import Paginacao from "../../componentes/Paginacao";
+import TitleSearch from "../../componentes/PageComponents";
 
 const PageUsers = () => {
 
@@ -16,6 +16,7 @@ const PageUsers = () => {
   const [totalPaginas, setTotalPaginas] = useState(0);
   const [paginaAtual, setPaginaAtual] = useState(0);
   const [tamanhoPagina] = useState(10);
+  const [searchTerm, setSearchTerm] = useState(''); // Hook para o filtro de pesquisa
 
   useEffect(() => {
     const fetchAndSetUser = async () => {
@@ -31,6 +32,15 @@ const PageUsers = () => {
     fetchAndSetUser();
   }, [paginaAtual, tamanhoPagina]);
 
+  // Filtro de pesquisa
+  const filter = users.filter((item) => {
+    return (
+      (item.nome ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.telContato ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.email ?? '').toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
   const handlePageChange = (newPage) => {
     setPaginaAtual(newPage);
   };
@@ -40,22 +50,13 @@ const PageUsers = () => {
       <MenuBar />
       <div className="content-page-epi">
 
-        <div className="title">
-          <h1>USUÁRIOS</h1>
-
-          <span>
-            <input className="input" placeholder="Pesquisar..." />
-            <span className="search-icon">
-              <img src={iconSearch} alt="icon"></img>
-            </span>
-          </span>
-        </div>
+        <TitleSearch title="Usuários" onSearchChange={setSearchTerm} />
 
         {carregando ? (
           <LargeLoading />
         ) : (
           <>
-            <TableUsers vetor={users} />
+            <TableUsers vetor={filter} />
             <Paginacao
               paginaAtual={paginaAtual}
               totalPaginas={totalPaginas}

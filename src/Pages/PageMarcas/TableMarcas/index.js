@@ -1,4 +1,12 @@
+import { useNavigate } from "react-router-dom";
+
 const TableMarcas = ({ vetor }) => {
+    const navigate = useNavigate();
+
+    const handleClick = (marca) => {
+        navigate(`/cadastro-marcas/${marca.id}`);
+    };
+
     return (
         <table>
             <thead>
@@ -10,7 +18,7 @@ const TableMarcas = ({ vetor }) => {
 
             <tbody>
                 {vetor.map(obj => (
-                    <tr key={obj.id}>
+                    <tr key={obj.id} onClick={() => handleClick(obj)}>
                         <td>{obj.id}</td>
                         <td>{obj.nome}</td>
                     </tr>

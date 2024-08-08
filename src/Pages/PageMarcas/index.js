@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import MenuBar from '../../componentes/MenuBar'
-import iconSearch from "../../assets/icon-search.png"
 import TableMarcas from './TableMarcas';
 import { useEffect, useState } from 'react';
 import { fetchMarcas } from "./api/apiMarca";
 import LargeLoading from '../../componentes/LoadingAnimation/LargeLoading';
 import Paginacao from '../../componentes/Paginacao';
+import TitleSearch from '../../componentes/PageComponents';
 
 const PageMarcas = () => {
 
@@ -16,6 +16,7 @@ const PageMarcas = () => {
   const [totalPaginas, setTotalPaginas] = useState(0);
   const [paginaAtual, setPaginaAtual] = useState(0);
   const [tamanhoPagina] = useState(10);
+  const [searchTerm, setSearchTerm] = useState(''); // Hook para o filtro de pesquisa
 
   useEffect(() => {
     const fetchAndSetMarcas = async () => {
@@ -31,6 +32,12 @@ const PageMarcas = () => {
     fetchAndSetMarcas();
   }, [paginaAtual, tamanhoPagina]);
 
+  const filter = marcas.filter((item) => {
+    return (
+      item.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
   const handlePageChange = (newPage) => {
     setPaginaAtual(newPage);
   };
@@ -40,22 +47,13 @@ const PageMarcas = () => {
       <MenuBar />
       <div className="content-page-epi">
 
-        <div className="title">
-          <h1>MARCAS</h1>
-
-          <span>
-            <input className="input" placeholder="Pesquisar..." />
-            <span className="search-icon">
-              <img src={iconSearch} alt="icon"></img>
-            </span>
-          </span>
-        </div>
+        <TitleSearch title="Marcas" onSearchChange={setSearchTerm}/>
 
         {carregando ? (
           <LargeLoading />
         ) : (
           <>
-            <TableMarcas vetor={marcas} />
+            <TableMarcas vetor={filter} />
             <Paginacao
               paginaAtual={paginaAtual}
               totalPaginas={totalPaginas}

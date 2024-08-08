@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { cadastrarPerifericos } from "../api";
+import { cadastrarPerifericos, fetchPerifericoById } from "../api";
 import MenuBar from "../../../componentes/MenuBar";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import iconManutencao from "../../../assets/icon-manutencao.png"
 import { fetchMarca } from "../../PageMarcas/api/apiMarca";
 import SmallLoading from "../../../componentes/LoadingAnimation/SmallLoading";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
 
 const CadastrarPeriferico = () => {
-
+    const { id } = useParams(); // Obtenha o ID da URL
     const [sucessAnimation, setSucessAnimation] = useState(false);
 
     const periferico = {
@@ -76,6 +76,17 @@ const CadastrarPeriferico = () => {
         );
     };
 
+    useEffect(() => {
+        if (id) {
+            const fetchPeriferico = async () => {
+                const perifericoData = await fetchPerifericoById(id); // Fetch Epi data by ID
+                setObjPeriferico(perifericoData);
+                setSearchMarca(perifericoData.idMarca.nome); // Preencha o campo da marca
+            };
+            fetchPeriferico();
+        }
+    }, [id]);
+
     const handleSelection = (type, item) => {
         if (type === 'marca') {
             setObjMarca(item);
@@ -94,7 +105,7 @@ const CadastrarPeriferico = () => {
             <div className="content-page-epi">
 
                 <div className="title">
-                    <h1>Cadastro de Periféricos</h1>
+                    <h1>{id ? "Editar Periférico" : "Cadastro de Periférico"}</h1>
 
                     <div className="link-manutencao">
                         <ul>
@@ -226,9 +237,14 @@ const CadastrarPeriferico = () => {
                     </label>
 
                     <div className="container-buttons">
-                        <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar</Link>
-                        <Link to='/cadastro-epi' hidden className="button button-cadastrar alterar">Alterar</Link>
-                        <Link to='/cadastro-epi' hidden className="button button-cadastrar excluir">Excluir</Link>
+                        {id ? (
+                            <>
+                                <Link to='/cadastro-perifericos' className="button button-cadastrar alterar">Alterar</Link>
+                                <Link to='/cadastro-perifericos' className="button button-cadastrar excluir">Excluir</Link>
+                            </>
+                        ) : (
+                            <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar</Link>
+                        )}
                     </div>
 
                 </form>

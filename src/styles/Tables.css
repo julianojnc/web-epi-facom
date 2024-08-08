@@ -21,6 +21,11 @@ tr:nth-child(even) {
   background-color: lightgray;
 }
 
+tr:hover{
+  cursor: pointer;
+  background-color: gray;
+}
+
 .table-manutencao{
   max-width: 318px;
   height: 0;

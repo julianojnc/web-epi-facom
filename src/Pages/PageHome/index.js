@@ -1,12 +1,11 @@
 import MenuBar from "../../componentes/MenuBar";
-// import TableEpi from "./TableEpi";
-import iconSearch from "../../assets/icon-search.png";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import Paginacao from "../../componentes/Paginacao";
 import { fetchEpiUsuario } from "./api";
 import TableEpiUsuario from "./TableEpiUsuario";
+import TitleSearch from "../../componentes/PageComponents";
 
 const PageHome = () => {
     const [epiUsuario, setEpiUsuario] = useState([]);
@@ -15,6 +14,7 @@ const PageHome = () => {
     const [totalPaginas, setTotalPaginas] = useState(0);
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [tamanhoPagina] = useState(10);
+    const [searchTerm, setSearchTerm] = useState(''); // Estado para o termo de pesquisa
 
     useEffect(() => {
         const fetchAndSetEpiUsuario = async () => {
@@ -30,6 +30,18 @@ const PageHome = () => {
         fetchAndSetEpiUsuario();
     }, [paginaAtual, tamanhoPagina]);
 
+    // Função para filtrar os dados
+    const filter = epiUsuario.filter((item) => {
+        return (
+            item.idEpi.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.idEpi.patrimonio.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.idEpi.local.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.idUsuario.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.idUsuario.telContato.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.idUsuario.email.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    });
+
     const handlePageChange = (newPage) => {
         setPaginaAtual(newPage);
     };
@@ -38,21 +50,12 @@ const PageHome = () => {
         <section>
             <MenuBar />
             <div className="content-page-epi">
-                <div className="title">
-                    <h1>HOME</h1>
-                    <span>
-                        <input className="input" placeholder="Pesquisar..." />
-                        <span className="search-icon">
-                            <img src={iconSearch} alt="icon"></img>
-                        </span>
-                    </span>
-                </div>
-
+                <TitleSearch title="Home" onSearchChange={setSearchTerm} />
                 {carregando ? (
                     <LargeLoading />
                 ) : (
                     <>
-                        <TableEpiUsuario vetor={epiUsuario} />
+                        <TableEpiUsuario vetor={filter} />
                         <Paginacao
                             paginaAtual={paginaAtual}
                             totalPaginas={totalPaginas}
@@ -61,7 +64,6 @@ const PageHome = () => {
                         />
                     </>
                 )}
-
                 <Link to='/cadastro-epi' className="button">Cadastrar</Link>
             </div>
         </section>

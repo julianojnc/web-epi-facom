@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import iconSearch from "../../assets/icon-search.png"
 import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import MenuBar from "../../componentes/MenuBar";
 import { fetchPerifericos } from "./api";
 import TablePeriferico from "./TablePeriferico";
 import { Link } from "react-router-dom";
 import Paginacao from "../../componentes/Paginacao";
+import TitleSearch from "../../componentes/PageComponents";
 
 
 const PagePeriferico = () => {
@@ -16,6 +16,7 @@ const PagePeriferico = () => {
     const [totalPaginas, setTotalPaginas] = useState(0);
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [tamanhoPagina] = useState(10);
+    const [searchTerm, setSearchTerm] = useState(''); // Hook para o filtro de pesquisa
 
     useEffect(() => {
         const fetchAndSetPeriferico = async () => {
@@ -31,6 +32,16 @@ const PagePeriferico = () => {
         fetchAndSetPeriferico();
     }, [paginaAtual, tamanhoPagina]);
 
+    // Filtro de pesquisa
+    const filter = perifericos.filter((item) => {
+        return (
+            (item.nome ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (item.patrimonio ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (item.serviceTag ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (item.expressCode ?? '').toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    });
+
     const handlePageChange = (newPage) => {
         setPaginaAtual(newPage);
     };
@@ -41,22 +52,13 @@ const PagePeriferico = () => {
 
             <div className="content-page-epi">
 
-                <div className="title">
-                    <h1>PERIFÉRICOS</h1>
-
-                    <span>
-                        <input className="input" placeholder="Pesquisar..." />
-                        <span className="search-icon">
-                            <img src={iconSearch} alt="icon"></img>
-                        </span>
-                    </span>
-                </div>
+                <TitleSearch title="Periféricos" onSearchChange={setSearchTerm} />
 
                 {carregando ? (
                     <LargeLoading />
                 ) : (
                     <>
-                        <TablePeriferico vetor={perifericos} />
+                        <TablePeriferico vetor={filter} />
                         <Paginacao
                             paginaAtual={paginaAtual}
                             totalPaginas={totalPaginas}

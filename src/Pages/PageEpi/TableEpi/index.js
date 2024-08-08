@@ -1,4 +1,12 @@
+import { useNavigate } from "react-router-dom";
+
 const TableEpi = ({ vetor }) => {
+    const navigate = useNavigate();
+
+    const handleClick = (epi) => {
+        navigate(`/cadastro-epi/${epi.id}`);
+    };
+
     return (
         <table>
             <thead>
@@ -8,13 +16,13 @@ const TableEpi = ({ vetor }) => {
                     <th>PATRIMONIO</th>
                     <th>LOCAL</th>
                     <th>SETOR</th>
-                    <th>DATA COMPRAR</th>
+                    <th>DATA COMPRA</th>
                     <th>DATA GARANTIA</th>
                 </tr>
             </thead>
             <tbody>
-                {vetor.map(obj => (
-                    <tr key={obj.id}>
+                {vetor.map((obj) => (
+                    <tr key={obj.id} onClick={() => handleClick(obj)}>
                         <td>{obj.id}</td>
                         <td>{obj.nome}</td>
                         <td>{obj.patrimonio}</td>
@@ -26,7 +34,7 @@ const TableEpi = ({ vetor }) => {
                 ))}
             </tbody>
         </table>
-    )
-}
+    );
+};
 
 export default TableEpi;
