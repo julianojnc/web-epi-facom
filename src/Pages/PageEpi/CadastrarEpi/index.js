@@ -9,11 +9,13 @@ import { cadastrarEpi, fetchEpiById } from "../api/apiEpi"; // Importe a funçã
 import { fetchMarca } from "../../PageMarcas/api/apiMarca"
 import SmallLoading from "../../../componentes/LoadingAnimation/SmallLoading";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
+import ModalVincularUsuario from "./ModalVincularUsuario";
 
 const CadastrarEpi = () => {
     const { id } = useParams(); // Obtenha o ID da URL
     const [manutencaoOpen, setManutencaoOpen] = useState(false);
     const [perifericoOpen, setPerifericoOpen] = useState(false);
+    const [usuarioOpen, setUsuarioOpen] = useState(false);
     const [sucessAnimation, setSucessAnimation] = useState(false);
 
     const epi = {
@@ -74,7 +76,8 @@ const CadastrarEpi = () => {
                 setEpis([...epis, response]);
                 setSucessAnimation(true);
                 setTimeout(() => {
-                    window.location.reload();
+                    setSucessAnimation(false)
+                    setUsuarioOpen(true)
                 }, 2000);
             }
         } catch (error) {
@@ -90,6 +93,7 @@ const CadastrarEpi = () => {
     const closeModal = () => {
         setManutencaoOpen(false);
         setPerifericoOpen(false);
+        setUsuarioOpen(false);
     };
 
     const filterData = (data, searchTerm, fields) => {
@@ -100,12 +104,12 @@ const CadastrarEpi = () => {
 
     const handleSelection = (type, item) => {
         if (type === 'marca') {
-            setObjMarca(item);
-            setSearchMarca(item.nome);
-            setSearchMarcaOpen(false);
+            setObjMarca(item); // Define o objeto de marca selecionado
+            setSearchMarca(item.nome); // Preenche o campo de busca com o nome da marca selecionada
+            setSearchMarcaOpen(false); // Fecha a lista de marcas
             setObjEpi(prevState => ({
                 ...prevState,
-                idMarca: item
+                idMarca: item // Atualiza o estado do Epi com a marca selecionada
             }));
         }
     };
@@ -113,27 +117,31 @@ const CadastrarEpi = () => {
     return (
         <section>
             <MenuBar />
-            <div className="content-page-epi">
+            <div className="content-page">
                 <div className="title">
-                    <h1>{id ? 'Editar Equipamento' : 'Cadastro de Equipamentos'}</h1>
-                    <div className="link-manutencao">
-                        <ul>
-                            <li>
-                                <Link onClick={() => setPerifericoOpen(true)} title='Vincular Periférico'>
-                                    <span>
-                                        <img src={iconLink} alt="icon"></img>
-                                    </span>
-                                </Link>
-                            </li>
-                            <li>
-                                <Link onClick={() => setManutencaoOpen(true)} title='Registros de Manutenção'>
-                                    <span>
-                                        <img src={iconManutencao} alt="icon"></img>
-                                    </span>
-                                </Link>
-                            </li>
-                        </ul>
-                    </div>
+                    <h1>{id ? 'Editar Equipamento' : 'Cadastro de Equipamento'}</h1>
+                    {id ? (
+                        <div className="link-manutencao">
+                            <ul>
+                                <li>
+                                    <Link onClick={() => setPerifericoOpen(true)} title='Vincular Periférico'>
+                                        <span>
+                                            <img src={iconLink} alt="icon"></img>
+                                        </span>
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link onClick={() => setManutencaoOpen(true)} title='Registros de Manutenção'>
+                                        <span>
+                                            <img src={iconManutencao} alt="icon"></img>
+                                        </span>
+                                    </Link>
+                                </li>
+                            </ul>
+                        </div>
+                    ) : (
+                        <div className="link-manutencao"></div>
+                    )}
                 </div>
 
                 <form>
@@ -166,31 +174,36 @@ const CadastrarEpi = () => {
                             className="input input-marca"
                             type="text"
                             placeholder="ID Marca"
-                            hidden />
+                            hidden
+                        />
                         <label className="label"> Marca:
                             <input
-                                value={searchMarca}
+                                value={searchMarca} // O campo de input agora é preenchido com o valor selecionado
                                 onClick={() => setSearchMarcaOpen(true)}
                                 onChange={(e) => setSearchMarca(e.target.value)}
                                 name="idMarca.id"
                                 className="input input-marca"
                                 type="text"
-                                placeholder="Marca" />
+                                placeholder="Marca"
+                            />
                             {searchMarcaOpen && (
                                 carregando ? (
                                     <SmallLoading />
                                 ) : (
                                     <div className="search-bar-curso">
-                                        {filterData(marcas, searchMarca, ['nome']).map((obj, indice) => (
-                                            <ul key={indice} onClick={() => handleSelection('marca', obj)}>
-                                                <li>
-                                                    <p>{obj.nome}</p>
-                                                </li>
-                                            </ul>
-                                        ))}
+                                        {filterData(marcas, searchMarca, ['nome'])
+                                            .filter(obj => obj.nome.toLowerCase() !== searchMarca.toLowerCase()) // Filtra para não mostrar a marca selecionada
+                                            .map((obj, indice) => (
+                                                <ul key={indice} onClick={() => handleSelection('marca', obj)}>
+                                                    <li>
+                                                        <p>{obj.nome}</p>
+                                                    </li>
+                                                </ul>
+                                            ))}
                                     </div>
                                 )
                             )}
+
                         </label>
 
                         <label className="label label-details">
@@ -259,7 +272,7 @@ const CadastrarEpi = () => {
                             placeholder="Data de Vencimento da Garantia" />
                     </label>
 
-                    <label className="label"> Usuario
+                    {/* <label className="label"> Usuario
                         <input
                             className="input"
                             type="text"
@@ -278,7 +291,7 @@ const CadastrarEpi = () => {
                             className="input"
                             type="text"
                             placeholder="Contato" />
-                    </label>
+                    </label> */}
 
                     <div className="container-buttons">
                         {id ? (
@@ -299,8 +312,11 @@ const CadastrarEpi = () => {
             {perifericoOpen && (
                 <ModalVincularPeriferico onClose={closeModal} />
             )}
+            {usuarioOpen && (
+                <ModalVincularUsuario onClose={closeModal} objEpi={objEpi} />
+            )}
             {sucessAnimation && (
-                <ModalSucess />
+                <ModalSucess title="Equipamento Cadastrado!" />
             )}
         </section>
     );

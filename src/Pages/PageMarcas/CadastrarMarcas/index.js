@@ -52,7 +52,7 @@ const CadastrarMarcas = () => {
     return (
         <section>
             <MenuBar />
-            <div className="content-page-epi">
+            <div className="content-page">
 
                 <div className="title">
                     <h1>{id ? 'Editar Marca' : 'Cadastro de Marca'}</h1>
@@ -88,7 +88,7 @@ const CadastrarMarcas = () => {
             </div>
 
             {sucessAnimation && (
-                <ModalSucess />
+                <ModalSucess title="Marca Cadastrada!" />
             )}
         </section>
     )

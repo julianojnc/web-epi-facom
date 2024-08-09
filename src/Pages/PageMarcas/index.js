@@ -45,7 +45,7 @@ const PageMarcas = () => {
   return (
     <section>
       <MenuBar />
-      <div className="content-page-epi">
+      <div className="content-page">
 
         <TitleSearch title="Marcas" onSearchChange={setSearchTerm}/>
 

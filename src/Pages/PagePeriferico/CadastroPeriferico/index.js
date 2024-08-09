@@ -6,10 +6,12 @@ import iconManutencao from "../../../assets/icon-manutencao.png"
 import { fetchMarca } from "../../PageMarcas/api/apiMarca";
 import SmallLoading from "../../../componentes/LoadingAnimation/SmallLoading";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
+import ModalManutencaoPeriferico from "./ModalManutencaoPeriferico";
 
 const CadastrarPeriferico = () => {
     const { id } = useParams(); // Obtenha o ID da URL
     const [sucessAnimation, setSucessAnimation] = useState(false);
+    const [manutencaoOpen, setManutencaoOpen] = useState(false);
 
     const periferico = {
         nome: '',
@@ -89,20 +91,24 @@ const CadastrarPeriferico = () => {
 
     const handleSelection = (type, item) => {
         if (type === 'marca') {
-            setObjMarca(item);
-            setSearchMarca(item.nome);
-            setSearchMarcaOpen(false);
+            setObjMarca(item); // Define o objeto de marca selecionado
+            setSearchMarca(item.nome); // Preenche o campo de busca com o nome da marca selecionada
+            setSearchMarcaOpen(false); // Fecha a lista de marcas
             setObjPeriferico(prevState => ({
                 ...prevState,
-                idMarca: item
+                idMarca: item // Atualiza o estado do Epi com a marca selecionada
             }));
         }
+    };
+
+    const closeModal = () => {
+        setManutencaoOpen(false);
     };
 
     return (
         <section>
             <MenuBar />
-            <div className="content-page-epi">
+            <div className="content-page">
 
                 <div className="title">
                     <h1>{id ? "Editar Periférico" : "Cadastro de Periférico"}</h1>
@@ -111,7 +117,7 @@ const CadastrarPeriferico = () => {
                         <ul>
 
                             <li>
-                                <Link to='/' title='Registros de Manutenção'>
+                                <Link onClick={() => setManutencaoOpen(true)} title='Registros de Manutenção'>
                                     <span>
                                         <img src={iconManutencao} alt="icon"></img>
                                     </span>
@@ -148,38 +154,39 @@ const CadastrarPeriferico = () => {
 
                     <div className="marca-checkbox">
 
-                        <input
+                    <input
                             value={objMarca.codMarca}
                             onChange={aoDigitar}
                             name="codMarca.id"
                             className="input input-marca"
                             type="text"
                             placeholder="ID Marca"
-                            hidden />
-
+                            hidden
+                        />
                         <label className="label"> Marca:
                             <input
-                                value={searchMarca}
+                                value={searchMarca} // O campo de input agora é preenchido com o valor selecionado
                                 onClick={() => setSearchMarcaOpen(true)}
                                 onChange={(e) => setSearchMarca(e.target.value)}
                                 name="idMarca.id"
                                 className="input input-marca"
                                 type="text"
-                                placeholder="Marca" />
-
-
+                                placeholder="Marca"
+                            />
                             {searchMarcaOpen && (
                                 carregando ? (
                                     <SmallLoading />
                                 ) : (
                                     <div className="search-bar-curso">
-                                        {filterData(marcas, searchMarca, ['nome']).map((obj, indice) => (
-                                            <ul key={indice} onClick={() => handleSelection('marca', obj)}>
-                                                <li>
-                                                    <p>{obj.nome}</p>
-                                                </li>
-                                            </ul>
-                                        ))}
+                                        {filterData(marcas, searchMarca, ['nome'])
+                                            .filter(obj => obj.nome.toLowerCase() !== searchMarca.toLowerCase()) // Filtra para não mostrar a marca selecionada
+                                            .map((obj, indice) => (
+                                                <ul key={indice} onClick={() => handleSelection('marca', obj)}>
+                                                    <li>
+                                                        <p>{obj.nome}</p>
+                                                    </li>
+                                                </ul>
+                                            ))}
                                     </div>
                                 )
                             )}
@@ -251,8 +258,11 @@ const CadastrarPeriferico = () => {
 
             </div>
 
+            {manutencaoOpen && (
+                <ModalManutencaoPeriferico onClose={closeModal} />
+            )}
             {sucessAnimation && (
-                <ModalSucess />
+                 <ModalSucess title="Periférico Cadastrado!"/>
             )}
 
         </section>

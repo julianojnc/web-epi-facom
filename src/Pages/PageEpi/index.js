@@ -50,7 +50,7 @@ const PageEpi = () => {
     return (
         <section>
             <MenuBar />
-            <div className="content-page-epi">
+            <div className="content-page">
 
                 <TitleSearch title="Equipamentos"  onSearchChange={setSearchTerm}/>
 

@@ -54,7 +54,7 @@ const CadastrarUsers = () => {
     return (
         <section>
             <MenuBar />
-            <div className="content-page-epi">
+            <div className="content-page">
 
                 <div className="title">
                     <h1>{id ? 'Editar Usuário' : 'Cadastro de Usuário'}</h1>
@@ -106,7 +106,7 @@ const CadastrarUsers = () => {
             </div>
 
             {sucessAnimation && (
-                <ModalSucess />
+                 <ModalSucess title="Usuário Cadastrado!"/>
             )}
         </section>
     )

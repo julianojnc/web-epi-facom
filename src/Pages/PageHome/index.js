@@ -49,7 +49,7 @@ const PageHome = () => {
     return (
         <section>
             <MenuBar />
-            <div className="content-page-epi">
+            <div className="content-page">
                 <TitleSearch title="Home" onSearchChange={setSearchTerm} />
                 {carregando ? (
                     <LargeLoading />

@@ -6,7 +6,8 @@
     bottom: 0;
     left: 0;
     z-index: 9999;
-    display: flex;
+    display: grid;
+    align-content: center;
     justify-content: center;
 }
 
@@ -18,5 +19,28 @@
     box-shadow: 0 0 1em rgb(0 0 0 / 0.3);
     transition: all 0.5s ease;
     padding: 20px 50px 20px 50px;
-    margin: 80px;
+    /* margin: 80px; */
+}
+
+.buttonsModal{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+}
+
+.buttonsModal a{
+    padding: 10px 20px;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.buttonModalNo{
+    background-color: #8D2E2E;
+}
+
+.buttonModalYes{
+    background-color: #31884B;
 }
