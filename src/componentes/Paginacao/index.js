@@ -2,6 +2,11 @@ import { MdFirstPage, MdLastPage, MdNavigateNext, MdNavigateBefore } from "react
 import { Link } from "react-router-dom";
 import "../../styles/Paginacao.css";
 
+/*
+    Paginação, compoente referente a pagina mostrada na Table que lista marca, usuario, epi, perifeiro
+    e Home. Em cada pagina é passada a prop referente ao valor da paginaAtual, totalPaaginas, totalRegistro
+    e onPageChange essa ultima responsável pela função de clicar na opção 3 e ir para a pagina 3.
+*/
 const Paginacao = ({ paginaAtual, totalPaginas, totalRegistros, onPageChange }) => {
 
     const handleFirstPage = () => {

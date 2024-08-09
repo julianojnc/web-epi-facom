@@ -1,5 +1,6 @@
 import iconSearch from "../../assets/icon-search.png"
 
+// Componente referente ao "Header" das paginas marca, usuario, epi, home e periferico
 const TitleSearch = ({ title, onSearchChange }) => {
     return (
         <div className="title">

@@ -8,6 +8,7 @@
 /*Loading pequeno, usado na listagem de cadastro abaixo de inputs como Marca, Usuario e Periferico*/
 .small {
     padding-top: 10px;
+    height: 25px;
 }
 
 /*Sucess Animation*/

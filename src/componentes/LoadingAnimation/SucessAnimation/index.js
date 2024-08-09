@@ -1,3 +1,4 @@
+// Animação do Loadin Grande
 const SucessAnimation = ({ onClose }) => {
     return (
         <div className="content">

@@ -7,6 +7,7 @@ import iconMarca from "../../assets/icon-marca.png"
 import { Link } from 'react-router-dom'
 import MenuLink from './MenuLink'
 
+// Menu Lateral do projeto
 const MenuBar = () => {
     return (
         <nav>

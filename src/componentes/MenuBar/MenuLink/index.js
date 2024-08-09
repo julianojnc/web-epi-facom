@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom"
 
 const MenuLink = ({ children, to, title }) => {
 
-    // Destacar icone no menu quando selecionada a pagina do mesmo
+    // Destaca icone no menu quando selecionada a pagina do mesmo
     const localizacao = useLocation();
 
     return (
