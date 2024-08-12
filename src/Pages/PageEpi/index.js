@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { fetchEpi } from "./api/apiEpi";
 import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import Paginacao from "../../componentes/Paginacao";
-import TitleSearch from "../../componentes/PageComponents";
+import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 
 const PageEpi = () => {
     const [epi, setEpi] = useState([]); // Hook para armazenar obj info vinda da api

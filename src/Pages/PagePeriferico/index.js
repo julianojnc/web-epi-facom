@@ -5,7 +5,7 @@ import { fetchPerifericos } from "./api";
 import TablePeriferico from "./TablePeriferico";
 import { Link } from "react-router-dom";
 import Paginacao from "../../componentes/Paginacao";
-import TitleSearch from "../../componentes/PageComponents";
+import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 
 
 const PagePeriferico = () => {

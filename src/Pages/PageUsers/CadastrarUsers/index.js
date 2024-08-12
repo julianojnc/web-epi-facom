@@ -1,8 +1,10 @@
 import MenuBar from "../../../componentes/MenuBar";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { cadastrarUsers, fetchUsersById } from "../api/apiUser";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
+import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
+import Buttons from "../../../componentes/PageComponents/PageCadastroButtons";
 
 const CadastrarUsers = () => {
     const { id } = useParams(); // Obtenha o ID da URL
@@ -56,9 +58,13 @@ const CadastrarUsers = () => {
             <MenuBar />
             <div className="content-page">
 
-                <div className="title">
-                    <h1>{id ? 'Editar Usuário' : 'Cadastro de Usuário'}</h1>
-                </div>
+                <CadastroHeader
+                    id={id}
+                    title="Cadastro de Usuário"
+                    titleEditar="Editar Usuário"
+                    hiddenPeriferico={true}
+                    hiddenManutencao={true}
+                />
 
                 <form>
                     <label className="label"> Nome:
@@ -91,22 +97,15 @@ const CadastrarUsers = () => {
                             placeholder="Email" />
                     </label>
 
-                    <div className="container-buttons">
-                        {id ? (
-                            <>
-                                <Link to='/cadastro-usuarios' className="button button-cadastrar alterar">Alterar</Link>
-                                <Link to='/cadastro-usuarios' className="button button-cadastrar excluir">Excluir</Link>
-                            </>
-                        ) : (
-                            <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar</Link>
-                        )}
-                    </div>
+                    <Buttons
+                        id={id}
+                        cadastrar={cadastrar}
+                    />
                 </form>
-
             </div>
 
             {sucessAnimation && (
-                 <ModalSucess title="Usuário Cadastrado!"/>
+                <ModalSucess title="Usuário Cadastrado!" />
             )}
         </section>
     )

@@ -5,7 +5,7 @@ import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import Paginacao from "../../componentes/Paginacao";
 import { fetchEpiUsuario } from "./api";
 import TableEpiUsuario from "./TableEpiUsuario";
-import TitleSearch from "../../componentes/PageComponents";
+import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 
 const PageHome = () => {
     const [epiUsuario, setEpiUsuario] = useState([]);

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { fetchMarcas } from "./api/apiMarca";
 import LargeLoading from '../../componentes/LoadingAnimation/LargeLoading';
 import Paginacao from '../../componentes/Paginacao';
-import TitleSearch from '../../componentes/PageComponents';
+import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 
 const PageMarcas = () => {
 
