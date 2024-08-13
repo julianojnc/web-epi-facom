@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import MenuBar from "../../../componentes/MenuBar";
 import ModalManutencaoEpi from "./ModalManutencaoEpi";
 import ModalVincularPeriferico from "./ModalVincularPeriferico";
-import { cadastrarEpi, fetchEpiById } from "../api/apiEpi";
+import { cadastrarEpi, fetchEpiById, alterarEpi, excluirEpi } from "../api/apiEpi";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
 import ModalVincularUsuario from "./ModalVincularUsuario";
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
@@ -12,6 +12,7 @@ import Buttons from "../../../componentes/PageComponents/PageCadastroButtons";
 
 const CadastrarEpi = () => {
     const { id } = useParams(); // Obtenha o ID da URL
+    const navigate = useNavigate();
     const [manutencaoOpen, setManutencaoOpen] = useState(false);
     const [perifericoOpen, setPerifericoOpen] = useState(false);
     const [usuarioOpen, setUsuarioOpen] = useState(false);
@@ -31,7 +32,6 @@ const CadastrarEpi = () => {
         }
     };
 
-    const [epis, setEpis] = useState([]);
     const [objEpi, setObjEpi] = useState(epi);
 
     useEffect(() => {
@@ -44,24 +44,37 @@ const CadastrarEpi = () => {
         }
     }, [id]);
 
-    const cadastrar = async () => {
-        console.log('Objeto a ser enviado:', objEpi);
+    const cadastrarOuAlterar = async () => {
         try {
-            const response = await cadastrarEpi(objEpi);
+            const response = id ? await alterarEpi(id, objEpi) : await cadastrarEpi(objEpi);
             console.log('Resposta da API:', response);
             if (response.mensagem) {
                 alert(response.mensagem);
             } else {
-                setEpis([...epis, response]);
                 setSucessAnimation(true);
                 setTimeout(() => {
-                    setSucessAnimation(false)
-                    setUsuarioOpen(true)
+                    setSucessAnimation(false);
+                    if (!id) navigate(`/cadastro-epi/${response.id}`); // Redireciona para edição se for novo cadastro
+                    setUsuarioOpen(true);
                 }, 2000);
             }
         } catch (error) {
-            console.error('Erro ao cadastrar Epi:', error);
-            alert('Ocorreu um erro ao tentar cadastrar Epi. Confira se não há duplicidade!');
+            console.error('Erro ao cadastrar/alterar Epi:', error);
+            alert('Ocorreu um erro ao tentar cadastrar/alterar Epi.');
+        }
+    };
+
+    const excluir = async () => {
+        const confirmDelete = window.confirm('Você tem certeza que deseja excluir este equipamento?');
+        if (confirmDelete) {
+            try {
+                await excluirEpi(id);
+                alert('EPI excluído com sucesso!');
+                navigate('/epi'); // Redireciona para a lista de EPIs
+            } catch (error) {
+                console.error('Erro ao excluir Epi:', error);
+                alert('Ocorreu um erro ao tentar excluir o EPI.');
+            }
         }
     };
 
@@ -180,8 +193,10 @@ const CadastrarEpi = () => {
 
                     <Buttons
                         id={id}
-                        cadastrar={cadastrar}
+                        cadastrarOuAlterar={cadastrarOuAlterar}
+                        excluir={excluir}
                     />
+
 
                 </form>
             </div>

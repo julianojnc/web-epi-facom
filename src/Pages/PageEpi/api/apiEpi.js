@@ -50,6 +50,33 @@ export const cadastrarEpi = async (epi) => {
     }
 };
 
+// Alterar
+export const alterarEpi = async (id, epi) => {
+    try {
+        const response = await axios.put(`${API_URL}/epi/${id}`, epi, {
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        throw error;
+    }
+};
+
+// Excluir
+export const excluirEpi = async (id) => {
+    try {
+        const response = await axios.delete(`${API_URL}/epi/${id}`);
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        throw error;
+    }
+};
+
 // tratativa de erros
 const handleApiError = (error) => {
     if (error.response) {
