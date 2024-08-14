@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchMarca } from "../../../Pages/PageMarcas/api/apiMarca";
 import SmallLoading from "../../LoadingAnimation/SmallLoading";
 import { fetchEpiById } from "../../../Pages/PageEpi/api/apiEpi";
-import { fetchPerifericoById } from "../../../Pages/PagePeriferico/api";
+import { fetchPerifericoById } from "../../../Pages/PagePeriferico/api/apiPeriferico";
 
 const MarcaCheckbox = ({id, obj, setObj, aoDigitar}) => {
     const objMarcas = { id: "" };

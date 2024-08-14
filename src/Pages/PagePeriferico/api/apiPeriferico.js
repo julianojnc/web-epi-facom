@@ -48,6 +48,33 @@ export const cadastrarPerifericos = async (periferico) => {
     }
 };
 
+// Alterar
+export const alterarPeriferico = async (id, periferico) => {
+    try {
+        const response = await axios.put(`${API_URL}/periferico/${id}`, periferico, {
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        throw error;
+    }
+};
+
+// Excluir
+export const excluirPeriferico = async (id) => {
+    try {
+        const response = await axios.delete(`${API_URL}/periferico/${id}`);
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        throw error;
+    }
+};
+
 const handleApiError = (error) => {
     if (error.response) {
         console.error('Erro na resposta da API:', error.response);

@@ -48,6 +48,33 @@ export const cadastrarUsers = async (user) => {
     }
 };
 
+// Alterar
+export const alterarUser = async (id, user) => {
+    try {
+        const response = await axios.put(`${API_URL}/usuarios/${id}`, user, {
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        throw error;
+    }
+};
+
+// Excluir
+export const excluirUser = async (id) => {
+    try {
+        const response = await axios.delete(`${API_URL}/usuarios/${id}`);
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        throw error;
+    }
+};
+
 const handleApiError = (error) => {
     if (error.response) {
         console.error('Erro na resposta da API:', error.response);

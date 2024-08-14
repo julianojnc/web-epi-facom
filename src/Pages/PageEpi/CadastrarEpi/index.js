@@ -96,8 +96,10 @@ const CadastrarEpi = () => {
                     id={id}
                     title="Cadastro de Equipamento"
                     titleEditar="Editar Equipamento"
+                    hiddenUsuario={false}
                     hiddenPeriferico={false}
                     hiddenManutencao={false}
+                    setUsuarioOpen={setUsuarioOpen}
                     setPerifericoOpen={setPerifericoOpen}
                     setManutencaoOpen={setManutencaoOpen}
                 />
@@ -170,8 +172,9 @@ const CadastrarEpi = () => {
                             placeholder="Data de Vencimento da Garantia" />
                     </label>
 
-                    {/* <label className="label"> Usuario
+                    {/*<label className="label"> Usuario
                         <input
+                            disabled
                             className="input"
                             type="text"
                             placeholder="Usuario" />
@@ -179,6 +182,7 @@ const CadastrarEpi = () => {
 
                     <label className="label"> Email do Usuario:
                         <input
+                            disabled
                             className="input"
                             type="text"
                             placeholder="Email" />
@@ -186,10 +190,11 @@ const CadastrarEpi = () => {
 
                     <label className="label"> Contato do Usuario:
                         <input
+                            disabled
                             className="input"
                             type="text"
                             placeholder="Contato" />
-                    </label> */}
+                    </label>*/}
 
                     <Buttons
                         id={id}
@@ -205,7 +210,7 @@ const CadastrarEpi = () => {
                 <ModalManutencaoEpi onClose={closeModal} />
             )}
             {perifericoOpen && (
-                <ModalVincularPeriferico onClose={closeModal} />
+                <ModalVincularPeriferico onClose={closeModal} id={id} />
             )}
             {usuarioOpen && (
                 <ModalVincularUsuario onClose={closeModal} objEpi={objEpi} />

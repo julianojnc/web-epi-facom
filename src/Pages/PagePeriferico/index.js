@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import MenuBar from "../../componentes/MenuBar";
-import { fetchPerifericos } from "./api";
+import { fetchPerifericos } from ".//api/apiPeriferico";
 import TablePeriferico from "./TablePeriferico";
 import { Link } from "react-router-dom";
 import Paginacao from "../../componentes/Paginacao";

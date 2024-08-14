@@ -1,5 +1,5 @@
 .link-manutencao ul{
-    width: 80px;
+    width: 130px;
     height: 33px;
     display: flex;
     justify-content: space-between;
@@ -7,6 +7,11 @@
 
 .link-manutencao ul li{
     margin-top: 3px;
+    transition: all 0.5s ease;
+}
+
+.link-manutencao ul li:hover{
+    transform: scale(1.1);
 }
 
 form {

@@ -1,39 +1,52 @@
 import MenuBar from "../../../componentes/MenuBar";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { cadastrarMarcas, fetchMarcaById } from "../api/apiMarca";
+import { alterarMarca, cadastrarMarcas, excluirMarca, fetchMarcaById } from "../api/apiMarca";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
 import Buttons from "../../../componentes/PageComponents/PageCadastroButtons";
 
 const CadastrarMarcas = () => {
     const { id } = useParams(); // Obtenha o ID da URL
+    const navigate = useNavigate();
     const [sucessAnimation, setSucessAnimation] = useState(false);
 
     const marca = {
         nome: ''
     };
 
-    const [marcas, setMarcas] = useState([]);
     const [objMarca, setObjMarca] = useState(marca);// Funcao para o cadastro de Marca
 
-    const cadastrar = async () => {
-        console.log('Objeto a ser enviado:', objMarca);
+    const cadastrarOuAlterar = async () => {
         try {
-            const response = await cadastrarMarcas(objMarca);
+            const response = id ? await alterarMarca(id, objMarca) : await cadastrarMarcas(objMarca);
             console.log('Resposta da API:', response);
             if (response.mensagem) {
                 alert(response.mensagem);
             } else {
-                setMarcas([...marcas, response]);
                 setSucessAnimation(true);
                 setTimeout(() => {
-                    window.location.reload();
+                    setSucessAnimation(false);
+                    if (!id) navigate(`/cadastro-marcas/${response.id}`); // Redireciona para edição se for novo cadastro
                 }, 2000);
             }
         } catch (error) {
-            console.error('Erro ao cadastrar Marca:', error);
-            alert('Ocorreu um erro ao tentar cadastrar Marca!');
+            console.error('Erro ao cadastrar/alterar Marca:', error);
+            alert('Ocorreu um erro ao tentar cadastrar/alterar Marca.');
+        }
+    };
+
+    const excluir = async () => {
+        const confirmDelete = window.confirm('Você tem certeza que deseja excluir esta Marca?');
+        if (confirmDelete) {
+            try {
+                await excluirMarca(id);
+                alert('Marca excluído com sucesso!');
+                navigate('/marcas'); // Redireciona para a lista de Marcas
+            } catch (error) {
+                console.error('Erro ao excluir Marca:', error);
+                alert('Ocorreu um erro ao tentar excluir esta Marca.');
+            }
         }
     };
 
@@ -77,7 +90,8 @@ const CadastrarMarcas = () => {
 
                     <Buttons
                         id={id}
-                        cadastrar={cadastrar}
+                        cadastrarOuAlterar={cadastrarOuAlterar}
+                        excluir={excluir}
                     />
                 </form>
             </div>

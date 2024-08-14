@@ -25,6 +25,10 @@
     text-decoration: none;
 }
 
+.paginacao div a:hover {
+    border: 1px solid black;
+}
+
 .paginacao div a svg {
     width: 100%;
 }

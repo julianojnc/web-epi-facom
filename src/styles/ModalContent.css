@@ -13,6 +13,7 @@
 
 .dialog-content form{
     width: 318px;
+    flex-wrap: wrap;
 }
 
 .title-modal-sucess{

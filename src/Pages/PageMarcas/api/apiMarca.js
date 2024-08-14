@@ -65,6 +65,33 @@ export const cadastrarMarcas = async (marca) => {
     }
 };
 
+// Alterar
+export const alterarMarca = async (id, marca) => {
+    try {
+        const response = await axios.put(`${API_URL}/marca/${id}`, marca, {
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        throw error;
+    }
+};
+
+// Excluir
+export const excluirMarca = async (id) => {
+    try {
+        const response = await axios.delete(`${API_URL}/marca/${id}`);
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        throw error;
+    }
+};
+
 const handleApiError = (error) => {
     if (error.response) {
         console.error('Erro na resposta da API:', error.response);

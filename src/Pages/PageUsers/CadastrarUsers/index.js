@@ -1,13 +1,14 @@
 import MenuBar from "../../../componentes/MenuBar";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { cadastrarUsers, fetchUsersById } from "../api/apiUser";
+import { alterarUser, cadastrarUsers, excluirUser, fetchUsersById } from "../api/apiUser";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
 import Buttons from "../../../componentes/PageComponents/PageCadastroButtons";
 
 const CadastrarUsers = () => {
     const { id } = useParams(); // Obtenha o ID da URL
+    const navigate = useNavigate();
     const [sucessAnimation, setSucessAnimation] = useState(false);
 
     const user = {
@@ -16,26 +17,38 @@ const CadastrarUsers = () => {
         telContato: ''
     };
 
-    const [users, setUsers] = useState([]);
     const [objUser, setObjUser] = useState(user);// Funcao para o cadastro de Usuarios
 
-    const cadastrar = async () => {
-        console.log('Objeto a ser enviado:', objUser);
+    const cadastrarOuAlterar = async () => {
         try {
-            const response = await cadastrarUsers(objUser);
+            const response = id ? await alterarUser(id, objUser) : await cadastrarUsers(objUser);
             console.log('Resposta da API:', response);
             if (response.mensagem) {
                 alert(response.mensagem);
             } else {
-                setUsers([...users, response]);
                 setSucessAnimation(true);
                 setTimeout(() => {
-                    window.location.reload();
+                    setSucessAnimation(false);
+                    if (!id) navigate(`/cadastro-usuarios/${response.id}`); // Redireciona para edição se for novo cadastro
                 }, 2000);
             }
         } catch (error) {
-            console.error('Erro ao cadastrar Usuario:', error);
-            alert('Ocorreu um erro ao tentar cadastrar Usuario. Confira se não há duplicidade!');
+            console.error('Erro ao cadastrar/alterar Usuario:', error);
+            alert('Ocorreu um erro ao tentar cadastrar/alterar Usuario.');
+        }
+    };
+
+    const excluir = async () => {
+        const confirmDelete = window.confirm('Você tem certeza que deseja excluir este Usuario?');
+        if (confirmDelete) {
+            try {
+                await excluirUser(id);
+                alert('Usuario excluído com sucesso!');
+                navigate('/usuarios'); // Redireciona para a lista de Usuarios
+            } catch (error) {
+                console.error('Erro ao excluir Usuario:', error);
+                alert('Ocorreu um erro ao tentar excluir este Usuario.');
+            }
         }
     };
 
@@ -99,7 +112,8 @@ const CadastrarUsers = () => {
 
                     <Buttons
                         id={id}
-                        cadastrar={cadastrar}
+                        cadastrarOuAlterar={cadastrarOuAlterar}
+                        excluir={excluir}
                     />
                 </form>
             </div>

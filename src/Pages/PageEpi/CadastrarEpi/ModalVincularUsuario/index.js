@@ -110,7 +110,6 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
                                 </div>
                             </form>
 
-                            {/* <TableManutencaoEpi /> */}
                         </div>
                     </>
                 )
