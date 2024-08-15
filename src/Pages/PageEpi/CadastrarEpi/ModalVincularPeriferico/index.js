@@ -6,7 +6,7 @@ import { cadastrarPerifericos } from "../../../PagePeriferico/api/apiPeriferico"
 import { useState } from "react";
 import MarcaCheckbox from "../../../../componentes/PageComponents/InputMarcaCheckbox";
 
-const ModalVincularPeriferico = ({ onClose, id }) => {
+const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
 
     const periferico = {
         nome: '',
@@ -59,6 +59,30 @@ const ModalVincularPeriferico = ({ onClose, id }) => {
             <div className="dialog-content">
                 <form>
 
+                    <label className="label"> Pesquisar Periféricos:
+                        <input className="input" type="text" placeholder="Pesquisar Periféricos Existentes..." />
+                    </label>
+
+                    <input
+                        value={objEpi.id}
+                        onChange={aoDigitar}
+                        name='objEpi.id'
+                        className="input"
+                        type="text"
+                        placeholder="Id Epi"
+                        hidden
+                    />
+
+                    <input
+                        value={objPeriferico.id}
+                        onChange={aoDigitar}
+                        name='id'
+                        className="input"
+                        type="text"
+                        placeholder="Id Periferico"
+                        hidden
+                    />
+
                     <label className="label"> Nome:
                         <input
                             value={objPeriferico.nome}
@@ -98,37 +122,13 @@ const ModalVincularPeriferico = ({ onClose, id }) => {
 
                     <label className="label"> Data Garantia:
                         <input
-                        value={objPeriferico.dataGarantia}
+                            value={objPeriferico.dataGarantia}
                             onChange={aoDigitar}
                             name='dataGarantia'
                             className="input"
                             type="date"
                             placeholder="Data de Retorno" />
                     </label>
-
-                    {/* <label className="label"> Data Vinculação:
-                        <input
-                        value={objPeriferico.nome}
-                            onChange={aoDigitar}
-                            name='nome'
-                            className="input"
-                            type="date"
-                            placeholder="Data Vinculação" />
-                    </label>
-
-                    <label className="label"> Data Desvinculação:
-                        <input
-                            className="input"
-                            type="date"
-                            placeholder="Data Vinculação" />
-                    </label>
-
-                    <label className="label"> Registro Desvinculação:
-                        <textarea
-                            className="input"
-                            type="text"
-                            placeholder="Data Vinculação" />
-                    </label> */}
 
                     <div className="container-buttons">
                         <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar Novo</Link>

@@ -5,14 +5,12 @@ section{
 
 .content-page{
     width: 100%;
-
     padding: 80px 94px 0px 94px;
 }
 
 .title{
     display: flex;
     justify-content: space-between;
-    
     margin-bottom: 20px;
 }
 
@@ -20,17 +18,28 @@ section{
     font-size: 25px;
 }
 
-.title span{
+.title label{
     display: flex;
     gap: 10px;
 }
 
-.title .search-icon img{
-    padding-top: 8px;
-    position: absolute;
+.search-icon{
+    display: flex;
+    align-items: center;
+    transition: all 0.5s ease;
+    cursor: pointer;
 }
 
-.title span .input{
+.search-icon:hover{
+    transform: scale(1.1);
+}
+
+.title .search-icon img{
+    height: 35px;
+    width: 35px;
+}
+
+.title label .input{
     width: 300px;
     border: 1px solid black;
     border-radius: 5px;

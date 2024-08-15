@@ -3,6 +3,7 @@ import Modal from "../../../../componentes/Modal";
 import { useState } from "react";
 import iconClose from "../../../../assets/icon-close.png"
 import { cadastrarUsers } from "../../../PageUsers/api/apiUser";
+import TableVincularUsuario from "./TableVincularUsuario";
 
 const ModalVincularUsuario = ({ onClose, objEpi }) => {
 
@@ -74,6 +75,26 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
                                     <input className="input" type="text" placeholder="Pesquisar Usuários Existentes..." />
                                 </label>
 
+                                <input
+                                    value={objEpi.id}
+                                    onChange={aoDigitar}
+                                    name='objEpi.id'
+                                    className="input"
+                                    type="text"
+                                    placeholder="Id Epi"
+                                    hidden
+                                />
+
+                                <input
+                                    value={objUser.id}
+                                    onChange={aoDigitar}
+                                    name='objUser.id'
+                                    className="input"
+                                    type="text"
+                                    placeholder="Id Usuario"
+                                    hidden
+                                />
+
                                 <label className="label"> Nome:
                                     <input
                                         value={objUser.nome}
@@ -109,6 +130,8 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
                                     <Link to='/cadastro-epi' className="button button-cadastrar">Vincular</Link>
                                 </div>
                             </form>
+
+                            <TableVincularUsuario />
 
                         </div>
                     </>

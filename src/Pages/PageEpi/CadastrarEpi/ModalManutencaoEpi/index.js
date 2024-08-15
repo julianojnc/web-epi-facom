@@ -4,7 +4,7 @@ import TableManutencaoEpi from "./TableManutencaoEpi"
 import iconClose from "../../../../assets/icon-close.png"
 
 
-const ModalManutencaoEpi = ({ onClose }) => {
+const ModalManutencaoEpi = ({ onClose, objEpi }) => {
     return (
 
         <Modal>
@@ -20,6 +20,16 @@ const ModalManutencaoEpi = ({ onClose }) => {
 
             <div className="dialog-content">
                 <form>
+
+                    <input
+                        value={objEpi.id}
+                        name='objEpi.id'
+                        className="input"
+                        type="text"
+                        placeholder="Id Epi"
+                        hidden
+                    />
+
                     <label className="label"> Descrição:
                         <textarea className="input" type="text" placeholder="Descrição" />
                     </label>

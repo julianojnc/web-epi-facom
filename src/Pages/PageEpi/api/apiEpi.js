@@ -2,6 +2,16 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:4000/api';
 
+
+/* Fazer:
+
+    fetchManutencaoEpi
+    fetchEpiUsuario
+    fetchEpiUsuarioById
+    fetchEpiPeriferico
+    fetchEpiPerifericoById
+*/
+
 // Lista Apenas um elemento com base no ID
 export const fetchEpiById = async (id) => {
     try {

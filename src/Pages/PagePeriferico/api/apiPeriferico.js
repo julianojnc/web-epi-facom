@@ -2,6 +2,10 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:4000/api';
 
+/*
+    fetchManutencaoPeriferico
+*/
+
 // Lista Apenas um elemento com base no ID
 export const fetchPerifericoById = async (id) => {
     try {

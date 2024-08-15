@@ -1,13 +1,12 @@
-const TableVincularPeriferico = () => {
+const TableVincularUsuario = () => {
     return (
         <table className="table-manutencao">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>NOME</th>
-                    <th>PATRIMONIO</th>
-                    <th>DATA VINCULACAO</th>
-                    <th>TEMPO VINCULADO</th>
+                    <th>CONTATO</th>
+                    <th>EMAIL</th>
                     <th>VINCULADO</th>
                 </tr>
             </thead>
@@ -15,10 +14,9 @@ const TableVincularPeriferico = () => {
             <tbody>
                 <tr>
                     <td>1</td>
-                    <td>MOUSE</td>
-                    <td>002022</td>
-                    <td>20/08/2020</td>
-                    <td>21/08/2024</td>
+                    <td>FULANO</td>
+                    <td>27999898280</td>
+                    <td>fulano@facom.com.br</td>
                     <td>SIM</td>
                 </tr>
             </tbody>
@@ -26,4 +24,4 @@ const TableVincularPeriferico = () => {
     )
 }
 
-export default TableVincularPeriferico;
+export default TableVincularUsuario;

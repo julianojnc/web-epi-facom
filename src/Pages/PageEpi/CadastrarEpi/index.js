@@ -207,10 +207,10 @@ const CadastrarEpi = () => {
             </div>
 
             {manutencaoOpen && (
-                <ModalManutencaoEpi onClose={closeModal} />
+                <ModalManutencaoEpi onClose={closeModal} objEpi={objEpi}/>
             )}
             {perifericoOpen && (
-                <ModalVincularPeriferico onClose={closeModal} id={id} />
+                <ModalVincularPeriferico onClose={closeModal} objEpi={objEpi} id={id}/>
             )}
             {usuarioOpen && (
                 <ModalVincularUsuario onClose={closeModal} objEpi={objEpi} />

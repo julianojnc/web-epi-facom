@@ -4,6 +4,7 @@ nav {
     background-color: black;
     color: white;
     text-align: center;
+    box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
 }
 
 ul {
@@ -26,12 +27,19 @@ ul {
     margin-bottom: 15px;
 }
 
+.icon span{
+    display: flex;
+    justify-content: center;
+}
+
 .icon:hover {
     background-color: darkgray;
+    border-radius: 5px;
     transform: scale(1.1);
 }
 
 .linkDestacado {
     background-color: darkgray;
+    border-radius: 5px;
     transform: scale(1.1);
 }

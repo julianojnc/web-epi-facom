@@ -5,7 +5,7 @@ const TitleSearch = ({ title, onSearchChange }) => {
     return (
         <div className="title">
             <h1>{title}</h1>
-            <span>
+            <label>
                 <input
                     className="input"
                     placeholder="Pesquisar..."
@@ -14,7 +14,7 @@ const TitleSearch = ({ title, onSearchChange }) => {
                 <span className="search-icon">
                     <img src={iconSearch} alt="icon"></img>
                 </span>
-            </span>
+            </label>
         </div>
     );
 };
