@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import MenuBar from "../../componentes/MenuBar";
-import TableUsers from "./TableUsers";
 import { useEffect, useState } from "react";
 import { fetchUsers } from "./api/apiUser";
+import MenuBar from "../../componentes/MenuBar";
 import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
-import Paginacao from "../../componentes/Paginacao";
 import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
+import TableUsers from "./TableUsers";
+import Paginacao from "../../componentes/Paginacao";
 
 const PageUsers = () => {
 

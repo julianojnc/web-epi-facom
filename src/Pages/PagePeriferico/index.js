@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
-import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
-import MenuBar from "../../componentes/MenuBar";
-import { fetchPerifericos } from ".//api/apiPeriferico";
-import TablePeriferico from "./TablePeriferico";
 import { Link } from "react-router-dom";
-import Paginacao from "../../componentes/Paginacao";
+import { useEffect, useState } from "react";
+import { fetchPerifericos } from ".//api/apiPeriferico";
+import MenuBar from "../../componentes/MenuBar";
+import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
-
+import TablePeriferico from "./TablePeriferico";
+import Paginacao from "../../componentes/Paginacao";
 
 const PagePeriferico = () => {
 

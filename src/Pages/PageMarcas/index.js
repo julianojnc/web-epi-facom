@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
-import MenuBar from '../../componentes/MenuBar'
-import TableMarcas from './TableMarcas';
 import { useEffect, useState } from 'react';
 import { fetchMarcas } from "./api/apiMarca";
+import MenuBar from '../../componentes/MenuBar'
 import LargeLoading from '../../componentes/LoadingAnimation/LargeLoading';
-import Paginacao from '../../componentes/Paginacao';
 import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
+import TableMarcas from './TableMarcas';
+import Paginacao from '../../componentes/Paginacao';
+
 
 const PageMarcas = () => {
 

@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 
 const TableEpi = ({ vetor }) => {
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Utilizado para enviar o usuario para outra pagina
 
-    const handleClick = (epi) => {
+    const handleClick = (epi) => { // Quando clicado usuario sera enviado para a pagina cadastro-epi e adicionado o id do mesmo no final da url
         navigate(`/cadastro-epi/${epi.id}`);
     };
 
@@ -21,8 +21,8 @@ const TableEpi = ({ vetor }) => {
                 </tr>
             </thead>
             <tbody>
-                {vetor.map((obj) => (
-                    <tr key={obj.id} onClick={() => handleClick(obj)}>
+                {vetor.map((obj) => ( // Mapeando o obj passado pela PageEpi por meio de vetor e listando os mesmo individualmente
+                    <tr key={obj.id} onClick={() => handleClick(obj)}> {/* Quando Clicado será acionada a função handleClick*/}
                         <td>{obj.id}</td>
                         <td>{obj.nome}</td>
                         <td>{obj.patrimonio}</td>

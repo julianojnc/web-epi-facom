@@ -1,11 +1,11 @@
-import MenuBar from "../../componentes/MenuBar";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
-import Paginacao from "../../componentes/Paginacao";
 import { fetchEpiUsuario } from "./api";
-import TableEpiUsuario from "./TableEpiUsuario";
+import MenuBar from "../../componentes/MenuBar";
+import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
+import TableEpiUsuario from "./TableEpiUsuario";
+import Paginacao from "../../componentes/Paginacao";
 
 const PageHome = () => {
     const [epiUsuario, setEpiUsuario] = useState([]);
@@ -15,7 +15,7 @@ const PageHome = () => {
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [tamanhoPagina] = useState(10);
     const [searchTerm, setSearchTerm] = useState(''); // Estado para o termo de pesquisa
-
+    
     useEffect(() => {
         const fetchAndSetEpiUsuario = async () => {
             if (epiUsuario.length === 0) {
@@ -29,6 +29,8 @@ const PageHome = () => {
         };
         fetchAndSetEpiUsuario();
     }, [paginaAtual, tamanhoPagina]);
+
+    console.log(epiUsuario)
 
     // Função para filtrar os dados
     const filter = epiUsuario.filter((item) => {

@@ -3,10 +3,8 @@ import Modal from "../../../../componentes/Modal"
 import TableManutencaoEpi from "./TableManutencaoEpi"
 import iconClose from "../../../../assets/icon-close.png"
 
-
 const ModalManutencaoEpi = ({ onClose, objEpi }) => {
     return (
-
         <Modal>
             <div className="dialog-title">
                 <h1>REGISTRO DE MANUTENÇÃO</h1>

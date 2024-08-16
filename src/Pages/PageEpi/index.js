@@ -1,11 +1,11 @@
-import MenuBar from "../../componentes/MenuBar";
-import TableEpi from "./TableEpi";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchEpi } from "./api/apiEpi";
+import MenuBar from "../../componentes/MenuBar";
 import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
-import Paginacao from "../../componentes/Paginacao";
 import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
+import TableEpi from "./TableEpi";
+import Paginacao from "../../componentes/Paginacao";
 
 const PageEpi = () => {
     const [epi, setEpi] = useState([]); // Hook para armazenar obj info vinda da api
@@ -19,8 +19,8 @@ const PageEpi = () => {
     // Carregando Api
     useEffect(() => {
         const fetchAndSetEpi = async () => {
-            if (epi.length === 0) {
-                setCarregando(true); // Se o tamanho do obj epi for igual a zero mostra carregando
+            if (epi.length === 0) { // Se o tamanho do obj epi for igual a zero carregando ativado
+                setCarregando(true); 
             }
             const { lista, totalRegistros, totalPaginas } = await fetchEpi(paginaAtual, tamanhoPagina);
             setEpi(lista);

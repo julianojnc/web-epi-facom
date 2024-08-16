@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import MenuBar from "../../../componentes/MenuBar";
-import ModalManutencaoEpi from "./ModalManutencaoEpi";
-import ModalVincularPeriferico from "./ModalVincularPeriferico";
 import { cadastrarEpi, fetchEpiById, alterarEpi, excluirEpi } from "../api/apiEpi";
-import ModalSucess from "../../../componentes/Modal/ModalSucess";
-import ModalVincularUsuario from "./ModalVincularUsuario";
+import MenuBar from "../../../componentes/MenuBar";
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
 import MarcaCheckbox from "../../../componentes/PageComponents/InputMarcaCheckbox";
 import Buttons from "../../../componentes/PageComponents/PageCadastroButtons";
+import ModalManutencaoEpi from "./ModalManutencaoEpi";
+import ModalVincularPeriferico from "./ModalVincularPeriferico";
+import ModalSucess from "../../../componentes/Modal/ModalSucess";
+import ModalVincularUsuario from "./ModalVincularUsuario";
 
 const CadastrarEpi = () => {
-    const { id } = useParams(); // Obtenha o ID da URL
-    const navigate = useNavigate();
-    const [manutencaoOpen, setManutencaoOpen] = useState(false);
-    const [perifericoOpen, setPerifericoOpen] = useState(false);
-    const [usuarioOpen, setUsuarioOpen] = useState(false);
-    const [sucessAnimation, setSucessAnimation] = useState(false);
+    const { id } = useParams(); // Obtenha o ID da URL assim trazendo o equipamento em específico
+    const navigate = useNavigate(); // Utilizado para enviar o usuario para outra pagina
+    const [manutencaoOpen, setManutencaoOpen] = useState(false); // Modal Manutenção
+    const [perifericoOpen, setPerifericoOpen] = useState(false); // Modal Periférico
+    const [usuarioOpen, setUsuarioOpen] = useState(false); // Modal Usuário
+    const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
 
-    const epi = {
+    const epi = { // Obj epi
         nome: '',
         patrimonio: '',
         serviceTag: '',
@@ -32,57 +32,57 @@ const CadastrarEpi = () => {
         }
     };
 
-    const [objEpi, setObjEpi] = useState(epi);
+    const [objEpi, setObjEpi] = useState(epi); // Armazenando o obj digitado em um hook
 
-    useEffect(() => {
-        if (id) {
+    useEffect(() => { // Fetch para mostrar um Epi específico referente ao ID do mesmo assim preenchendo os campos do formulário
+        if (id) { // Se id tiver valor será feita a listagem pelo fetchEpi
             const fetchEpi = async () => {
-                const epiData = await fetchEpiById(id); // Fetch Epi data by ID
-                setObjEpi(epiData);
+                const epiData = await fetchEpiById(id); // epiData recebe o id
+                setObjEpi(epiData); // setObjEpi com o valor de epiData
             };
             fetchEpi();
         }
     }, [id]);
 
-    const cadastrarOuAlterar = async () => {
+    const cadastrarOuAlterar = async () => { // Cadastro ou Alterar Epi
         try {
-            const response = id ? await alterarEpi(id, objEpi) : await cadastrarEpi(objEpi);
+            const response = id ? await alterarEpi(id, objEpi) : await cadastrarEpi(objEpi); // Se Id conter valor alterarEpi com id em questao e o objEpi, se não cadastrarEpi com o objEpi
             console.log('Resposta da API:', response);
             if (response.mensagem) {
                 alert(response.mensagem);
             } else {
-                setSucessAnimation(true);
-                setTimeout(() => {
-                    setSucessAnimation(false);
+                setSucessAnimation(true); // Modal Cadastrado com sucesso é ativada
+                setTimeout(() => { // Tempo de 2segundos é disparado
+                    setSucessAnimation(false); // Modal Cadastrado com sucesso é desativada
                     if (!id) navigate(`/cadastro-epi/${response.id}`); // Redireciona para edição se for novo cadastro
-                    setUsuarioOpen(true);
-                }, 2000);
+                    setUsuarioOpen(true); // Modal Usuario Ativada
+                }, 2000 /* Declarado os 2 segundos */);
             }
-        } catch (error) {
+        } catch (error) { // Tratativa de erro
             console.error('Erro ao cadastrar/alterar Epi:', error);
             alert('Ocorreu um erro ao tentar cadastrar/alterar Epi.');
         }
     };
 
-    const excluir = async () => {
-        const confirmDelete = window.confirm('Você tem certeza que deseja excluir este equipamento?');
-        if (confirmDelete) {
+    const excluir = async () => { // Excluir Epi
+        const confirmDelete = window.confirm('Você tem certeza que deseja excluir este equipamento?'); // Alerta para a confirmação de exclusão
+        if (confirmDelete) { // Se confirmado Excluir excluirEpi do id específico
             try {
                 await excluirEpi(id);
-                alert('EPI excluído com sucesso!');
-                navigate('/epi'); // Redireciona para a lista de EPIs
-            } catch (error) {
+                alert('EPI excluído com sucesso!'); // Confirmação de exclusão
+                navigate('/epi'); // Redireciona para a lista de epi
+            } catch (error) { // Tratativa de erros
                 console.error('Erro ao excluir Epi:', error);
                 alert('Ocorreu um erro ao tentar excluir o EPI.');
             }
         }
     };
 
-    const aoDigitar = (e) => {
+    const aoDigitar = (e) => { // Função que armazena o valor digitado nos campos em setObjEpi
         setObjEpi({ ...objEpi, [e.target.name]: e.target.value });
     };
 
-    const closeModal = () => {
+    const closeModal = () => { // Funcção para fechar a Modal "MUDAR ISSO"
         setManutencaoOpen(false);
         setPerifericoOpen(false);
         setUsuarioOpen(false);
