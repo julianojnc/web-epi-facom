@@ -35,11 +35,13 @@ ul {
 .icon:hover {
     background-color: darkgray;
     border-radius: 5px;
-    transform: scale(1.5);
+    transform: scale(1.1);
+    width: 55px;
 }
 
 .linkDestacado {
     background-color: darkgray;
     border-radius: 5px;
-    transform: scale(1.5);
+    transform: scale(1.1);
+    width: 55px;
 }
