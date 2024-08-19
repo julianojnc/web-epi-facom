@@ -19,7 +19,7 @@ const PageEpi = () => {
     // Carregando Api
     useEffect(() => {
         const fetchAndSetEpi = async () => {
-            if (epi.length === 0) { // Se o tamanho do obj epi for igual a zero carregando ativado 'while'
+            if (epi.length === 0) { // Se o tamanho do obj epi for igual a zero carregando ativado
                 setCarregando(true); 
             }
             const { lista, totalRegistros, totalPaginas } = await fetchEpi(paginaAtual, tamanhoPagina);

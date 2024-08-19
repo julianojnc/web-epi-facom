@@ -23,7 +23,7 @@ tr:nth-child(even) {
   background-color: lightgray;
 }
 
-tr:hover{
+tbody tr:hover{
   cursor: pointer;
   background-color: gray;
   color: white;
