@@ -207,16 +207,20 @@ const CadastrarEpi = () => {
             </div>
 
             {manutencaoOpen && (
-                <ModalManutencaoEpi onClose={closeModal} objEpi={objEpi}/>
+                <ModalManutencaoEpi onClose={closeModal} objEpi={objEpi} />
             )}
             {perifericoOpen && (
-                <ModalVincularPeriferico onClose={closeModal} objEpi={objEpi} id={id}/>
+                <ModalVincularPeriferico onClose={closeModal} objEpi={objEpi} id={id} />
             )}
             {usuarioOpen && (
                 <ModalVincularUsuario onClose={closeModal} objEpi={objEpi} />
             )}
             {sucessAnimation && (
-                <ModalSucess title="Equipamento Cadastrado!" />
+                <ModalSucess
+                    id={id}
+                    title="Equipamento Cadastrado!"
+                    titleEditar="Equipamento Editado!"
+                />
             )}
         </section>
     );

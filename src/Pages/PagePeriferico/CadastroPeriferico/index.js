@@ -158,7 +158,11 @@ const CadastrarPeriferico = () => {
                 <ModalManutencaoPeriferico onClose={closeModal} />
             )}
             {sucessAnimation && (
-                <ModalSucess title="Periférico Cadastrado!" />
+                <ModalSucess 
+                    id={id}
+                    title="Periférico Cadastrado!"
+                    titleEditar="Periférico Editado!" 
+                />
             )}
 
         </section>

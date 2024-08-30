@@ -119,7 +119,11 @@ const CadastrarUsers = () => {
             </div>
 
             {sucessAnimation && (
-                <ModalSucess title="Usuário Cadastrado!" />
+                <ModalSucess 
+                    id={id}
+                    title="Usuário Cadastrado!"
+                    titleEditar="Usuário Editado!"
+                />
             )}
         </section>
     )

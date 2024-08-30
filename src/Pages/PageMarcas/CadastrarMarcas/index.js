@@ -97,7 +97,11 @@ const CadastrarMarcas = () => {
             </div>
 
             {sucessAnimation && (
-                <ModalSucess title="Marca Cadastrada!" />
+                <ModalSucess
+                    id={id}
+                    title="Marca Cadastrada!"
+                    titleEditar="Marca Editada!"
+                />
             )}
         </section>
     )
