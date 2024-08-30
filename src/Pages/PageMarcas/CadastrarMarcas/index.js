@@ -74,6 +74,7 @@ const CadastrarMarcas = () => {
                     titleEditar="Editar Marca"
                     hiddenPeriferico={true}
                     hiddenManutencao={true}
+                    hiddenUsuario={true}
                 />
 
                 <form>

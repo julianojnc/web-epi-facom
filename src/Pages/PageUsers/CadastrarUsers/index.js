@@ -77,6 +77,7 @@ const CadastrarUsers = () => {
                     titleEditar="Editar Usuário"
                     hiddenPeriferico={true}
                     hiddenManutencao={true}
+                    hiddenUsuario={true}
                 />
 
                 <form>
