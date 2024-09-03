@@ -19,9 +19,7 @@ const PagePeriferico = () => {
 
     useEffect(() => {
         const fetchAndSetPeriferico = async () => {
-            if (perifericos.length === 0) {
-                setCarregando(true);
-            }
+            setCarregando(true);
             const { lista, totalRegistros, totalPaginas } = await fetchPerifericos(paginaAtual, tamanhoPagina);
             setPerifericos(lista);
             setTotalRegistros(totalRegistros);
@@ -53,7 +51,7 @@ const PagePeriferico = () => {
 
                 <TitleSearch title="Periféricos" onSearchChange={setSearchTerm} />
 
-                {carregando ? (
+                {carregando || perifericos.length === 0 ? (
                     <LargeLoading />
                 ) : (
                     <>

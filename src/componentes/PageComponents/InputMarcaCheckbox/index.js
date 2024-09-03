@@ -89,9 +89,9 @@ const MarcaCheckbox = ({id, obj, setObj, aoDigitar, isEpi}) => {
         <>
             <div className="marca-checkbox">
                         <input
-                            value={objMarca.idMarca}
+                            value={objMarca.codMarca}
                             onChange={aoDigitar}
-                            name="idMarca.id"
+                            name="codMarca.id"
                             className="input input-marca"
                             type="text"
                             placeholder="ID Marca"

@@ -21,9 +21,7 @@ const PageMarcas = () => {
 
   useEffect(() => {
     const fetchAndSetMarcas = async () => {
-      if (marcas.length === 0) {
-        setCarregando(true);
-      }
+      setCarregando(true);
       const { lista, totalRegistros, totalPaginas } = await fetchMarcas(paginaAtual, tamanhoPagina);
       setMarcas(lista);
       setTotalRegistros(totalRegistros);
@@ -48,9 +46,9 @@ const PageMarcas = () => {
       <MenuBar />
       <div className="content-page">
 
-        <TitleSearch title="Marcas" onSearchChange={setSearchTerm}/>
+        <TitleSearch title="Marcas" onSearchChange={setSearchTerm} />
 
-        {carregando ? (
+        {carregando || marcas.length === 0 ? (
           <LargeLoading />
         ) : (
           <>

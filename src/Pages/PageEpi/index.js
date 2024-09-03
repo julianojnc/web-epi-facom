@@ -19,17 +19,15 @@ const PageEpi = () => {
     // Carregando Api
     useEffect(() => {
         const fetchAndSetEpi = async () => {
-            if (epi.length === 0) { // Se o tamanho do obj epi for igual a zero carregando ativado
-                setCarregando(true); 
-            }
+            setCarregando(true); // Ativa o carregamento antes da busca
             const { lista, totalRegistros, totalPaginas } = await fetchEpi(paginaAtual, tamanhoPagina);
             setEpi(lista);
             setTotalRegistros(totalRegistros);
             setTotalPaginas(totalPaginas);
-            setCarregando(false); // Aqui é setado todos os valores para os hooks e desabilitada a animação de carregamento
+            setCarregando(false); // Desativa o carregamento após a busca
         };
         fetchAndSetEpi();
-    }, [paginaAtual, tamanhoPagina]);
+    }, [paginaAtual, tamanhoPagina]);    
 
     // Filtro de pesquisa
     const filter = epi.filter((item) => {
@@ -54,7 +52,7 @@ const PageEpi = () => {
 
                 <TitleSearch title="Equipamentos"  onSearchChange={setSearchTerm}/>
 
-                {carregando ? (
+                {carregando || epi.length === 0 ? (
                     <LargeLoading />
                 ) : (
                     <>

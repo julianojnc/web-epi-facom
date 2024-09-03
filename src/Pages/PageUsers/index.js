@@ -20,9 +20,7 @@ const PageUsers = () => {
 
   useEffect(() => {
     const fetchAndSetUser = async () => {
-      if (users.length === 0) {
-        setCarregando(true);
-      }
+      setCarregando(true);
       const { lista, totalRegistros, totalPaginas } = await fetchUsers(paginaAtual, tamanhoPagina);
       setUsers(lista);
       setTotalRegistros(totalRegistros);
@@ -52,7 +50,7 @@ const PageUsers = () => {
 
         <TitleSearch title="Usuários" onSearchChange={setSearchTerm} />
 
-        {carregando ? (
+        {carregando || users.length === 0 ? (
           <LargeLoading />
         ) : (
           <>

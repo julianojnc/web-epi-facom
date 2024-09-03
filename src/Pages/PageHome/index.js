@@ -15,12 +15,10 @@ const PageHome = () => {
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [tamanhoPagina] = useState(10);
     const [searchTerm, setSearchTerm] = useState(''); // Estado para o termo de pesquisa
-    
+
     useEffect(() => {
         const fetchAndSetEpiUsuario = async () => {
-            if (epiUsuario.length === 0) {
-                setCarregando(true);
-            }
+            setCarregando(true);
             const { lista, totalRegistros, totalPaginas } = await fetchEpiUsuario(paginaAtual, tamanhoPagina);
             setEpiUsuario(lista);
             setTotalRegistros(totalRegistros);
@@ -53,7 +51,7 @@ const PageHome = () => {
             <MenuBar />
             <div className="content-page">
                 <TitleSearch title="Home" onSearchChange={setSearchTerm} />
-                {carregando ? (
+                {carregando || epiUsuario.length === 0 ? (
                     <LargeLoading />
                 ) : (
                     <>

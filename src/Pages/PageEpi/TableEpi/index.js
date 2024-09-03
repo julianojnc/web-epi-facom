@@ -21,8 +21,8 @@ const TableEpi = ({ vetor }) => {
                 </tr>
             </thead>
             <tbody>
-                {vetor.map((obj) => ( // Mapeando o obj passado pela PageEpi por meio de vetor e listando os mesmo individualmente
-                    <tr key={obj.id} onClick={() => handleClick(obj)}> {/* Quando Clicado será acionada a função handleClick*/}
+                {vetor.map((obj) => (
+                    <tr key={obj.id} onClick={() => handleClick(obj)}>
                         <td>{obj.id}</td>
                         <td>{obj.nome}</td>
                         <td>{obj.patrimonio}</td>
