@@ -130,6 +130,7 @@ const CadastrarEpi = () => {
                         obj={objEpi}
                         setObj={setObjEpi}
                         aoDigitar={aoDigitar}
+                        isEpi={true}
                     />
 
                     <label className="label"> Local:
@@ -171,30 +172,6 @@ const CadastrarEpi = () => {
                             type="date"
                             placeholder="Data de Vencimento da Garantia" />
                     </label>
-
-                    {/*<label className="label"> Usuario
-                        <input
-                            disabled
-                            className="input"
-                            type="text"
-                            placeholder="Usuario" />
-                    </label>
-
-                    <label className="label"> Email do Usuario:
-                        <input
-                            disabled
-                            className="input"
-                            type="text"
-                            placeholder="Email" />
-                    </label>
-
-                    <label className="label"> Contato do Usuario:
-                        <input
-                            disabled
-                            className="input"
-                            type="text"
-                            placeholder="Contato" />
-                    </label>*/}
 
                     <Buttons
                         id={id}

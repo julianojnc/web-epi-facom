@@ -4,7 +4,7 @@ import SmallLoading from "../../LoadingAnimation/SmallLoading";
 import { fetchEpiById } from "../../../Pages/PageEpi/api/apiEpi";
 import { fetchPerifericoById } from "../../../Pages/PagePeriferico/api/apiPeriferico";
 
-const MarcaCheckbox = ({id, obj, setObj, aoDigitar}) => {
+const MarcaCheckbox = ({id, obj, setObj, aoDigitar, isEpi}) => {
     const objMarcas = { id: "" };
     const [marcas, setMarcas] = useState([]);
     const [objMarca, setObjMarca] = useState(objMarcas);
@@ -14,24 +14,42 @@ const MarcaCheckbox = ({id, obj, setObj, aoDigitar}) => {
     const [moreDetails, setMoreDetails] = useState(false);
 
     useEffect(() => {
-        if (id) {
-            const fetchEpi = async () => {
-                const epiData = await fetchEpiById(id);
-                setSearchMarca(epiData.idMarca.nome);
-            };
-            fetchEpi();
-        }
-    }, [id]);
-
-    useEffect(() => {
-        if (id) {
-            const fetchPeriferico = async () => {
-                const perifericoData = await fetchPerifericoById(id); // Fetch Epi data by ID
-                setSearchMarca(perifericoData.idMarca.nome);
-            };
-            fetchPeriferico();
-        }
-    }, [id]);
+        const MAX_ATTEMPTS = 3; // Número máximo de tentativas
+        const RETRY_DELAY = 1000; // Tempo de espera entre tentativas (em milissegundos)
+    
+        const fetchData = async (attempt = 1) => {
+            if (id) {
+                try {
+                    if (isEpi) { // se isEpi for verdadeiro a função para epi é acionada se nao a funcao para periferico
+                        const epiData = await fetchEpiById(id);
+                        if (epiData && epiData.idMarca) {
+                            setSearchMarca(epiData.idMarca.nome);
+                        } else {
+                            throw new Error("EPI data or idMarca is undefined"); // retorno de erro no console
+                        }
+                    } else {
+                        const perifericoData = await fetchPerifericoById(id);
+                        if (perifericoData && perifericoData.idMarca) {
+                            setSearchMarca(perifericoData.idMarca.nome);
+                        } else {
+                            throw new Error("Periférico data or idMarca is undefined"); // retorno de erro no console
+                        }
+                    }
+                } catch (error) {
+                    console.error(`Attempt ${attempt} failed:`, error); // retorno de tentativas no console
+    
+                    if (attempt < MAX_ATTEMPTS) { // se a tentativa for  menor que o numero de tentativas fetchData e recarregado
+                        setTimeout(() => fetchData(attempt + 1), RETRY_DELAY);
+                    } else {
+                        console.error("All attempts failed. Unable to fetch data."); // retorno de erro no console
+                    }
+                }
+            }
+        };
+    
+        fetchData();
+    }, [id, isEpi]); // Inclua isEpi como dependência se ela puder mudar
+    
 
     useEffect(() => {
         const fetchAndSetMarcas = async () => {
@@ -71,9 +89,9 @@ const MarcaCheckbox = ({id, obj, setObj, aoDigitar}) => {
         <>
             <div className="marca-checkbox">
                         <input
-                            value={objMarca.codMarca}
+                            value={objMarca.idMarca}
                             onChange={aoDigitar}
-                            name="codMarca.id"
+                            name="idMarca.id"
                             className="input input-marca"
                             type="text"
                             placeholder="ID Marca"
