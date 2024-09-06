@@ -51,6 +51,7 @@ export const fetchPerifericos = async (page = 0, size = 10) => {
     }
 };
 
+// cadastrar
 export const cadastrarPerifericos = async (periferico) => {
     try {
         const response = await axios.post(`${API_URL}/periferico`, periferico, {
@@ -65,6 +66,29 @@ export const cadastrarPerifericos = async (periferico) => {
         throw error;
     }
 };
+
+// Vincular EPI com Periférico
+export const vincularEpiPeriferico = async (idEpi, idPeriferico) => {
+    try {
+        const payload = {
+            idEpi: { id: idEpi },
+            idPeriferico: { id: idPeriferico }
+        };
+
+        const response = await axios.post(`${API_URL}/epi-periferico`, payload, {
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        throw error;
+    }
+};
+
 
 // Alterar
 export const alterarPeriferico = async (id, periferico) => {

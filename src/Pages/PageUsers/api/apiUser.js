@@ -47,6 +47,7 @@ export const fetchUsers = async (page = 0, size = 10) => {
     }
 };
 
+// cadastrar
 export const cadastrarUsers = async (user) => {
     try {
         const response = await axios.post(`${API_URL}/usuarios`, user, {
@@ -55,6 +56,28 @@ export const cadastrarUsers = async (user) => {
                 'Accept': 'application/json',
             },
         });
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        throw error;
+    }
+};
+
+// Vincular EPI com Usuario
+export const vincularEpiUser = async (idEpi, idUsuario) => {
+    try {
+        const payload = {
+            idEpi: { id: idEpi },
+            idUsuario: { id: idUsuario }
+        };
+
+        const response = await axios.post(`${API_URL}/epi-usuario`, payload, {
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+            },
+        });
+
         return response.data;
     } catch (error) {
         handleApiError(error);

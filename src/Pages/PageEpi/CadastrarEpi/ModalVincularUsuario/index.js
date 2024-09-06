@@ -2,13 +2,13 @@ import { Link } from "react-router-dom";
 import Modal from "../../../../componentes/Modal";
 import { useState } from "react";
 import iconClose from "../../../../assets/icon-close.png"
-import { cadastrarUsers } from "../../../PageUsers/api/apiUser";
+import { cadastrarUsers, vincularEpiUser } from "../../../PageUsers/api/apiUser";
 import TableVincularUsuario from "./TableVincularUsuario";
 import ModalSucess from "../../../../componentes/Modal/ModalSucess";
 
 const ModalVincularUsuario = ({ onClose, objEpi }) => {
 
-    const initialUser = {
+    const user = {
         nome: '',
         email: '',
         telContato: ''
@@ -17,7 +17,7 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
     const [vincularUsuarioPergunta, setVincularUsuarioPergunta] = useState(true);
     const [vincularUsuario, setVincularUsuario] = useState(false);
     const [users, setUsers] = useState([]);
-    const [objUser, setObjUser] = useState(initialUser); // Função para o cadastro de Usuários
+    const [objUser, setObjUser] = useState(user); // Função para o cadastro de Usuários
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
     
     const cadastrarVinculoUsuario = () => {
@@ -25,6 +25,7 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
         setVincularUsuarioPergunta(false);
     };
 
+    // cadastrar novo usuario
     const cadastrar = async () => {
         console.log('Objeto a ser enviado:', objUser);
         try {
@@ -45,6 +46,27 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
         } catch (error) {
             console.error('Erro ao cadastrar Usuario:', error);
             alert('Ocorreu um erro ao tentar cadastrar Usuario!');
+        }
+    };
+
+    // vincular usuario
+    const vincular = async () => {
+        try {
+            const response = await vincularEpiUser(objEpi.id, objUser.id);
+            console.log('Resposta da API - Vinculação:', response);
+
+            if (response.mensagem) {
+                alert(response.mensagem);
+            } else {
+                setSucessAnimation(true); // Exibe animação de sucesso
+                setTimeout(() => {
+                    setSucessAnimation(false);
+                    onClose(); // Fecha modal após sucesso
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('Erro ao vincular EPI com usuario:', error);
+            alert('Ocorreu um erro ao tentar vincular o EPI com o usuario.');
         }
     };
 
@@ -137,7 +159,7 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
 
                             <div className="container-buttons">
                                 <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar Novo</Link>
-                                <Link to='/cadastro-epi' className="button button-cadastrar">Vincular</Link>
+                                <Link onClick={vincular} className="button button-cadastrar">Vincular</Link>
                             </div>
                         </form>
 

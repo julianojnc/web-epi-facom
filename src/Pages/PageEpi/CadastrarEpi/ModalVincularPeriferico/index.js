@@ -2,9 +2,10 @@ import { Link } from "react-router-dom";
 import Modal from "../../../../componentes/Modal"
 import iconClose from "../../../../assets/icon-close.png"
 import TableVincularPeriferico from "./TableVincularPeriferico";
-import { cadastrarPerifericos } from "../../../PagePeriferico/api/apiPeriferico";
+import { cadastrarPerifericos, vincularEpiPeriferico } from "../../../PagePeriferico/api/apiPeriferico";
 import { useState } from "react";
 import MarcaCheckbox from "../../../../componentes/PageComponents/InputMarcaCheckbox";
+import ModalSucess from "../../../../componentes/Modal/ModalSucess";
 
 const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
 
@@ -23,7 +24,9 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
 
     const [perifericos, setPerifericos] = useState([]);
     const [objPeriferico, setObjPeriferico] = useState(periferico);
+    const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
 
+    // cadastrar novo periferico
     const cadastrar = async () => {
         console.log('Objeto a ser enviado:', objPeriferico);
         try {
@@ -32,13 +35,41 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
             if (response.mensagem) {
                 alert(response.mensagem);
             } else {
-                setPerifericos([...perifericos, response]);
+                // Atualizar o estado com os dados do periferico cadastrado
+                setSucessAnimation(true); // Modal Cadastrado com sucesso é ativada
+                setTimeout(() => { // Tempo de 2segundos é disparado
+                    setSucessAnimation(false); // Modal Cadastrado com sucesso é desativada
+                    setObjPeriferico(response); // Preenche os inputs com os dados retornados da API
+                    setPerifericos([...perifericos, response]);
+                }, 2000 /* Declarado os 2 segundos */);
             }
         } catch (error) {
             console.error('Erro ao cadastrar Periferico:', error);
             alert('Ocorreu um erro ao tentar cadastrar Periferico.');
         }
     };
+
+    // vincular periferico
+    const vincular = async () => {
+        try {
+            const response = await vincularEpiPeriferico(objEpi.id, objPeriferico.id);
+            console.log('Resposta da API - Vinculação:', response);
+
+            if (response.mensagem) {
+                alert(response.mensagem);
+            } else {
+                setSucessAnimation(true); // Exibe animação de sucesso
+                setTimeout(() => {
+                    setSucessAnimation(false);
+                    onClose(); // Fecha modal após sucesso
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('Erro ao vincular EPI com periférico:', error);
+            alert('Ocorreu um erro ao tentar vincular o EPI com o periférico.');
+        }
+    };
+
 
     const aoDigitar = (e) => {
         setObjPeriferico({ ...objPeriferico, [e.target.name]: e.target.value });
@@ -132,12 +163,21 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
 
                     <div className="container-buttons">
                         <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar Novo</Link>
-                        <Link to='/cadastro-epi' className="button button-cadastrar">Vincular</Link>
+                        <Link onClick={vincular} className="button button-cadastrar">Vincular</Link>
                     </div>
                 </form>
 
                 <TableVincularPeriferico />
             </div>
+
+            {sucessAnimation && (
+                        <ModalSucess
+                            id={objPeriferico.id}
+                            title="Periférico Cadastrado!"
+                            titleEditar="Periférico Vinculado!"
+                        />
+                    )}
+
         </Modal>
     )
 }
