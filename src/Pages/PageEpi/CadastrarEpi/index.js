@@ -5,7 +5,7 @@ import MenuBar from "../../../componentes/MenuBar";
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
 import MarcaCheckbox from "../../../componentes/PageComponents/InputMarcaCheckbox";
 import Buttons from "../../../componentes/PageComponents/PageCadastroButtons";
-import ModalManutencaoEpi from "./ModalManutencaoEpi";
+import ModalManutencao from "../../../componentes/Modal/ModalManutencao";
 import ModalVincularPeriferico from "./ModalVincularPeriferico";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
 import ModalVincularUsuario from "./ModalVincularUsuario";
@@ -45,6 +45,12 @@ const CadastrarEpi = () => {
     }, [id]);
 
     const cadastrarOuAlterar = async () => { // Cadastro ou Alterar Epi
+
+        // if (!objManutencao.descricao || !objManutencao.valor || !objManutencao.dataIniManutencao || !objManutencao.dataRetManutencao) {
+        //     alert('Por favor, preencha todos os campos obrigatórios.');
+        //     return;
+        // }
+
         try {
             const response = id ? await alterarEpi(id, objEpi) : await cadastrarEpi(objEpi); // Se Id conter valor alterarEpi com id em questao e o objEpi, se não cadastrarEpi com o objEpi
             console.log('Resposta da API:', response);
@@ -184,7 +190,7 @@ const CadastrarEpi = () => {
             </div>
 
             {manutencaoOpen && (
-                <ModalManutencaoEpi onClose={closeModal} objEpi={objEpi} />
+                <ModalManutencao onClose={closeModal} objEpiPeriferico={objEpi} isEpi="epi" />
             )}
             {perifericoOpen && (
                 <ModalVincularPeriferico onClose={closeModal} objEpi={objEpi} id={id} />

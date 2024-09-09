@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import MenuBar from "../../../componentes/MenuBar";
 import { useNavigate, useParams } from "react-router-dom";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
-import ModalManutencaoPeriferico from "./ModalManutencaoPeriferico";
+import ModalManutencao from "../../../componentes/Modal/ModalManutencao";
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
 import MarcaCheckbox from "../../../componentes/PageComponents/InputMarcaCheckbox";
 import Buttons from "../../../componentes/PageComponents/PageCadastroButtons";
@@ -155,13 +155,17 @@ const CadastrarPeriferico = () => {
             </div>
 
             {manutencaoOpen && (
-                <ModalManutencaoPeriferico onClose={closeModal} />
+                <ModalManutencao
+                    objEpiPeriferico={objPeriferico}
+                    onClose={closeModal}
+                    isEpi="periferico"
+                />
             )}
             {sucessAnimation && (
-                <ModalSucess 
+                <ModalSucess
                     id={id}
                     title="Periférico Cadastrado!"
-                    titleEditar="Periférico Editado!" 
+                    titleEditar="Periférico Editado!"
                 />
             )}
 

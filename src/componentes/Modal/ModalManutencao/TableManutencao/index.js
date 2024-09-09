@@ -1,4 +1,4 @@
-const TableManutencaoEpi = () => {
+const TableManutencao = () => {
     return (
         <table className="table-manutencao">
             <thead>
@@ -24,4 +24,4 @@ const TableManutencaoEpi = () => {
     )
 }
 
-export default TableManutencaoEpi;
+export default TableManutencao;

@@ -100,6 +100,22 @@ export const excluirEpi = async (id) => {
     }
 };
 
+// cadastrar Manutencao
+export const cadastrarManutencao = async (manutencao) => {
+    try {
+        const response = await axios.post(`${API_URL}/manutencao`, manutencao, {
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        throw error;
+    }
+};
+
 // tratativa de erros
 const handleApiError = (error) => {
     if (error.response) {
