@@ -16,15 +16,6 @@ axiosRetry(axios, {
     },
 });
 
-/* Fazer:
-
-    fetchManutencaoEpi
-    fetchEpiUsuario
-    fetchEpiUsuarioById
-    fetchEpiPeriferico
-    fetchEpiPerifericoById
-*/
-
 // Lista Apenas um elemento com base no ID
 export const fetchEpiById = async (id) => {
     try {
@@ -93,22 +84,6 @@ export const alterarEpi = async (id, epi) => {
 export const excluirEpi = async (id) => {
     try {
         const response = await axios.delete(`${API_URL}/epi/${id}`);
-        return response.data;
-    } catch (error) {
-        handleApiError(error);
-        throw error;
-    }
-};
-
-// cadastrar Manutencao
-export const cadastrarManutencao = async (manutencao) => {
-    try {
-        const response = await axios.post(`${API_URL}/manutencao`, manutencao, {
-            headers: {
-                'Content-type': 'application/json',
-                'Accept': 'application/json',
-            },
-        });
         return response.data;
     } catch (error) {
         handleApiError(error);
