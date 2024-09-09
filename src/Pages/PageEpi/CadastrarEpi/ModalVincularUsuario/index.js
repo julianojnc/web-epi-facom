@@ -29,6 +29,10 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
 
     // cadastrar novo usuario
     const cadastrar = async () => {
+        if (!objUser.nome) {
+            alert('Por favor, preencha o campo obrigatório: Nome!');
+            return;
+        }
         console.log('Objeto a ser enviado:', objUser);
         try {
             const response = await cadastrarUsers(objUser);

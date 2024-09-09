@@ -28,6 +28,10 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
 
     // cadastrar novo periferico
     const cadastrar = async () => {
+        if (!objPeriferico.nome || !objPeriferico.idMarca.id) {
+            alert('Por favor, preencha todos os campos obrigatórios: Nome e Marca!');
+            return;
+        }
         console.log('Objeto a ser enviado:', objPeriferico);
         try {
             const response = await cadastrarPerifericos(objPeriferico);

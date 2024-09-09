@@ -21,6 +21,12 @@ const CadastrarUsers = () => {
     const [objUser, setObjUser] = useState(user);// Funcao para o cadastro de Usuarios
 
     const cadastrarOuAlterar = async () => {
+
+        if (!objUser.nome) {
+            alert('Por favor, preencha o campo obrigatório: Nome!');
+            return;
+        }
+
         try {
             const response = id ? await alterarUser(id, objUser) : await cadastrarUsers(objUser);
             console.log('Resposta da API:', response);

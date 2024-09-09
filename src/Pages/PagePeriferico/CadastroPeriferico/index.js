@@ -30,6 +30,12 @@ const CadastrarPeriferico = () => {
     const [objPeriferico, setObjPeriferico] = useState(periferico);// Funcao para o cadastro de Periferico
 
     const cadastrarOuAlterar = async () => {
+
+        if (!objPeriferico.nome || !objPeriferico.idMarca.id) {
+            alert('Por favor, preencha todos os campos obrigatórios: Nome e Marca!');
+            return;
+        }
+
         try {
             const response = id ? await alterarPeriferico(id, objPeriferico) : await cadastrarPerifericos(objPeriferico);
             console.log('Resposta da API:', response);

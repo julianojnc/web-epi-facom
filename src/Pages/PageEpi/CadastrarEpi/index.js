@@ -46,10 +46,10 @@ const CadastrarEpi = () => {
 
     const cadastrarOuAlterar = async () => { // Cadastro ou Alterar Epi
 
-        // if (!objManutencao.descricao || !objManutencao.valor || !objManutencao.dataIniManutencao || !objManutencao.dataRetManutencao) {
-        //     alert('Por favor, preencha todos os campos obrigatórios.');
-        //     return;
-        // }
+        if (!objEpi.nome || !objEpi.patrimonio || !objEpi.idMarca.id) {
+            alert('Por favor, preencha todos os campos obrigatórios: Nome, Patrimônio e Marca!');
+            return;
+        }
 
         try {
             const response = id ? await alterarEpi(id, objEpi) : await cadastrarEpi(objEpi); // Se Id conter valor alterarEpi com id em questao e o objEpi, se não cadastrarEpi com o objEpi

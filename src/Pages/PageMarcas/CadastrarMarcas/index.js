@@ -18,6 +18,12 @@ const CadastrarMarcas = () => {
     const [objMarca, setObjMarca] = useState(marca);// Funcao para o cadastro de Marca
 
     const cadastrarOuAlterar = async () => {
+
+        if (!objMarca.nome) {
+            alert('Por favor, preencha o campo obrigatório: Nome!');
+            return;
+        }
+
         try {
             const response = id ? await alterarMarca(id, objMarca) : await cadastrarMarcas(objMarca);
             console.log('Resposta da API:', response);

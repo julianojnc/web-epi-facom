@@ -39,6 +39,12 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
 
     // cadastrar manutencao
     const cadastrar = async () => {
+
+        if (!objManutencao.descricao) {
+            alert('Por favor, preencha o campo obrigatório: Descrição!');
+            return;
+        }
+
         console.log('Objeto a ser enviado antes da modificação:', objManutencao);
         
         // Se enviar o obj com o idEpi e idPeriferico tera bad request 500 entao e removido um antes do post
