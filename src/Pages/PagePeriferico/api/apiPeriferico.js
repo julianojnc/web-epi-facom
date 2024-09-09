@@ -16,10 +16,6 @@ axiosRetry(axios, {
     },
 });
 
-/*
-    fetchManutencaoPeriferico
-*/
-
 // Lista Apenas um elemento com base no ID
 export const fetchPerifericoById = async (id) => {
     try {

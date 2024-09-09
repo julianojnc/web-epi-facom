@@ -1,24 +1,25 @@
-const TableManutencao = () => {
+const TableManutencao = ({ vetor }) => {
     return (
         <table className="table-manutencao">
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>DESCRIÇÃO</th>
+                    <th>DATA INICIO</th>
+                    <th>DATA RETORNO</th>
                     <th>VALOR</th>
-                    <th>INCIO</th>
-                    <th>RETORNO</th>
                 </tr>
             </thead>
-
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Troca Hd</td>
-                    <td>100 reais</td>
-                    <td>20/08/2009</td>
-                    <td>21/08/2009</td>
-                </tr>
+                {vetor.map((obj) => (
+                    <tr key={obj.id}>
+                        <td>{obj.id}</td>
+                        <td>{obj.descricao}</td>
+                        <td>{obj.dataIniManutencao}</td>
+                        <td>{obj.dataRetManutencao}</td>
+                        <td>{obj.valor}</td>
+                    </tr>
+                ))}
             </tbody>
         </table>
     )

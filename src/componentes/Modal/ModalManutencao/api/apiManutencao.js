@@ -16,6 +16,26 @@ axiosRetry(axios, {
     },
 });
 
+// Listar todos os elementos e tambem a pagina do mesmo e quantos por pagina
+export const fetchManutencao = async (page = 0, size = 10) => {
+    try {
+        const response = await axios.get(`${API_URL}/manutencao?p=${page}&s=${size}`);
+        if (response.data && Array.isArray(response.data.lista)) {
+            return {
+                lista: response.data.lista,
+                totalRegistros: response.data.totalRegistros,
+                totalPaginas: response.data.totalPaginas
+            };
+        } else {
+            console.error('A resposta da API não contém a estrutura esperada:', response.data);
+            return { lista: [], totalRegistros: 0, totalPaginas: 0 };
+        }
+    } catch (error) {
+        handleApiError(error);
+        return { lista: [], totalRegistros: 0, totalPaginas: 0 };
+    }
+};
+
 // cadastrar Manutencao
 export const cadastrarManutencao = async (manutencao) => {
     try {

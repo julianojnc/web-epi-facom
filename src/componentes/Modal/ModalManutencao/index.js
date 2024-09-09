@@ -3,8 +3,9 @@ import Modal from ".."
 import TableManutencao from "./TableManutencao"
 import iconClose from "../../../assets/icon-close.png"
 import { useEffect, useState } from "react"
-import { cadastrarManutencao } from "./api/apiManutencao"
+import { cadastrarManutencao, fetchManutencao } from "./api/apiManutencao"
 import ModalSucess from "../ModalSucess";
+import Paginacao from "../../Paginacao"
 
 const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
 
@@ -24,6 +25,31 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
     const [manutencoes, setManutencoes] = useState([]);
     const [objManutencao, setObjManutencao] = useState(manutencao);
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
+    const [totalRegistros, setTotalRegistros] = useState(0); // Hook para armazenar o total de registros info vinda da api
+    const [totalPaginas, setTotalPaginas] = useState(0); // Hook para armazenar o total de paginas info vinda da api
+    const [paginaAtual, setPaginaAtual] = useState(0); // Hook para armazenar em qual pagina esta selecionada info vinda da api
+    const [tamanhoPagina] = useState(10); // Hook para dizer quantos registro ira ser mostrado na tela
+
+    // Carregando Api
+    useEffect(() => {
+        const fetchAndSetManutencao = async () => {
+            const { lista, totalRegistros, totalPaginas } = await fetchManutencao(paginaAtual, tamanhoPagina);
+            setManutencoes(lista);
+            setTotalRegistros(totalRegistros);
+            setTotalPaginas(totalPaginas);
+        };
+        fetchAndSetManutencao();
+    }, [paginaAtual, tamanhoPagina]);
+
+    const handlePageChange = (newPage) => {
+        setPaginaAtual(newPage);
+    };
+
+    // Filtro das manutenções com base no objEpiPeriferico.id
+    const manutencoesFiltradas = manutencoes.filter((item) => {
+        return (isEpi === "epi" && item.idEpi?.id === objEpiPeriferico.id) ||
+            (isEpi !== "epi" && item.idPeriferico?.id === objEpiPeriferico.id);
+    });
 
     // Atualiza o idEpi ou idPeriferico baseado no isEpi
     useEffect(() => {
@@ -46,24 +72,24 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
         }
 
         console.log('Objeto a ser enviado antes da modificação:', objManutencao);
-        
-        // Se enviar o obj com o idEpi e idPeriferico tera bad request 500 entao e removido um antes do post
+
+        // Se enviar o obj com o idEpi e idPeriferico tera erro 500 no backend entao é removido um antes do post
         // Clonar o objeto para evitar modificar o estado diretamente
         const objEnvio = { ...objManutencao };
-    
+
         // Remover idPeriferico se for EPI e idEpi se for Periférico
         if (isEpi === "epi") {
             delete objEnvio.idPeriferico;
         } else {
             delete objEnvio.idEpi;
         }
-    
+
         console.log('Objeto a ser enviado após modificação:', objEnvio);
-    
+
         try {
             const response = await cadastrarManutencao(objEnvio);
             console.log('Resposta da API:', response);
-    
+
             if (response.mensagem) {
                 alert(response.mensagem);
             } else {
@@ -80,7 +106,6 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
             alert('Ocorreu um erro ao tentar cadastrar Manutencao!');
         }
     };
-    
 
     console.log(objManutencao)
 
@@ -110,6 +135,7 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                         className="input"
                         type="text"
                         placeholder={isEpi === "epi" ? "Id EPI" : "Id Periférico"}
+                        hidden
                     />
 
                     <input
@@ -171,7 +197,15 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                     </div>
                 </form>
 
-                <TableManutencao />
+                <div className="modal-table">
+                    <TableManutencao vetor={manutencoesFiltradas} />
+                    <Paginacao
+                        paginaAtual={paginaAtual}
+                        totalPaginas={totalPaginas}
+                        totalRegistros={totalRegistros}
+                        onPageChange={handlePageChange}
+                    />
+                </div>
             </div>
 
             {sucessAnimation && (

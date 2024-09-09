@@ -19,3 +19,8 @@
 .title-modal-sucess{
     margin-bottom: 25px;
 }
+
+.modal-table{
+    width: 318px;
+    flex-wrap: wrap;
+}
