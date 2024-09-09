@@ -5,6 +5,8 @@ import iconClose from "../../../../assets/icon-close.png"
 import { cadastrarUsers, vincularEpiUser } from "../../../PageUsers/api/apiUser";
 import TableVincularUsuario from "./TableVincularUsuario";
 import ModalSucess from "../../../../componentes/Modal/ModalSucess";
+import InputMask from 'react-input-mask';
+
 
 const ModalVincularUsuario = ({ onClose, objEpi }) => {
 
@@ -136,13 +138,14 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
                             </label>
 
                             <label className="label"> Contato:
-                                <input
+                                <InputMask
                                     value={objUser.telContato}
                                     onChange={aoDigitar}
                                     name='telContato'
                                     className="input"
                                     type="text"
                                     placeholder="Contato"
+                                    mask="(99)99999-9999"
                                 />
                             </label>
 

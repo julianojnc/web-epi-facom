@@ -5,6 +5,7 @@ import { alterarUser, cadastrarUsers, excluirUser, fetchUsersById } from "../api
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
 import Buttons from "../../../componentes/PageComponents/PageCadastroButtons";
+import InputMask from 'react-input-mask';
 
 const CadastrarUsers = () => {
     const { id } = useParams(); // Obtenha o ID da URL
@@ -92,13 +93,15 @@ const CadastrarUsers = () => {
                     </label>
 
                     <label className="label"> Contato:
-                        <input
+                        <InputMask
                             value={objUser.telContato}
                             onChange={aoDigitar}
                             name='telContato'
                             className="input"
                             type="text"
-                            placeholder="Contato" />
+                            placeholder="Contato"
+                            mask="(99)99999-9999"
+                        />
                     </label>
 
                     <label className="label"> Email:
@@ -120,7 +123,7 @@ const CadastrarUsers = () => {
             </div>
 
             {sucessAnimation && (
-                <ModalSucess 
+                <ModalSucess
                     id={id}
                     title="Usuário Cadastrado!"
                     titleEditar="Usuário Editado!"
