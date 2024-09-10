@@ -2,10 +2,12 @@ import { Link } from "react-router-dom";
 import Modal from "../../../../componentes/Modal"
 import iconClose from "../../../../assets/icon-close.png"
 import TableVincularPeriferico from "./TableVincularPeriferico";
-import { cadastrarPerifericos, vincularEpiPeriferico } from "../../../PagePeriferico/api/apiPeriferico";
-import { useState } from "react";
+import { cadastrarPerifericos, fetchEpiPerifericos, vincularEpiPeriferico } from "../../../PagePeriferico/api/apiPeriferico";
+import { useEffect, useState } from "react";
 import MarcaCheckbox from "../../../../componentes/PageComponents/InputMarcaCheckbox";
 import ModalSucess from "../../../../componentes/Modal/ModalSucess";
+import Paginacao from "../../../../componentes/Paginacao";
+import MediumLoading from "../../../../componentes/LoadingAnimation/MediumLoading";
 
 const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
 
@@ -24,7 +26,34 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
 
     const [perifericos, setPerifericos] = useState([]);
     const [objPeriferico, setObjPeriferico] = useState(periferico);
+    const [carregando, setCarregando] = useState(true); // Hook para mostrar animação de Carregamento
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
+    const [totalRegistros, setTotalRegistros] = useState(0); // Hook para armazenar o total de registros info vinda da api
+    const [totalPaginas, setTotalPaginas] = useState(0); // Hook para armazenar o total de paginas info vinda da api
+    const [paginaAtual, setPaginaAtual] = useState(0); // Hook para armazenar em qual pagina esta selecionada info vinda da api
+    const [tamanhoPagina] = useState(5); // Hook para dizer quantos registro ira ser mostrado na tela
+
+    // Carregando Api epi-periferico
+    useEffect(() => {
+        const fetchAndSetPeriferico = async () => {
+            setCarregando(true); // Ativa o carregamento antes da busca
+            const { lista, totalRegistros, totalPaginas } = await fetchEpiPerifericos(paginaAtual, tamanhoPagina);
+            setPerifericos(lista);
+            setTotalRegistros(totalRegistros);
+            setTotalPaginas(totalPaginas);
+            setCarregando(false); // Desativa o carregamento após a busca
+        };
+        fetchAndSetPeriferico();
+    }, [paginaAtual, tamanhoPagina]);
+
+    const handlePageChange = (newPage) => {
+        setPaginaAtual(newPage);
+    };
+
+    // Filtro das perifericos com base no objEpi.id
+    const perifericosFiltrados = perifericos.filter((item) => {
+        return (item.idEpi?.id === objEpi.id);
+    });
 
     // cadastrar novo periferico
     const cadastrar = async () => {
@@ -73,7 +102,6 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
             alert('Ocorreu um erro ao tentar vincular o EPI com o periférico.');
         }
     };
-
 
     const aoDigitar = (e) => {
         setObjPeriferico({ ...objPeriferico, [e.target.name]: e.target.value });
@@ -171,16 +199,31 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
                     </div>
                 </form>
 
-                <TableVincularPeriferico />
+
+                {carregando || perifericosFiltrados.length === 0 ? (
+                    <div className="modal-table">
+                        <MediumLoading />
+                    </div>
+                ) : (
+                    <div className="modal-table">
+                        <TableVincularPeriferico vetor={perifericosFiltrados} />
+                        <Paginacao
+                            paginaAtual={paginaAtual}
+                            totalPaginas={totalPaginas}
+                            totalRegistros={totalRegistros}
+                            onPageChange={handlePageChange}
+                        />
+                    </div>
+                )}
             </div>
 
             {sucessAnimation && (
-                        <ModalSucess
-                            id={objPeriferico.id}
-                            title="Periférico Cadastrado!"
-                            titleEditar="Periférico Vinculado!"
-                        />
-                    )}
+                <ModalSucess
+                    id={objPeriferico.id}
+                    title="Periférico Cadastrado!"
+                    titleEditar="Periférico Vinculado!"
+                />
+            )}
 
         </Modal>
     )

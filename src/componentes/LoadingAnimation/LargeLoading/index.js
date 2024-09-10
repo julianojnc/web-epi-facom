@@ -1,7 +1,7 @@
 import '../../../styles/Loading.css'
 import { OrbitProgress } from "react-loading-indicators"
 
-// Loading Grande utilizado quando cadastrado marca, epi, periferico, usuario com sucesso
+// Loading Grande utilizado na espera da resposta da api nas telas principais
 const LargeLoading = () => {
     return (
         <section className="loading-content">

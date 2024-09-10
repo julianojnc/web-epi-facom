@@ -1,26 +1,26 @@
-const TableVincularPeriferico = () => {
+const TableVincularPeriferico = ({ vetor }) => {
     return (
-        <table className="table-manutencao">
+        <table>
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>NOME</th>
-                    <th>PATRIMONIO</th>
-                    <th>DATA VINCULACAO</th>
-                    <th>TEMPO VINCULADO</th>
+                    <th>PATRIMÔNIO</th>
+                    <th>DATA VINCULAÇÃO</th>
                     <th>VINCULADO</th>
                 </tr>
             </thead>
 
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>MOUSE</td>
-                    <td>002022</td>
-                    <td>20/08/2020</td>
-                    <td>21/08/2024</td>
-                    <td>SIM</td>
-                </tr>
+                {vetor.map((obj) => (
+                    <tr key={obj.id}>
+                        <td>{obj.id}</td>
+                        <td>{obj.idPeriferico.nome}</td>
+                        <td>{obj.idPeriferico.patrimonio}</td>
+                        <td>{obj.dataVinculacao}</td>
+                        <td>{obj.idPeriferico.isVinculado}</td>
+                    </tr>
+                ))}
             </tbody>
         </table>
     )

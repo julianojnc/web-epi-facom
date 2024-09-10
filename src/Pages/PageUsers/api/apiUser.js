@@ -63,6 +63,25 @@ export const cadastrarUsers = async (user) => {
     }
 };
 
+export const fetchEpiUser = async (page = 0, size = 5) => {
+    try {
+        const response = await axios.get(`${API_URL}/epi-usuario?p=${page}&s=${size}`);
+        if (response.data && Array.isArray(response.data.lista)) {
+            return {
+                lista: response.data.lista,
+                totalRegistros: response.data.totalRegistros,
+                totalPaginas: response.data.totalPaginas
+            };
+        } else {
+            console.error('A resposta da API não contém a estrutura esperada:', response.data);
+            return { lista: [], totalRegistros: 0, totalPaginas: 0 };
+        }
+    } catch (error) {
+        handleApiError(error);
+        return { lista: [], totalRegistros: 0, totalPaginas: 0 };
+    }
+};
+
 // Vincular EPI com Usuario
 export const vincularEpiUser = async (idEpi, idUsuario) => {
     try {

@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import Modal from "../../../../componentes/Modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import iconClose from "../../../../assets/icon-close.png"
-import { cadastrarUsers, vincularEpiUser } from "../../../PageUsers/api/apiUser";
+import { cadastrarUsers, fetchEpiUser, vincularEpiUser } from "../../../PageUsers/api/apiUser";
 import TableVincularUsuario from "./TableVincularUsuario";
 import ModalSucess from "../../../../componentes/Modal/ModalSucess";
 import InputMask from 'react-input-mask';
-
+import Paginacao from "../../../../componentes/Paginacao";
+import MediumLoading from "../../../../componentes/LoadingAnimation/MediumLoading";
 
 const ModalVincularUsuario = ({ onClose, objEpi }) => {
 
@@ -20,12 +21,40 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
     const [vincularUsuario, setVincularUsuario] = useState(false);
     const [users, setUsers] = useState([]);
     const [objUser, setObjUser] = useState(user); // Função para o cadastro de Usuários
+    const [carregando, setCarregando] = useState(true); // Hook para mostrar animação de Carregamento
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
-    
+    const [totalRegistros, setTotalRegistros] = useState(0); // Hook para armazenar o total de registros info vinda da api
+    const [totalPaginas, setTotalPaginas] = useState(0); // Hook para armazenar o total de paginas info vinda da api
+    const [paginaAtual, setPaginaAtual] = useState(0); // Hook para armazenar em qual pagina esta selecionada info vinda da api
+    const [tamanhoPagina] = useState(5); // Hook para dizer quantos registro ira ser mostrado na tela
+
     const cadastrarVinculoUsuario = () => {
         setVincularUsuario(true);
         setVincularUsuarioPergunta(false);
     };
+
+    // Carregando Api epi-usuario
+    useEffect(() => {
+        const fetchAndSetUser = async () => {
+            setCarregando(true); // Ativa o carregamento antes da busca
+            const { lista, totalRegistros, totalPaginas } = await fetchEpiUser(paginaAtual, tamanhoPagina);
+            setUsers(lista);
+            setTotalRegistros(totalRegistros);
+            setTotalPaginas(totalPaginas);
+            setCarregando(false); // Desativa o carregamento após a busca
+        };
+        fetchAndSetUser();
+    }, [paginaAtual, tamanhoPagina]);
+
+    const handlePageChange = (newPage) => {
+        setPaginaAtual(newPage);
+    };
+
+    // Filtro das usuarios com base no objEpi.id
+    const usersFiltrados = users.filter((item) => {
+        return (item.idEpi?.id === objEpi.id);
+    });
+
 
     // cadastrar novo usuario
     const cadastrar = async () => {
@@ -170,7 +199,21 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
                             </div>
                         </form>
 
-                        <TableVincularUsuario />
+                        {carregando || usersFiltrados.length === 0 ? (
+                            <div className="modal-table">
+                                <MediumLoading />
+                            </div>
+                        ) : (
+                            <div className="modal-table">
+                                <TableVincularUsuario vetor={usersFiltrados} />
+                                <Paginacao
+                                    paginaAtual={paginaAtual}
+                                    totalPaginas={totalPaginas}
+                                    totalRegistros={totalRegistros}
+                                    onPageChange={handlePageChange}
+                                />
+                            </div>
+                        )}
                     </div>
 
                     {sucessAnimation && (

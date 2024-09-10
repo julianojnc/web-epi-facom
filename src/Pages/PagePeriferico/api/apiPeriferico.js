@@ -63,6 +63,26 @@ export const cadastrarPerifericos = async (periferico) => {
     }
 };
 
+// Carregar Perifericos vinculados a Epi
+export const fetchEpiPerifericos = async (page = 0, size = 5) => {
+    try {
+        const response = await axios.get(`${API_URL}/epi-periferico?p=${page}&s=${size}`);
+        if (response.data && Array.isArray(response.data.lista)) {
+            return {
+                lista: response.data.lista,
+                totalRegistros: response.data.totalRegistros,
+                totalPaginas: response.data.totalPaginas
+            };
+        } else {
+            console.error('A resposta da API não contém a estrutura esperada:', response.data);
+            return { lista: [], totalRegistros: 0, totalPaginas: 0 };
+        }
+    } catch (error) {
+        handleApiError(error);
+        return { lista: [], totalRegistros: 0, totalPaginas: 0 };
+    }
+};
+
 // Vincular EPI com Periférico
 export const vincularEpiPeriferico = async (idEpi, idPeriferico) => {
     try {

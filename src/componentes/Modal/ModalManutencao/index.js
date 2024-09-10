@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { cadastrarManutencao, fetchManutencao } from "./api/apiManutencao"
 import ModalSucess from "../ModalSucess";
 import Paginacao from "../../Paginacao"
+import MediumLoading from "../../LoadingAnimation/MediumLoading"
 
 const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
 
@@ -24,6 +25,7 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
 
     const [manutencoes, setManutencoes] = useState([]);
     const [objManutencao, setObjManutencao] = useState(manutencao);
+    const [carregando, setCarregando] = useState(true); // Hook para mostrar animação de Carregamento
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
     const [totalRegistros, setTotalRegistros] = useState(0); // Hook para armazenar o total de registros info vinda da api
     const [totalPaginas, setTotalPaginas] = useState(0); // Hook para armazenar o total de paginas info vinda da api
@@ -33,10 +35,12 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
     // Carregando Api
     useEffect(() => {
         const fetchAndSetManutencao = async () => {
+            setCarregando(true); // Ativa o carregamento antes da busca
             const { lista, totalRegistros, totalPaginas } = await fetchManutencao(paginaAtual, tamanhoPagina);
             setManutencoes(lista);
             setTotalRegistros(totalRegistros);
             setTotalPaginas(totalPaginas);
+            setCarregando(false); // Desativa o carregamento após a busca
         };
         fetchAndSetManutencao();
     }, [paginaAtual, tamanhoPagina]);
@@ -65,12 +69,10 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
 
     // cadastrar manutencao
     const cadastrar = async () => {
-
         if (!objManutencao.descricao) {
             alert('Por favor, preencha o campo obrigatório: Descrição!');
             return;
         }
-
         console.log('Objeto a ser enviado antes da modificação:', objManutencao);
 
         // Se enviar o obj com o idEpi e idPeriferico tera erro 500 no backend entao é removido um antes do post
@@ -83,7 +85,6 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
         } else {
             delete objEnvio.idEpi;
         }
-
         console.log('Objeto a ser enviado após modificação:', objEnvio);
 
         try {
@@ -197,15 +198,21 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                     </div>
                 </form>
 
-                <div className="modal-table">
-                    <TableManutencao vetor={manutencoesFiltradas} />
-                    <Paginacao
-                        paginaAtual={paginaAtual}
-                        totalPaginas={totalPaginas}
-                        totalRegistros={totalRegistros}
-                        onPageChange={handlePageChange}
-                    />
-                </div>
+                {carregando || manutencoesFiltradas.length === 0 ? (
+                    <div className="modal-table">
+                        <MediumLoading />
+                    </div>
+                ) : (
+                    <div className="modal-table">
+                        <TableManutencao vetor={manutencoesFiltradas} />
+                        <Paginacao
+                            paginaAtual={paginaAtual}
+                            totalPaginas={totalPaginas}
+                            totalRegistros={totalRegistros}
+                            onPageChange={handlePageChange}
+                        />
+                    </div>
+                )}
             </div>
 
             {sucessAnimation && (

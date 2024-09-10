@@ -1,6 +1,6 @@
-const TableVincularUsuario = () => {
+const TableVincularUsuario = ({ vetor }) => {
     return (
-        <table className="table-manutencao">
+        <table>
             <thead>
                 <tr>
                     <th>ID</th>
@@ -12,13 +12,15 @@ const TableVincularUsuario = () => {
             </thead>
 
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>FULANO</td>
-                    <td>27999898280</td>
-                    <td>fulano@facom.com.br</td>
-                    <td>SIM</td>
-                </tr>
+            {vetor.map((obj) => (
+                    <tr key={obj.id}>
+                        <td>{obj.id}</td>
+                        <td>{obj.idUsuario.nome}</td>
+                        <td>{obj.idUsuario.telContato}</td>
+                        <td>{obj.idUsuario.email}</td>
+                        <td>{obj.idUsuario.isVinculado}</td>
+                    </tr>
+                ))}
             </tbody>
         </table>
     )

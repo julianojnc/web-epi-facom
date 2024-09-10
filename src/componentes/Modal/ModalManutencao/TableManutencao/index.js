@@ -1,6 +1,6 @@
 const TableManutencao = ({ vetor }) => {
     return (
-        <table className="table-manutencao">
+        <table>
             <thead>
                 <tr>
                     <th>ID</th>
