@@ -105,6 +105,11 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
         }
     };
 
+    // Função para lidar com a seleção do periférico
+    const handleSelectUsuario = (usuarioSelecionado) => {
+        setObjUser(usuarioSelecionado);
+    }
+
     const aoDigitar = (e) => {
         setObjUser({ ...objUser, [e.target.name]: e.target.value });
     };
@@ -194,8 +199,10 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
                             </label>
 
                             <div className="container-buttons">
-                                <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar Novo</Link>
-                                <Link onClick={vincular} className="button button-cadastrar">Vincular</Link>
+                                {objUser.id > 0 ?
+                                    <Link onClick={vincular} className="button button-cadastrar">Vincular</Link> :
+                                    <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar Novo</Link>
+                                }
                             </div>
                         </form>
 
@@ -205,7 +212,10 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
                             </div>
                         ) : (
                             <div className="modal-table">
-                                <TableVincularUsuario vetor={usersFiltrados} />
+                                <TableVincularUsuario
+                                    vetor={usersFiltrados}
+                                    onSelect={handleSelectUsuario}
+                                />
                                 <Paginacao
                                     paginaAtual={paginaAtual}
                                     totalPaginas={totalPaginas}

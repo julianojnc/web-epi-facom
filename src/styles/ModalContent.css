@@ -4,16 +4,21 @@
     margin-bottom: 10px;
 }
 
-.dialog-content {
+.dialog-content{
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 50px;
 }
 
-.dialog-content form{
+.dialog-content form, .form-periferico{
     width: 318px;
     flex-wrap: wrap;
+}
+
+.dialog-content .form-periferico{
+    width: 676px;
+    align-items: initial;
 }
 
 .title-modal-sucess{

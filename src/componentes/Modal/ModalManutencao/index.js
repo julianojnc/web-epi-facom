@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { cadastrarManutencao, fetchManutencao } from "./api/apiManutencao";
+import { CurrencyInput } from 'react-currency-mask';
 import Modal from ".."
 import TableManutencao from "./TableManutencao"
-import iconClose from "../../../assets/icon-close.png"
-import { useEffect, useState } from "react"
-import { cadastrarManutencao, fetchManutencao } from "./api/apiManutencao"
-import ModalSucess from "../ModalSucess";
 import Paginacao from "../../Paginacao"
+import iconClose from "../../../assets/icon-close.png"
+import ModalSucess from "../ModalSucess";
 import MediumLoading from "../../LoadingAnimation/MediumLoading"
 
 const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
@@ -30,7 +31,7 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
     const [totalRegistros, setTotalRegistros] = useState(0); // Hook para armazenar o total de registros info vinda da api
     const [totalPaginas, setTotalPaginas] = useState(0); // Hook para armazenar o total de paginas info vinda da api
     const [paginaAtual, setPaginaAtual] = useState(0); // Hook para armazenar em qual pagina esta selecionada info vinda da api
-    const [tamanhoPagina] = useState(10); // Hook para dizer quantos registro ira ser mostrado na tela
+    const [tamanhoPagina] = useState(8); // Hook para dizer quantos registro ira ser mostrado na tela
 
     // Carregando Api
     useEffect(() => {
@@ -73,7 +74,7 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
             alert('Por favor, preencha o campo obrigatório: Descrição!');
             return;
         }
-        console.log('Objeto a ser enviado antes da modificação:', objManutencao);
+        // console.log('Objeto a ser enviado antes da modificação:', objManutencao);
 
         // Se enviar o obj com o idEpi e idPeriferico tera erro 500 no backend entao é removido um antes do post
         // Clonar o objeto para evitar modificar o estado diretamente
@@ -85,7 +86,7 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
         } else {
             delete objEnvio.idEpi;
         }
-        console.log('Objeto a ser enviado após modificação:', objEnvio);
+        // console.log('Objeto a ser enviado após modificação:', objEnvio);
 
         try {
             const response = await cadastrarManutencao(objEnvio);
@@ -108,7 +109,7 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
         }
     };
 
-    console.log(objManutencao)
+    // console.log(objManutencao)
 
     const aoDigitar = (e) => {
         setObjManutencao({ ...objManutencao, [e.target.name]: e.target.value });
@@ -161,12 +162,12 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                     </label>
 
                     <label className="label"> Valor:
-                        <input
+                        <CurrencyInput
                             value={objManutencao.valor}
                             name="valor"
                             onChange={aoDigitar}
+                            onChangeValue={aoDigitar}
                             className="input"
-                            type="text"
                             placeholder="Valor"
                         />
                     </label>

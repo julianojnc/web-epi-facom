@@ -1,4 +1,4 @@
-const TableVincularUsuario = ({ vetor }) => {
+const TableVincularUsuario = ({ vetor, onSelect }) => {
     return (
         <table>
             <thead>
@@ -12,13 +12,13 @@ const TableVincularUsuario = ({ vetor }) => {
             </thead>
 
             <tbody>
-            {vetor.map((obj) => (
-                    <tr key={obj.id}>
+                {vetor.map((obj) => (
+                    <tr key={obj.id} onClick={() => onSelect(obj.idUsuario)}>
                         <td>{obj.id}</td>
                         <td>{obj.idUsuario.nome}</td>
                         <td>{obj.idUsuario.telContato}</td>
                         <td>{obj.idUsuario.email}</td>
-                        <td>{obj.idUsuario.isVinculado}</td>
+                        <td>{obj.idUsuario.isVinculado === 1 ? 'SIM' : 'NÃO'}</td>
                     </tr>
                 ))}
             </tbody>

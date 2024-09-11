@@ -1,4 +1,4 @@
-const TableVincularPeriferico = ({ vetor }) => {
+const TableVincularPeriferico = ({ vetor, onSelect }) => {
     return (
         <table>
             <thead>
@@ -13,12 +13,12 @@ const TableVincularPeriferico = ({ vetor }) => {
 
             <tbody>
                 {vetor.map((obj) => (
-                    <tr key={obj.id}>
+                    <tr key={obj.id} onClick={() => onSelect(obj)}>
                         <td>{obj.id}</td>
                         <td>{obj.idPeriferico.nome}</td>
                         <td>{obj.idPeriferico.patrimonio}</td>
                         <td>{obj.dataVinculacao}</td>
-                        <td>{obj.idPeriferico.isVinculado}</td>
+                        <td>{obj.idPeriferico.isVinculado === 1 ? 'SIM' : 'NÃO'}</td>
                     </tr>
                 ))}
             </tbody>

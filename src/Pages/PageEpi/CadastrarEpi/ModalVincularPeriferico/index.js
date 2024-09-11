@@ -4,10 +4,11 @@ import iconClose from "../../../../assets/icon-close.png"
 import TableVincularPeriferico from "./TableVincularPeriferico";
 import { cadastrarPerifericos, fetchEpiPerifericos, vincularEpiPeriferico } from "../../../PagePeriferico/api/apiPeriferico";
 import { useEffect, useState } from "react";
-import MarcaCheckbox from "../../../../componentes/PageComponents/InputMarcaCheckbox";
 import ModalSucess from "../../../../componentes/Modal/ModalSucess";
 import Paginacao from "../../../../componentes/Paginacao";
 import MediumLoading from "../../../../componentes/LoadingAnimation/MediumLoading";
+import InputSecundarioPeriferico from "../../../../componentes/PageComponents/InputModalPeriferico/InputSecundarioPeriferico";
+import InputPrincipalPeriferico from "../../../../componentes/PageComponents/InputModalPeriferico/InputPrincipalPeriferico";
 
 const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
 
@@ -21,17 +22,18 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
         isVinculado: '',
         idMarca: {
             id: '',
-        }
+        },
     };
 
     const [perifericos, setPerifericos] = useState([]);
     const [objPeriferico, setObjPeriferico] = useState(periferico);
     const [carregando, setCarregando] = useState(true); // Hook para mostrar animação de Carregamento
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
+    const [inputSecundario, setInputSecundario] = useState(false); // Mostra novos inputs ao selecionar periferico
     const [totalRegistros, setTotalRegistros] = useState(0); // Hook para armazenar o total de registros info vinda da api
     const [totalPaginas, setTotalPaginas] = useState(0); // Hook para armazenar o total de paginas info vinda da api
     const [paginaAtual, setPaginaAtual] = useState(0); // Hook para armazenar em qual pagina esta selecionada info vinda da api
-    const [tamanhoPagina] = useState(5); // Hook para dizer quantos registro ira ser mostrado na tela
+    const [tamanhoPagina] = useState(7); // Hook para dizer quantos registro ira ser mostrado na tela
 
     // Carregando Api epi-periferico
     useEffect(() => {
@@ -103,6 +105,15 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
         }
     };
 
+    // Função para lidar com a seleção do periférico
+    const handleSelectPeriferico = (perifericoSelecionado) => {
+        setObjPeriferico({
+            ...perifericoSelecionado.idPeriferico, // Copia todos os dados do periférico selecionado
+            dataVinculacao: perifericoSelecionado.dataVinculacao // Adiciona a data de vinculação
+        });
+        setInputSecundario(true);
+    }
+
     const aoDigitar = (e) => {
         setObjPeriferico({ ...objPeriferico, [e.target.name]: e.target.value });
     }
@@ -120,85 +131,25 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
             </div>
 
             <div className="dialog-content">
-                <form>
-
-                    <label className="label"> Pesquisar Periféricos:
-                        <input className="input" type="text" placeholder="Pesquisar Periféricos Existentes..." />
-                    </label>
-
-                    <input
-                        value={objEpi.id}
-                        onChange={aoDigitar}
-                        name='objEpi.id'
-                        className="input"
-                        type="text"
-                        placeholder="Id Epi"
-                        hidden
-                    />
-
-                    <input
-                        value={objPeriferico.id}
-                        onChange={aoDigitar}
-                        name='id'
-                        className="input"
-                        type="text"
-                        placeholder="Id Periferico"
-                        hidden
-                    />
-
-                    <label className="label"> Nome:
-                        <input
-                            value={objPeriferico.nome}
-                            onChange={aoDigitar}
-                            name='nome'
-                            className="input"
-                            type="text"
-                            placeholder="Nome" />
-                    </label>
-
-                    <label className="label"> Patrimonio:
-                        <input
-                            value={objPeriferico.patrimonio}
-                            onChange={aoDigitar}
-                            name='patrimonio'
-                            className="input"
-                            type="text"
-                            placeholder="Patrimonio" />
-                    </label>
-
-                    <MarcaCheckbox
-                        id={id}
-                        obj={objPeriferico}
-                        setObj={setObjPeriferico}
+                <form className={inputSecundario === true ? "form-periferico" : ""}>
+                    <InputPrincipalPeriferico
                         aoDigitar={aoDigitar}
+                        objPeriferico={objPeriferico}
+                        objEpi={objEpi}
+                        id={id}
+                        setObjPeriferico={setObjPeriferico}
+                        cadastrar={cadastrar}
+                        vincular={vincular}
                     />
 
-                    <label className="label"> Data Compra:
-                        <input
-                            value={objPeriferico.dataCompra}
-                            onChange={aoDigitar}
-                            name='dataCompra'
-                            className="input"
-                            type="date"
-                            placeholder="Data de incio" />
-                    </label>
-
-                    <label className="label"> Data Garantia:
-                        <input
-                            value={objPeriferico.dataGarantia}
-                            onChange={aoDigitar}
-                            name='dataGarantia'
-                            className="input"
-                            type="date"
-                            placeholder="Data de Retorno" />
-                    </label>
-
-                    <div className="container-buttons">
-                        <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar Novo</Link>
-                        <Link onClick={vincular} className="button button-cadastrar">Vincular</Link>
-                    </div>
+                    {inputSecundario && (
+                        <InputSecundarioPeriferico
+                            aoDigitar={aoDigitar}
+                            objPeriferico={objPeriferico}
+                            perifericos={perifericos}
+                        />
+                    )}
                 </form>
-
 
                 {carregando || perifericosFiltrados.length === 0 ? (
                     <div className="modal-table">
@@ -206,7 +157,10 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
                     </div>
                 ) : (
                     <div className="modal-table">
-                        <TableVincularPeriferico vetor={perifericosFiltrados} />
+                        <TableVincularPeriferico
+                            vetor={perifericosFiltrados}
+                            onSelect={handleSelectPeriferico}
+                        />
                         <Paginacao
                             paginaAtual={paginaAtual}
                             totalPaginas={totalPaginas}

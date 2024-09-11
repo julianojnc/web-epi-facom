@@ -17,7 +17,7 @@ axiosRetry(axios, {
 });
 
 // Listar todos os elementos e tambem a pagina do mesmo e quantos por pagina
-export const fetchManutencao = async (page = 0, size = 10) => {
+export const fetchManutencao = async (page = 0, size = 8) => {
     try {
         const response = await axios.get(`${API_URL}/manutencao?p=${page}&s=${size}`);
         if (response.data && Array.isArray(response.data.lista)) {

@@ -11,6 +11,10 @@
     gap: 5px;
 }
 
+.paginacao div p{
+    font-size: 14px;
+}
+
 .paginacao div a {
     display: flex;
     align-items: center;
