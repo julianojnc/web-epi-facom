@@ -4,7 +4,7 @@ import SmallLoading from "../../LoadingAnimation/SmallLoading";
 import { fetchEpiById } from "../../../Pages/PageEpi/api/apiEpi";
 import { fetchPerifericoById } from "../../../Pages/PagePeriferico/api/apiPeriferico";
 
-const MarcaCheckbox = ({id, obj, setObj, aoDigitar, isEpi}) => {
+const MarcaCheckbox = ({id, obj, setObj, objEpiPeriferico, aoDigitar, isEpi}) => {
     const objMarcas = { id: "" };
     const [marcas, setMarcas] = useState([]);
     const [objMarca, setObjMarca] = useState(objMarcas);
@@ -13,44 +13,36 @@ const MarcaCheckbox = ({id, obj, setObj, aoDigitar, isEpi}) => {
     const [carregando, setCarregando] = useState(true);
     const [moreDetails, setMoreDetails] = useState(false);
 
+    // Fetch data for EPI or Periferico based on the ID and isEpi
     useEffect(() => {
-        const MAX_ATTEMPTS = 3; // Número máximo de tentativas
-        const RETRY_DELAY = 1000; // Tempo de espera entre tentativas (em milissegundos)
-    
-        const fetchData = async (attempt = 1) => {
+        const fetchData = async () => {
             if (id) {
                 try {
-                    if (isEpi) { // se isEpi for verdadeiro a função para epi é acionada se nao a funcao para periferico
+                    if (isEpi) {
                         const epiData = await fetchEpiById(id);
                         if (epiData && epiData.idMarca) {
                             setSearchMarca(epiData.idMarca.nome);
                         } else {
-                            throw new Error("EPI data or idMarca is undefined"); // retorno de erro no console
+                            console.error("EPI data or idMarca is undefined");
                         }
                     } else {
                         const perifericoData = await fetchPerifericoById(id);
                         if (perifericoData && perifericoData.idMarca) {
                             setSearchMarca(perifericoData.idMarca.nome);
                         } else {
-                            throw new Error("Periférico data or idMarca is undefined"); // retorno de erro no console
+                            console.error("Periférico data or idMarca is undefined");
                         }
                     }
                 } catch (error) {
-                    console.error(`Attempt ${attempt} failed:`, error); // retorno de tentativas no console
-    
-                    if (attempt < MAX_ATTEMPTS) { // se a tentativa for  menor que o numero de tentativas fetchData e recarregado
-                        setTimeout(() => fetchData(attempt + 1), RETRY_DELAY);
-                    } else {
-                        console.error("All attempts failed. Unable to fetch data."); // retorno de erro no console
-                    }
+                    console.error("Failed to fetch data:", error);
                 }
             }
         };
     
         fetchData();
     }, [id, isEpi]); // Inclua isEpi como dependência se ela puder mudar
-    
 
+    // Fetch all available marcas
     useEffect(() => {
         const fetchAndSetMarcas = async () => {
             const fetchedMarcas = await fetchMarca();
@@ -88,76 +80,75 @@ const MarcaCheckbox = ({id, obj, setObj, aoDigitar, isEpi}) => {
     return(
         <>
             <div className="marca-checkbox">
-                        <input
-                            value={objMarca.codMarca}
-                            onChange={aoDigitar}
-                            name="codMarca.id"
-                            className="input input-marca"
-                            type="text"
-                            placeholder="ID Marca"
-                            hidden
-                        />
-                        <label className="label"> Marca:
-                            <input
-                                value={searchMarca} // O campo de input agora é preenchido com o valor selecionado
-                                onClick={() => setSearchMarcaOpen(true)}
-                                onChange={(e) => setSearchMarca(e.target.value)}
-                                name="idMarca.id"
-                                className="input input-marca"
-                                type="text"
-                                placeholder="Marca"
-                            />
-                            {searchMarcaOpen && (
-                                carregando ? (
-                                    <SmallLoading />
-                                ) : (
-                                    <div className="search-bar-curso">
-                                        {filterData(marcas, searchMarca, ['nome'])
-                                            .filter(obj => obj.nome.toLowerCase() !== searchMarca.toLowerCase()) // Filtra para não mostrar a marca selecionada
-                                            .map((obj, indice) => (
-                                                <ul key={indice} onClick={() => handleSelection('marca', obj)}>
-                                                    <li>
-                                                        <p>{obj.nome}</p>
-                                                    </li>
-                                                </ul>
-                                            ))}
-                                    </div>
-                                )
-                            )}
-
-                        </label>
-
-                        <label onClick={handleMoreDetails} className="label label-details">
-                            <input className="input input-details" type="checkbox" />
-                            Mais Detalhes
-                        </label>
-                    </div>
-
-                    {moreDetails && (
-                        <>
-                            <label className="label"> Service Tag:
-                                <input
-                                    value={obj.serviceTag}
-                                    onChange={aoDigitar}
-                                    name='serviceTag'
-                                    className="input"
-                                    type="text"
-                                    placeholder="Service Tag" />
-                            </label>
-
-                            <label className="label"> Express Code:
-                                <input
-                                    value={obj.expressCode}
-                                    onChange={aoDigitar}
-                                    name='expressCode'
-                                    className="input"
-                                    type="text"
-                                    placeholder="Express Code" />
-                            </label>
-                        </>
+                <input
+                    value={objMarca.codMarca}
+                    onChange={aoDigitar}
+                    name="codMarca.id"
+                    className="input input-marca"
+                    type="text"
+                    placeholder="ID Marca"
+                    hidden
+                />
+                <label className="label"> Marca:
+                    <input
+                        value={searchMarca} // O campo de input agora é preenchido com o valor selecionado
+                        onClick={() => setSearchMarcaOpen(true)}
+                        onChange={(e) => setSearchMarca(e.target.value)}
+                        name="idMarca.id"
+                        className="input input-marca"
+                        type="text"
+                        placeholder="Marca"
+                    />
+                    {searchMarcaOpen && (
+                        carregando ? (
+                            <SmallLoading />
+                        ) : (
+                            <div className="search-bar-curso">
+                                {filterData(marcas, searchMarca, ['nome'])
+                                    .filter(obj => obj.nome.toLowerCase() !== searchMarca.toLowerCase()) // Filtra para não mostrar a marca selecionada
+                                    .map((obj, indice) => (
+                                        <ul key={indice} onClick={() => handleSelection('marca', obj)}>
+                                            <li>
+                                                <p>{obj.nome}</p>
+                                            </li>
+                                        </ul>
+                                    ))}
+                            </div>
+                        )
                     )}
+                </label>
+
+                <label onClick={handleMoreDetails} className="label label-details">
+                    <input className="input input-details" type="checkbox" />
+                    Mais Detalhes
+                </label>
+            </div>
+
+            {moreDetails && (
+                <>
+                    <label className="label"> Service Tag:
+                        <input
+                            value={obj.serviceTag || objEpiPeriferico?.idPeriferico?.serviceTag}
+                            onChange={aoDigitar}
+                            name='serviceTag'
+                            className="input"
+                            type="text"
+                            placeholder="Service Tag" />
+                    </label>
+
+                    <label className="label"> Express Code:
+                        <input
+                            value={obj.expressCode || objEpiPeriferico?.idPeriferico?.expressCode}
+                            onChange={aoDigitar}
+                            name='expressCode'
+                            className="input"
+                            type="text"
+                            placeholder="Express Code" />
+                    </label>
+                </>
+            )}
         </>
-    )
-}
+    );
+};
 
 export default MarcaCheckbox;

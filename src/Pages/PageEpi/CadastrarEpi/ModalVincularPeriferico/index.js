@@ -25,8 +25,24 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
         },
     };
 
+    const epiPeriferico = {
+        idEpi: {
+            id: "",
+        },
+        idPeriferico: {
+            id: "",
+            nome: "",
+            isVinculado: "",
+        },
+        dataVinculacao: "",
+        dataDesvinculacao: "",
+        registroDesvinculacao: ""
+    };
+
     const [perifericos, setPerifericos] = useState([]);
     const [objPeriferico, setObjPeriferico] = useState(periferico);
+    const [epiPerifericos, setEpiPerifericos] = useState([]);
+    const [objEpiPeriferico, setObjEpiPeriferico] = useState(epiPeriferico);
     const [carregando, setCarregando] = useState(true); // Hook para mostrar animação de Carregamento
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
     const [inputSecundario, setInputSecundario] = useState(false); // Mostra novos inputs ao selecionar periferico
@@ -40,7 +56,7 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
         const fetchAndSetPeriferico = async () => {
             setCarregando(true); // Ativa o carregamento antes da busca
             const { lista, totalRegistros, totalPaginas } = await fetchEpiPerifericos(paginaAtual, tamanhoPagina);
-            setPerifericos(lista);
+            setEpiPerifericos(lista);
             setTotalRegistros(totalRegistros);
             setTotalPaginas(totalPaginas);
             setCarregando(false); // Desativa o carregamento após a busca
@@ -53,7 +69,7 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
     };
 
     // Filtro das perifericos com base no objEpi.id
-    const perifericosFiltrados = perifericos.filter((item) => {
+    const perifericosFiltrados = epiPerifericos.filter((item) => {
         return (item.idEpi?.id === objEpi.id);
     });
 
@@ -107,15 +123,40 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
 
     // Função para lidar com a seleção do periférico
     const handleSelectPeriferico = (perifericoSelecionado) => {
-        setObjPeriferico({
-            ...perifericoSelecionado.idPeriferico, // Copia todos os dados do periférico selecionado
-            dataVinculacao: perifericoSelecionado.dataVinculacao // Adiciona a data de vinculação
+        // Atualizando o objeto epiPeriferico com todos os dados relevantes
+        setObjEpiPeriferico({
+            id: perifericoSelecionado.id,
+            idEpi: {
+                id: objEpi.id, // Usando o ID do EPI atual
+            },
+            idPeriferico: {
+                id: perifericoSelecionado.idPeriferico.id, // ID do periférico selecionado
+                nome: perifericoSelecionado.idPeriferico.nome, // Nome do periférico selecionado
+                patrimonio: perifericoSelecionado.idPeriferico.patrimonio,
+                serviceTag: perifericoSelecionado.idPeriferico.serviceTag,
+                expressCode: perifericoSelecionado.idPeriferico.expressCode,
+                dataCompra: perifericoSelecionado.idPeriferico.dataCompra,
+                dataGarantia: perifericoSelecionado.idPeriferico.dataGarantia,
+                idMarca: {
+                    id: perifericoSelecionado.idPeriferico.idMarca.id,
+                },
+                isVinculado: perifericoSelecionado.idPeriferico.isVinculado, // Status de vinculação do periférico
+            },
+            dataVinculacao: perifericoSelecionado.dataVinculacao || "", // Data de vinculação se disponível
+            dataDesvinculacao: perifericoSelecionado.dataDesvinculacao || "", // Data de desvinculação se disponível
+            registroDesvinculacao: perifericoSelecionado.registroDesvinculacao || "", // Registro de desvinculação se disponível
         });
+
+        // Exibir inputs secundários com mais detalhes sobre o periférico
         setInputSecundario(true);
-    }
+
+        // Debug para garantir que os dados foram atualizados corretamente
+        console.log("Periférico selecionado:", objEpiPeriferico);
+    };
 
     const aoDigitar = (e) => {
         setObjPeriferico({ ...objPeriferico, [e.target.name]: e.target.value });
+        setObjEpiPeriferico({ ...objEpiPeriferico, [e.target.name]: e.target.value});
     }
 
     return (
@@ -135,18 +176,19 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
                     <InputPrincipalPeriferico
                         aoDigitar={aoDigitar}
                         objPeriferico={objPeriferico}
+                        objEpiPeriferico={objEpiPeriferico}
                         objEpi={objEpi}
                         id={id}
                         setObjPeriferico={setObjPeriferico}
                         cadastrar={cadastrar}
                         vincular={vincular}
+                        onClose={onClose}
                     />
 
                     {inputSecundario && (
                         <InputSecundarioPeriferico
                             aoDigitar={aoDigitar}
-                            objPeriferico={objPeriferico}
-                            perifericos={perifericos}
+                            objEpiPeriferico={objEpiPeriferico}
                         />
                     )}
                 </form>

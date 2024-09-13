@@ -1,20 +1,56 @@
-import { useState } from "react";
-import InputDesvinculoPeriferico from "../inputDesvinculoPeriferico";
+import { useEffect, useState } from "react";
+import { Switch } from "@mui/material";
 
-const InputSecundarioPeriferico = ({ aoDigitar, objPeriferico }) => {
+const InputSecundarioPeriferico = ({ aoDigitar, objEpiPeriferico }) => {
 
-    const [desvinculacao, setDesvinculacao] = useState(false);
+    // Inicializa o estado do Switch baseado no valor de isVinculado (true se for 1, false se for 0)
+    const [checked, setChecked] = useState(objEpiPeriferico.idPeriferico.isVinculado === 1);
+
+    // Sincroniza o valor de checked com o valor de isVinculado de objEpiPeriferico
+    useEffect(() => {
+        setChecked(objEpiPeriferico.idPeriferico.isVinculado === 1);
+    }, [objEpiPeriferico.idPeriferico.isVinculado]);
+
+    const handleChange = (event) => {
+        const newValue = event.target.checked;
+        setChecked(newValue);
+
+        // Atualiza o campo `isVinculado` diretamente dentro de `idPeriferico`
+        aoDigitar({
+            target: {
+                name: 'idPeriferico',
+                value: {
+                    ...objEpiPeriferico.idPeriferico, // Mantém os outros campos de `idPeriferico`
+                    isVinculado: newValue ? 1 : 0 // Atualiza apenas `isVinculado` corretamente
+                }
+            }
+        });
+    };
 
     return (
         <div>
-            <InputDesvinculoPeriferico
-                objPeriferico={objPeriferico}
-                setDesvinculacao={setDesvinculacao}
-            />
+            <div className="marca-checkbox">
+                <label className="label"> Vinculado:
+                    <input
+                        value={checked ? 'SIM' : 'NÃO'}
+                        name='isVinculado'
+                        className="input input-marca"
+                        type="text"
+                        placeholder="Vinculado"
+                        disabled
+                    />
+                </label>
+
+                <Switch
+                    checked={checked}
+                    onChange={handleChange}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                />
+            </div>
 
             <label className="label"> Data Vinculação:
                 <input
-                    value={objPeriferico.dataVinculacao}
+                    value={objEpiPeriferico.dataVinculacao}
                     onChange={aoDigitar}
                     name='dataVinculacao'
                     className="input"
@@ -23,25 +59,26 @@ const InputSecundarioPeriferico = ({ aoDigitar, objPeriferico }) => {
             </label>
 
             {
-                desvinculacao && (
+                !checked && (
                     <>
                         <label className="label"> Data Desvinculação:
                             <input
-                                value={objPeriferico.dataDesvinculacao}
+                                value={objEpiPeriferico.dataDesvinculacao}
                                 onChange={aoDigitar}
                                 name='dataDesvinculacao'
                                 className="input"
                                 type="date"
+                                disabled
                             />
                         </label>
 
                         <label className="label"> Registro Desvinculação:
                             <textarea
-                                value={objPeriferico.registroDesvinculacao}
+                                value={objEpiPeriferico.registroDesvinculacao}
                                 onChange={aoDigitar}
                                 name='registroDesvinculacao'
                                 className="input"
-                                type="text"
+                                rows='4'
                                 placeholder="Qual o Motivo da Desvinculação..." />
                         </label>
                     </>

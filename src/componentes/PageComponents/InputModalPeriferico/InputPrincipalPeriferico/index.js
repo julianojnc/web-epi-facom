@@ -1,10 +1,44 @@
 import { Link } from "react-router-dom";
 import MarcaCheckbox from "../../InputMarcaCheckbox";
+import { alterarEpiPeriferico } from "../../../../Pages/PagePeriferico/api/apiPeriferico";
+import { useState } from "react";
+import ModalSucess from "../../../Modal/ModalSucess";
 
-const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeriferico, id, cadastrar, vincular }) => {
+const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeriferico, objEpiPeriferico, cadastrar, vincular, onClose }) => {
+
+    const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
+    const [loadingButton, setLoadingButton] = useState(false);
+
+    const alterar = async () => {
+        if (!objEpiPeriferico.registroDesvinculacao) {
+            alert('Por favor, preencha todos os campos obrigatórios: Registro de Desvinculação!');
+            return;
+        }
+        setLoadingButton(true);
+
+        try {
+            const response = await alterarEpiPeriferico(objEpiPeriferico.id, objEpiPeriferico);
+            console.log('Resposta da API:', response);
+            if (response.mensagem) {
+                alert(response.mensagem);
+            } else {
+                setSucessAnimation(true); // Exibe animação de sucesso
+                setTimeout(() => {
+                    setSucessAnimation(false);
+                    onClose(); // Fecha modal após sucesso
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('Erro ao cadastrar/alterar Periferico:', error);
+            alert('Ocorreu um erro ao tentar cadastrar/alterar Periferico.');
+        } finally {
+            setLoadingButton(false);
+        }
+    };
+
     return (
         <div>
-            {objPeriferico.id > 0 ? (
+            {objPeriferico.id || objEpiPeriferico.idPeriferico.id > 0 ? (
                 <></>
             ) : (
                 <label className="label"> Pesquisar Periféricos:
@@ -13,7 +47,7 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
             )}
 
             <input
-                value={objEpi.id}
+                value={objEpi.id || objEpiPeriferico.idEpi.id}
                 onChange={aoDigitar}
                 name='objEpi.id'
                 className="input"
@@ -23,7 +57,7 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
             />
 
             <input
-                value={objPeriferico.id}
+                value={objPeriferico.id || objEpiPeriferico.idPeriferico.id}
                 onChange={aoDigitar}
                 name='id'
                 className="input"
@@ -34,7 +68,7 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
 
             <label className="label"> Nome:
                 <input
-                    value={objPeriferico.nome}
+                    value={objPeriferico.nome || objEpiPeriferico.idPeriferico.nome}
                     onChange={aoDigitar}
                     name='nome'
                     className="input"
@@ -44,7 +78,7 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
 
             <label className="label"> Patrimonio:
                 <input
-                    value={objPeriferico.patrimonio}
+                    value={objPeriferico.patrimonio || objEpiPeriferico.idPeriferico.patrimonio}
                     onChange={aoDigitar}
                     name='patrimonio'
                     className="input"
@@ -53,15 +87,16 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
             </label>
 
             <MarcaCheckbox
-                id={id}
-                obj={objPeriferico}
+                id={objEpiPeriferico.idPeriferico.id}
+                obj={objEpiPeriferico}
                 setObj={setObjPeriferico}
                 aoDigitar={aoDigitar}
+                objEpiPeriferico={objEpiPeriferico}
             />
 
             <label className="label"> Data Compra:
                 <input
-                    value={objPeriferico.dataCompra}
+                    value={objPeriferico.dataCompra || objEpiPeriferico.idPeriferico.dataCompra}
                     onChange={aoDigitar}
                     name='dataCompra'
                     className="input"
@@ -71,7 +106,7 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
 
             <label className="label"> Data Garantia:
                 <input
-                    value={objPeriferico.dataGarantia}
+                    value={objPeriferico.dataGarantia || objEpiPeriferico.idPeriferico.dataGarantia}
                     onChange={aoDigitar}
                     name='dataGarantia'
                     className="input"
@@ -80,11 +115,33 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
             </label>
 
             <div className="container-buttons">
-                {objPeriferico.id > 0 ?
-                    <Link onClick={vincular} className="button button-cadastrar">Vincular</Link> :
-                    <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar Novo</Link>
-                }
+                <div className="container-buttons">
+                    {objEpiPeriferico.id > 0 ? (
+                        (objPeriferico.id || objEpiPeriferico.idPeriferico.id > 0) ? (
+                            <Link onClick={alterar} className="button button-cadastrar" disabled={loadingButton}>
+                                {loadingButton ? "Desvinculando..." : "Desvincular"}
+                            </Link>
+                        ) : null
+                    ) : (
+                        (objPeriferico.id || objEpiPeriferico.idPeriferico.id > 0) ? (
+                            <Link onClick={vincular} className="button button-cadastrar" disabled={loadingButton}>
+                                {loadingButton ? "Vinculando..." : "Vincular"}
+                            </Link>
+                        ) : (
+                            <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar Novo</Link>
+                        )
+                    )}
+                </div>
+
             </div>
+
+            {sucessAnimation && (
+                <ModalSucess
+                    id={objEpiPeriferico.id}
+                    title=""
+                    titleEditar="Periférico Desvinculado!"
+                />
+            )}
         </div>
     )
 }

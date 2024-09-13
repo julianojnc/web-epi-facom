@@ -63,6 +63,33 @@ export const cadastrarPerifericos = async (periferico) => {
     }
 };
 
+// Alterar
+export const alterarPeriferico = async (id, periferico) => {
+    try {
+        const response = await axios.put(`${API_URL}/periferico/${id}`, periferico, {
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        throw error;
+    }
+};
+
+// Excluir
+export const excluirPeriferico = async (id) => {
+    try {
+        const response = await axios.delete(`${API_URL}/periferico/${id}`);
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        throw error;
+    }
+};
+
 // Carregar Perifericos vinculados a Epi
 export const fetchEpiPerifericos = async (page = 0, size = 7) => {
     try {
@@ -105,27 +132,15 @@ export const vincularEpiPeriferico = async (idEpi, idPeriferico) => {
     }
 };
 
-
 // Alterar
-export const alterarPeriferico = async (id, periferico) => {
+export const alterarEpiPeriferico = async (id, epiPeriferico) => {
     try {
-        const response = await axios.put(`${API_URL}/periferico/${id}`, periferico, {
+        const response = await axios.put(`${API_URL}/epi-periferico/${id}`, epiPeriferico, {
             headers: {
                 'Content-type': 'application/json',
                 'Accept': 'application/json',
             },
         });
-        return response.data;
-    } catch (error) {
-        handleApiError(error);
-        throw error;
-    }
-};
-
-// Excluir
-export const excluirPeriferico = async (id) => {
-    try {
-        const response = await axios.delete(`${API_URL}/periferico/${id}`);
         return response.data;
     } catch (error) {
         handleApiError(error);
