@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { cadastrarManutencao, fetchManutencao } from "./api/apiManutencao";
-import { CurrencyInput } from 'react-currency-mask';
+// import { CurrencyInput } from 'react-currency-mask';
 import Modal from ".."
 import TableManutencao from "./TableManutencao"
 import Paginacao from "../../Paginacao"
@@ -161,7 +161,8 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                         />
                     </label>
 
-                    <label className="label"> Valor:
+                    {/*
+                        <label className="label"> Valor:
                         <CurrencyInput
                             value={objManutencao.valor}
                             name="valor"
@@ -170,6 +171,17 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                             className="input"
                             placeholder="Valor"
                         />
+                    </label>
+                    */}
+
+                    <label className="label">Valor:
+                        <input
+                            value={objManutencao.valor}
+                            name="valor"
+                            onChange={aoDigitar}
+                            className="input"
+                            placeholder="Valor"
+                            type="number" />
                     </label>
 
                     <label className="label"> Data Inicio:
