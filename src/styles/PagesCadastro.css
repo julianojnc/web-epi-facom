@@ -76,6 +76,11 @@ form .input-details {
     background-color: #8D2E2E;
 }
 
+.download{
+    margin-top: 20px;
+    background-color: #2e578d;
+}
+
 .container-buttons{
     display: flex;
     min-width: 318px;

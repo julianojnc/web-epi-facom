@@ -7,6 +7,7 @@ const Buttons = ({id, cadastrarOuAlterar, excluir}) => {
                             <>
                                 <Link onClick={cadastrarOuAlterar} className="button button-cadastrar alterar">Alterar</Link>
                                 <Link onClick={excluir} className="button button-cadastrar excluir">Excluir</Link>
+                                
                             </>
                         ) : (
                             <Link onClick={cadastrarOuAlterar} className="button button-cadastrar">Cadastrar</Link>

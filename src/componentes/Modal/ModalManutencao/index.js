@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { useEffect, useState } from "react"
-import { cadastrarManutencao, fetchManutencao } from "./api/apiManutencao";
+import { cadastrarManutencao, downloadFileManutencao, fetchManutencao, uploadFileManutencao } from "./api/apiManutencao";
 // import { CurrencyInput } from 'react-currency-mask';
 import Modal from ".."
 import TableManutencao from "./TableManutencao"
@@ -16,6 +16,7 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
         valor: "",
         dataIniManutencao: "",
         dataRetManutencao: "",
+        fileName: '',
         idEpi: {
             id: ""
         },
@@ -32,6 +33,7 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
     const [totalPaginas, setTotalPaginas] = useState(0); // Hook para armazenar o total de paginas info vinda da api
     const [paginaAtual, setPaginaAtual] = useState(0); // Hook para armazenar em qual pagina esta selecionada info vinda da api
     const [tamanhoPagina] = useState(8); // Hook para dizer quantos registro ira ser mostrado na tela
+    const [selectedFile, setSelectedFile] = useState(null); // Para armazenar o arquivo selecionado
 
     // Carregando Api
     useEffect(() => {
@@ -74,7 +76,6 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
             alert('Por favor, preencha o campo obrigatório: Descrição!');
             return;
         }
-        // console.log('Objeto a ser enviado antes da modificação:', objManutencao);
 
         // Se enviar o obj com o idEpi e idPeriferico tera erro 500 no backend entao é removido um antes do post
         // Clonar o objeto para evitar modificar o estado diretamente
@@ -86,7 +87,6 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
         } else {
             delete objEnvio.idEpi;
         }
-        // console.log('Objeto a ser enviado após modificação:', objEnvio);
 
         try {
             const response = await cadastrarManutencao(objEnvio);
@@ -109,7 +109,30 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
         }
     };
 
-    // console.log(objManutencao)
+    // // Função para lidar com o upload do arquivo
+    // const handleFileUpload = async () => {
+    //     if (selectedFile) {
+    //         try {
+    //             const formData = new FormData();
+    //             formData.append('file', selectedFile);
+    //             await uploadFileManutencao(id, formData); // Chama a função de upload
+    //             alert('Arquivo carregado com sucesso!');
+    //         } catch (error) {
+    //             console.error('Erro ao fazer upload:', error);
+    //             alert('Ocorreu um erro ao tentar fazer upload do arquivo.');
+    //         }
+    //     }
+    // };
+
+    // // Função para lidar com o download do arquivo
+    // const handleFileDownload = async () => {
+    //     try {
+    //         await downloadFileManutencao(id); // Chama a função de download
+    //     } catch (error) {
+    //         console.error('Erro ao fazer download:', error);
+    //         alert('Ocorreu um erro ao tentar baixar o arquivo.');
+    //     }
+    // };
 
     const aoDigitar = (e) => {
         setObjManutencao({ ...objManutencao, [e.target.name]: e.target.value });

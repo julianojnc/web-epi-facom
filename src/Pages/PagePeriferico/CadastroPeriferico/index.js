@@ -6,7 +6,8 @@ import ModalManutencao from "../../../componentes/Modal/ModalManutencao";
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
 import MarcaCheckbox from "../../../componentes/PageComponents/InputMarcaCheckbox";
 import Buttons from "../../../componentes/PageComponents/PageCadastroButtons";
-import { alterarPeriferico, cadastrarPerifericos, excluirPeriferico, fetchPerifericoById } from "../api/apiPeriferico";
+import { alterarPeriferico, cadastrarPerifericos, downloadFilePeriferico, excluirPeriferico, fetchPerifericoById, uploadFilePeriferico } from "../api/apiPeriferico";
+import UploadDowload from "../../../componentes/PageComponents/PageCadastroUploadDownload";
 
 const CadastrarPeriferico = () => {
     const { id } = useParams(); // Obtenha o ID da URL
@@ -22,12 +23,14 @@ const CadastrarPeriferico = () => {
         dataCompra: '',
         dataGarantia: '',
         isVinculado: '',
+        fileName: '',
         idMarca: {
             id: '',
         }
     };
 
     const [objPeriferico, setObjPeriferico] = useState(periferico);// Funcao para o cadastro de Periferico
+    const [selectedFile, setSelectedFile] = useState(null); // Para armazenar o arquivo selecionado
 
     const cadastrarOuAlterar = async () => {
         if (!objPeriferico.nome || !objPeriferico.idMarca.id) {
@@ -64,6 +67,32 @@ const CadastrarPeriferico = () => {
                 console.error('Erro ao excluir Periferico:', error);
                 alert('Ocorreu um erro ao tentar excluir o Periferico.');
             }
+        }
+    };
+
+    // Função para lidar com o upload do arquivo
+    const handleFileUpload = async () => {
+        if (selectedFile) {
+            try {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                await uploadFilePeriferico(id, formData); // Chama a função de upload
+                alert('Arquivo carregado com sucesso!');
+                navigate(`/perifericos`);
+            } catch (error) {
+                console.error('Erro ao fazer upload:', error);
+                alert('Ocorreu um erro ao tentar fazer upload do arquivo.');
+            }
+        }
+    };
+
+    // Função para lidar com o download do arquivo
+    const handleFileDownload = async () => {
+        try {
+            await downloadFilePeriferico(id); // Chama a função de download
+        } catch (error) {
+            console.error('Erro ao fazer download:', error);
+            alert('Ocorreu um erro ao tentar baixar o arquivo.');
         }
     };
 
@@ -150,6 +179,16 @@ const CadastrarPeriferico = () => {
                             placeholder="Data Garantia"
                         />
                     </label>
+
+                    {/* Funcionalidades para o envio de arquivos e dowloads*/}
+                    {id > 0 && ( // Condição para renderizar o UploadDownload somente quando o id for maior que 0
+                        <UploadDowload
+                            handleFileDownload={handleFileDownload}
+                            handleFileUpload={handleFileUpload}
+                            obj={{ fileName: objPeriferico.fileName }}
+                            setSelectedFile={setSelectedFile}
+                        />
+                    )}
 
                     <Buttons
                         id={id}

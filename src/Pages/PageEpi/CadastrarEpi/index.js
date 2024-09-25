@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { cadastrarEpi, fetchEpiById, alterarEpi, excluirEpi } from "../api/apiEpi";
+import { cadastrarEpi, fetchEpiById, alterarEpi, excluirEpi, uploadFile, downloadFile, uploadFileEpi, downloadFileEpi } from "../api/apiEpi";
 import MenuBar from "../../../componentes/MenuBar";
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
 import MarcaCheckbox from "../../../componentes/PageComponents/InputMarcaCheckbox";
@@ -9,6 +9,7 @@ import ModalManutencao from "../../../componentes/Modal/ModalManutencao";
 import ModalVincularPeriferico from "./ModalVincularPeriferico";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
 import ModalVincularUsuario from "./ModalVincularUsuario";
+import UploadDowload from "../../../componentes/PageComponents/PageCadastroUploadDownload";
 
 const CadastrarEpi = () => {
     const { id } = useParams(); // Obtenha o ID da URL assim trazendo o equipamento em específico
@@ -27,12 +28,14 @@ const CadastrarEpi = () => {
         setor: '',
         dataCompra: '',
         dataGarantia: '',
+        fileName: '',
         idMarca: {
             id: '',
         }
     };
 
     const [objEpi, setObjEpi] = useState(epi); // Armazenando o obj digitado em um hook
+    const [selectedFile, setSelectedFile] = useState(null); // Para armazenar o arquivo selecionado
 
     useEffect(() => { // Fetch para mostrar um Epi específico referente ao ID do mesmo assim preenchendo os campos do formulário
         if (id) { // Se id tiver valor será feita a listagem pelo fetchEpi
@@ -92,6 +95,32 @@ const CadastrarEpi = () => {
         setManutencaoOpen(false);
         setPerifericoOpen(false);
         setUsuarioOpen(false);
+    };
+
+    // Função para lidar com o upload do arquivo
+    const handleFileUpload = async () => {
+        if (selectedFile) {
+            try {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                await uploadFileEpi(id, formData); // Chama a função de upload
+                alert('Arquivo carregado com sucesso!');
+                navigate(`/epi`);
+            } catch (error) {
+                console.error('Erro ao fazer upload:', error);
+                alert('Ocorreu um erro ao tentar fazer upload do arquivo.');
+            }
+        }
+    };
+
+    // Função para lidar com o download do arquivo
+    const handleFileDownload = async () => {
+        try {
+            await downloadFileEpi(id); // Chama a função de download
+        } catch (error) {
+            console.error('Erro ao fazer download:', error);
+            alert('Ocorreu um erro ao tentar baixar o arquivo.');
+        }
     };
 
     return (
@@ -179,12 +208,24 @@ const CadastrarEpi = () => {
                             placeholder="Data de Vencimento da Garantia" />
                     </label>
 
+                    {/* Funcionalidades para o envio de arquivos e dowloads*/}
+                    {id > 0 && ( // Condição para renderizar o UploadDownload somente quando o id for maior que 0
+                        <UploadDowload
+                            handleFileDownload={handleFileDownload}
+                            handleFileUpload={handleFileUpload}
+                            obj={{ fileName: objEpi.fileName }}
+                            setSelectedFile={setSelectedFile}
+                        />
+                    )}
+
                     <Buttons
                         id={id}
                         cadastrarOuAlterar={cadastrarOuAlterar}
                         excluir={excluir}
+                        objEpi={objEpi}
+                        handleFileUpload={handleFileUpload}
+                        handleFileDownload={handleFileDownload}
                     />
-
 
                 </form>
             </div>

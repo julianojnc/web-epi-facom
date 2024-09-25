@@ -52,6 +52,40 @@ export const cadastrarManutencao = async (manutencao) => {
     }
 };
 
+// Função para upload de arquivo
+export const uploadFileManutencao = async (id, formData) => {
+    try {
+        const response = await axios.post(`${API_URL}/manutencao/${id}/uploadFile`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao fazer upload de arquivo:', error);
+        throw error;
+    }
+};
+
+// Função para download de arquivo
+export const downloadFileManutencao = async (id) => {
+    try {
+        const response = await axios.get(`${API_URL}/manutencao/${id}/downloadFile`, {
+            responseType: 'blob',
+        });
+        // Cria um link temporário para o download
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'arquivo.pdf'); // Nome do arquivo
+        document.body.appendChild(link);
+        link.click();
+    } catch (error) {
+        console.error('Erro ao fazer download de arquivo:', error);
+        throw error;
+    }
+};
+
 // tratativa de erros
 const handleApiError = (error) => {
     if (error.response) {
