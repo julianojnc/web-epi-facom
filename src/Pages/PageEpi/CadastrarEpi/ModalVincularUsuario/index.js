@@ -5,9 +5,10 @@ import iconClose from "../../../../assets/icon-close.png"
 import { cadastrarUsers, fetchEpiUser, vincularEpiUser } from "../../../PageUsers/api/apiUser";
 import TableVincularUsuario from "./TableVincularUsuario";
 import ModalSucess from "../../../../componentes/Modal/ModalSucess";
-import InputMask from 'react-input-mask';
 import Paginacao from "../../../../componentes/Paginacao";
 import MediumLoading from "../../../../componentes/LoadingAnimation/MediumLoading";
+import InputPrincipalUsuario from "../../../../componentes/PageComponents/InputModalUsuario/InputPrincipalUsuario";
+import InputSecundarioUsuario from "../../../../componentes/PageComponents/InputModalUsuario/InputSecundarioUsuario";
 
 const ModalVincularUsuario = ({ onClose, objEpi }) => {
 
@@ -17,10 +18,24 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
         telContato: ''
     };
 
-    const [vincularUsuarioPergunta, setVincularUsuarioPergunta] = useState(true);
-    const [vincularUsuario, setVincularUsuario] = useState(false);
+    const epiUsuario = {
+        idEpi: {
+            id: ""
+        },
+        idUsuario: {
+            id: "",
+            nome: "",
+            isVinculado: "",
+        }
+    }
+
     const [users, setUsers] = useState([]);
     const [objUser, setObjUser] = useState(user); // Função para o cadastro de Usuários
+    const [epiUsuarios, setEpiUsuarios] = useState([]);
+    const [objEpiUsuario, setObjEpiUsuario] = useState(epiUsuario);
+    const [vincularUsuarioPergunta, setVincularUsuarioPergunta] = useState(true);
+    const [vincularUsuario, setVincularUsuario] = useState(false);
+    const [inputSecundario, setInputSecundario] = useState(false); // Mostra novos inputs ao selecionar usuario
     const [carregando, setCarregando] = useState(true); // Hook para mostrar animação de Carregamento
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
     const [totalRegistros, setTotalRegistros] = useState(0); // Hook para armazenar o total de registros info vinda da api
@@ -38,7 +53,7 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
         const fetchAndSetUser = async () => {
             setCarregando(true); // Ativa o carregamento antes da busca
             const { lista, totalRegistros, totalPaginas } = await fetchEpiUser(paginaAtual, tamanhoPagina);
-            setUsers(lista);
+            setEpiUsuarios(lista);
             setTotalRegistros(totalRegistros);
             setTotalPaginas(totalPaginas);
             setCarregando(false); // Desativa o carregamento após a busca
@@ -51,7 +66,7 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
     };
 
     // Filtro das usuarios com base no objEpi.id
-    const usersFiltrados = users.filter((item) => {
+    const usersFiltrados = epiUsuarios.filter((item) => {
         return (item.idEpi?.id === objEpi.id);
     });
 
@@ -107,13 +122,33 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
 
     // Função para lidar com a seleção do periférico
     const handleSelectUsuario = (usuarioSelecionado) => {
-        setObjUser(usuarioSelecionado);
-    }
+        // Atualizando o objeto objEpiPeriferico com todos os dados relevantes
+        setObjEpiUsuario({
+            id: usuarioSelecionado.id || '',
+            idEpi: {
+                id: objEpi?.id || "", // Usando o ID do EPI atual, ou vazio caso não exista
+            },
+            idUsuario: {
+                id: usuarioSelecionado?.idUsuario?.id || "",
+                nome: usuarioSelecionado?.idUsuario?.nome || "",
+                email: usuarioSelecionado?.idUsuario?.email || "",
+                telContato: usuarioSelecionado?.idUsuario?.telContato || "",
+                isVinculado: usuarioSelecionado?.idUsuario?.isVinculado || false, // Status de vinculação, ou falso
+            },
+        });
+
+        // Exibir inputs secundários com mais detalhes sobre o periférico
+        setInputSecundario(true);
+        // Debug para garantir que os dados foram atualizados corretamente
+        console.log("Usuario selecionado:", objEpiUsuario);
+    };
 
     const aoDigitar = (e) => {
         setObjUser({ ...objUser, [e.target.name]: e.target.value });
+        setObjEpiUsuario({ ...objEpiUsuario, [e.target.name]: e.target.value });
     };
 
+    console.log(objUser)
     return (
         <Modal>
             {vincularUsuarioPergunta && (
@@ -139,71 +174,24 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
                     </div>
 
                     <div className="dialog-content">
-                        <form>
-                            <label className="label"> Pesquisar Usuario:
-                                <input className="input" type="text" placeholder="Pesquisar Usuários Existentes..." />
-                            </label>
+                        <form className={inputSecundario === true ? "form-periferico" : ""}>
 
-                            <input
-                                value={objEpi.id}
-                                onChange={aoDigitar}
-                                name='objEpi.id'
-                                className="input"
-                                type="text"
-                                placeholder="Id Epi"
-                                hidden
+                            <InputPrincipalUsuario
+                                objUser={objUser}
+                                objEpi={objEpi}
+                                objEpiUsuarios={objEpiUsuario}
+                                vincular={vincular}
+                                cadastrar={cadastrar}
+                                aoDigitar={aoDigitar}
+                                onClose={onClose}
                             />
 
-                            <input
-                                value={objUser.id || ''}
-                                onChange={aoDigitar}
-                                name='objUser.id'
-                                className="input"
-                                type="text"
-                                placeholder="Id Usuario"
-                                hidden
-                            />
-
-                            <label className="label"> Nome:
-                                <input
-                                    value={objUser.nome}
-                                    onChange={aoDigitar}
-                                    name='nome'
-                                    className="input"
-                                    type="text"
-                                    placeholder="Nome"
+                            {inputSecundario && (
+                                <InputSecundarioUsuario
+                                    aoDigitar={aoDigitar}
+                                    objEpiUsuario={objEpiUsuario}
                                 />
-                            </label>
-
-                            <label className="label"> Contato:
-                                <InputMask
-                                    value={objUser.telContato}
-                                    onChange={aoDigitar}
-                                    name='telContato'
-                                    className="input"
-                                    type="text"
-                                    placeholder="Contato"
-                                    mask="(99)99999-9999"
-                                />
-                            </label>
-
-                            <label className="label"> Email:
-                                <input
-                                    value={objUser.email}
-                                    onChange={aoDigitar}
-                                    name='email'
-                                    className="input"
-                                    type="text"
-                                    placeholder="Email"
-                                />
-                            </label>
-
-                            <div className="container-buttons">
-                                {objUser.id > 0 ?
-                                    <Link onClick={vincular} className="button button-cadastrar">Vincular</Link> :
-                                    <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar Novo</Link>
-                                }
-                            </div>
+                            )}
                         </form>
 
                         {carregando || usersFiltrados.length === 0 ? (

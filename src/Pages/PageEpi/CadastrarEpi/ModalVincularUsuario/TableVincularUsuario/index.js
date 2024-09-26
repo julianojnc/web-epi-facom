@@ -13,7 +13,7 @@ const TableVincularUsuario = ({ vetor, onSelect }) => {
 
             <tbody>
                 {vetor.map((obj) => (
-                    <tr key={obj.id} onClick={() => onSelect(obj.idUsuario)}>
+                    <tr key={obj.id} onClick={() => onSelect(obj)}>
                         <td>{obj.id}</td>
                         <td>{obj.idUsuario.nome}</td>
                         <td>{obj.idUsuario.telContato}</td>

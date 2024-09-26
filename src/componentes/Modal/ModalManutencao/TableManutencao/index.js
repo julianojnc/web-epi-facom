@@ -1,4 +1,4 @@
-const TableManutencao = ({ vetor }) => {
+const TableManutencao = ({ vetor, onSelect }) => {
     return (
         <table>
             <thead>
@@ -12,7 +12,7 @@ const TableManutencao = ({ vetor }) => {
             </thead>
             <tbody>
                 {vetor.map((obj) => (
-                    <tr key={obj.id}>
+                    <tr key={obj.id} onClick={() => onSelect(obj)}>
                         <td>{obj.id}</td>
                         <td>{obj.descricao}</td>
                         <td>{obj.dataIniManutencao}</td>

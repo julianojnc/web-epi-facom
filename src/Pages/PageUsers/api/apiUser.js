@@ -105,6 +105,22 @@ export const vincularEpiUser = async (idEpi, idUsuario) => {
 };
 
 // Alterar
+export const alterarEpiUsuario = async (id, epiUsuario) => {
+    try {
+        const response = await axios.put(`${API_URL}/epi-usuario/${id}`, epiUsuario, {
+            headers: {
+                'Content-type': 'application/json',
+                'Accept': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        handleApiError(error);
+        throw error;
+    }
+};
+
+// Alterar
 export const alterarUser = async (id, user) => {
     try {
         const response = await axios.put(`${API_URL}/usuarios/${id}`, user, {

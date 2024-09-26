@@ -132,7 +132,6 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
                         )
                     )}
                 </div>
-
             </div>
 
             {sucessAnimation && (

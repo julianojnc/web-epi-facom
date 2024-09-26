@@ -123,28 +123,28 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
 
     // Função para lidar com a seleção do periférico
     const handleSelectPeriferico = (perifericoSelecionado) => {
-        // Atualizando o objeto epiPeriferico com todos os dados relevantes
+        // Atualizando o objeto objEpiPeriferico com todos os dados relevantes
         setObjEpiPeriferico({
-            id: perifericoSelecionado.id,
+            id: perifericoSelecionado.id || '',
             idEpi: {
-                id: objEpi.id, // Usando o ID do EPI atual
+                id: objEpi?.id || "", // Usando o ID do EPI atual, ou vazio caso não exista
             },
             idPeriferico: {
-                id: perifericoSelecionado.idPeriferico.id, // ID do periférico selecionado
-                nome: perifericoSelecionado.idPeriferico.nome, // Nome do periférico selecionado
-                patrimonio: perifericoSelecionado.idPeriferico.patrimonio,
-                serviceTag: perifericoSelecionado.idPeriferico.serviceTag,
-                expressCode: perifericoSelecionado.idPeriferico.expressCode,
-                dataCompra: perifericoSelecionado.idPeriferico.dataCompra,
-                dataGarantia: perifericoSelecionado.idPeriferico.dataGarantia,
+                id: perifericoSelecionado?.idPeriferico?.id || "", // ID do periférico selecionado, ou vazio
+                nome: perifericoSelecionado?.idPeriferico?.nome || "", // Nome do periférico selecionado, ou vazio
+                patrimonio: perifericoSelecionado?.idPeriferico?.patrimonio || "", // Patrimônio do periférico, ou vazio
+                serviceTag: perifericoSelecionado?.idPeriferico?.serviceTag || "", // Service tag do periférico, ou vazio
+                expressCode: perifericoSelecionado?.idPeriferico?.expressCode || "", // Express code do periférico, ou vazio
+                dataCompra: perifericoSelecionado?.idPeriferico?.dataCompra || "", // Data de compra do periférico, ou vazio
+                dataGarantia: perifericoSelecionado?.idPeriferico?.dataGarantia || "", // Data de garantia do periférico, ou vazio
                 idMarca: {
-                    id: perifericoSelecionado.idPeriferico.idMarca.id,
+                    id: perifericoSelecionado?.idPeriferico?.idMarca?.id || "", // ID da marca do periférico, ou vazio
                 },
-                isVinculado: perifericoSelecionado.idPeriferico.isVinculado, // Status de vinculação do periférico
+                isVinculado: perifericoSelecionado?.idPeriferico?.isVinculado || false, // Status de vinculação, ou falso
             },
-            dataVinculacao: perifericoSelecionado.dataVinculacao || "", // Data de vinculação se disponível
-            dataDesvinculacao: perifericoSelecionado.dataDesvinculacao || "", // Data de desvinculação se disponível
-            registroDesvinculacao: perifericoSelecionado.registroDesvinculacao || "", // Registro de desvinculação se disponível
+            dataVinculacao: perifericoSelecionado?.dataVinculacao || "", // Data de vinculação, ou vazio
+            dataDesvinculacao: perifericoSelecionado?.dataDesvinculacao || "", // Data de desvinculação, ou vazio
+            registroDesvinculacao: perifericoSelecionado?.registroDesvinculacao || "", // Registro de desvinculação, ou vazio
         });
 
         // Exibir inputs secundários com mais detalhes sobre o periférico
@@ -156,7 +156,7 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
 
     const aoDigitar = (e) => {
         setObjPeriferico({ ...objPeriferico, [e.target.name]: e.target.value });
-        setObjEpiPeriferico({ ...objEpiPeriferico, [e.target.name]: e.target.value});
+        setObjEpiPeriferico({ ...objEpiPeriferico, [e.target.name]: e.target.value });
     }
 
     return (

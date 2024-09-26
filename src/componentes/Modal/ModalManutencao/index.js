@@ -8,6 +8,7 @@ import Paginacao from "../../Paginacao"
 import iconClose from "../../../assets/icon-close.png"
 import ModalSucess from "../ModalSucess";
 import MediumLoading from "../../LoadingAnimation/MediumLoading"
+import UploadDowload from "../../PageComponents/PageCadastroUploadDownload";
 
 const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
 
@@ -32,7 +33,7 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
     const [totalRegistros, setTotalRegistros] = useState(0); // Hook para armazenar o total de registros info vinda da api
     const [totalPaginas, setTotalPaginas] = useState(0); // Hook para armazenar o total de paginas info vinda da api
     const [paginaAtual, setPaginaAtual] = useState(0); // Hook para armazenar em qual pagina esta selecionada info vinda da api
-    const [tamanhoPagina] = useState(8); // Hook para dizer quantos registro ira ser mostrado na tela
+    const [tamanhoPagina] = useState(10); // Hook para dizer quantos registro ira ser mostrado na tela
     const [selectedFile, setSelectedFile] = useState(null); // Para armazenar o arquivo selecionado
 
     // Carregando Api
@@ -109,30 +110,48 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
         }
     };
 
-    // // Função para lidar com o upload do arquivo
-    // const handleFileUpload = async () => {
-    //     if (selectedFile) {
-    //         try {
-    //             const formData = new FormData();
-    //             formData.append('file', selectedFile);
-    //             await uploadFileManutencao(id, formData); // Chama a função de upload
-    //             alert('Arquivo carregado com sucesso!');
-    //         } catch (error) {
-    //             console.error('Erro ao fazer upload:', error);
-    //             alert('Ocorreu um erro ao tentar fazer upload do arquivo.');
-    //         }
-    //     }
-    // };
+    // Função para lidar com a seleção da manutenção
+    const handleSelectManutencao = (manutencaoSelecionada) => {
+        // Atualizando o objeto objManutencao com todos os dados relevantes
+        setObjManutencao({
+            ...manutencaoSelecionada,
+            id: manutencaoSelecionada.id || '',
+            descricao: manutencaoSelecionada.descricao || '',
+            valor: manutencaoSelecionada.valor || '',
+            dataIniManutencao: manutencaoSelecionada.dataIniManutencao || '',
+            dataRetManutencao: manutencaoSelecionada.dataRetManutencao || '',
+            fileName: manutencaoSelecionada.fileName || '',
+            idEpi: manutencaoSelecionada.idEpi ? manutencaoSelecionada.idEpi : { id: "" },
+            idPeriferico: manutencaoSelecionada.idPeriferico ? manutencaoSelecionada.idPeriferico : { id: "" }
+        });
+    };
 
-    // // Função para lidar com o download do arquivo
-    // const handleFileDownload = async () => {
-    //     try {
-    //         await downloadFileManutencao(id); // Chama a função de download
-    //     } catch (error) {
-    //         console.error('Erro ao fazer download:', error);
-    //         alert('Ocorreu um erro ao tentar baixar o arquivo.');
-    //     }
-    // };
+    // Função para lidar com o upload do arquivo
+    const handleFileUpload = async () => {
+        if (selectedFile) {
+            try {
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                await uploadFileManutencao(objManutencao.id, formData); // Chama a função de upload
+                alert('Arquivo carregado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao fazer upload:', error);
+                alert('Ocorreu um erro ao tentar fazer upload do arquivo.');
+            }
+
+            onClose();
+        }
+    };
+
+    // Função para lidar com o download do arquivo
+    const handleFileDownload = async () => {
+        try {
+            await downloadFileManutencao(objManutencao.id); // Chama a função de download
+        } catch (error) {
+            console.error('Erro ao fazer download:', error);
+            alert('Ocorreu um erro ao tentar baixar o arquivo.');
+        }
+    };
 
     const aoDigitar = (e) => {
         setObjManutencao({ ...objManutencao, [e.target.name]: e.target.value });
@@ -229,6 +248,16 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                         />
                     </label>
 
+                    {/* Funcionalidades para o envio de arquivos e dowloads*/}
+                    {objManutencao.id > 0 && ( // Condição para renderizar o UploadDownload somente quando o id for maior que 0
+                        <UploadDowload
+                            handleFileDownload={handleFileDownload}
+                            handleFileUpload={handleFileUpload}
+                            obj={{ fileName: objManutencao.fileName }}
+                            setSelectedFile={setSelectedFile}
+                        />
+                    )}
+
                     <div className="container-buttons">
                         <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar</Link>
                     </div>
@@ -240,7 +269,10 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                     </div>
                 ) : (
                     <div className="modal-table">
-                        <TableManutencao vetor={manutencoesFiltradas} />
+                        <TableManutencao
+                            vetor={manutencoesFiltradas}
+                            onSelect={handleSelectManutencao}
+                        />
                         <Paginacao
                             paginaAtual={paginaAtual}
                             totalPaginas={totalPaginas}
