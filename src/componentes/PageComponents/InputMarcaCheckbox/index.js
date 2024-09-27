@@ -76,7 +76,7 @@ const MarcaCheckbox = ({ id, obj, setObj, objEpiPeriferico, aoDigitar, isEpi }) 
 
     const handleMoreDetails = () => {
         setChecked(true)
-    }
+    };
 
     return (
         <>

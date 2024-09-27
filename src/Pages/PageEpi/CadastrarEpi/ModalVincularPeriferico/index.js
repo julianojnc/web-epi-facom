@@ -96,7 +96,11 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
             }
         } catch (error) {
             console.error('Erro ao cadastrar Periferico:', error);
-            alert('Ocorreu um erro ao tentar cadastrar Periferico.');
+            if (error.response && error.response.data) {
+                alert(error.response.data); // Exibe a mensagem de erro da resposta da API
+            } else {
+                alert('Ocorreu um erro ao tentar cadastrar Periferico.'); // Mensagem genérica se não houver detalhes
+            }
         }
     };
 
@@ -117,7 +121,11 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
             }
         } catch (error) {
             console.error('Erro ao vincular EPI com periférico:', error);
-            alert('Ocorreu um erro ao tentar vincular o EPI com o periférico.');
+            if (error.response && error.response.data) {
+                alert(error.response.data); // Exibe a mensagem de erro da resposta da API
+            } else {
+                alert('Ocorreu um erro ao tentar vincular o EPI com o periférico.'); // Mensagem genérica se não houver detalhes
+            }
         }
     };
 
