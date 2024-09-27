@@ -3,15 +3,16 @@ import { fetchMarca } from "../../../Pages/PageMarcas/api/apiMarca";
 import SmallLoading from "../../LoadingAnimation/SmallLoading";
 import { fetchEpiById } from "../../../Pages/PageEpi/api/apiEpi";
 import { fetchPerifericoById } from "../../../Pages/PagePeriferico/api/apiPeriferico";
+import { Switch } from "@mui/material";
 
-const MarcaCheckbox = ({id, obj, setObj, objEpiPeriferico, aoDigitar, isEpi}) => {
+const MarcaCheckbox = ({ id, obj, setObj, objEpiPeriferico, aoDigitar, isEpi }) => {
     const objMarcas = { id: "" };
     const [marcas, setMarcas] = useState([]);
     const [objMarca, setObjMarca] = useState(objMarcas);
     const [searchMarca, setSearchMarca] = useState('');
     const [searchMarcaOpen, setSearchMarcaOpen] = useState(false);
     const [carregando, setCarregando] = useState(true);
-    const [moreDetails, setMoreDetails] = useState(false);
+    const [checked, setChecked] = useState(false);
 
     // Fetch data for EPI or Periferico based on the ID and isEpi
     useEffect(() => {
@@ -38,7 +39,7 @@ const MarcaCheckbox = ({id, obj, setObj, objEpiPeriferico, aoDigitar, isEpi}) =>
                 }
             }
         };
-    
+
         fetchData();
     }, [id, isEpi]); // Inclua isEpi como dependência se ela puder mudar
 
@@ -74,10 +75,10 @@ const MarcaCheckbox = ({id, obj, setObj, objEpiPeriferico, aoDigitar, isEpi}) =>
     };
 
     const handleMoreDetails = () => {
-        setMoreDetails(true)
+        setChecked(true)
     }
 
-    return(
+    return (
         <>
             <div className="marca-checkbox">
                 <input
@@ -118,13 +119,14 @@ const MarcaCheckbox = ({id, obj, setObj, objEpiPeriferico, aoDigitar, isEpi}) =>
                     )}
                 </label>
 
-                <label onClick={handleMoreDetails} className="label label-details">
-                    <input className="input input-details" type="checkbox" />
-                    Mais Detalhes
-                </label>
+                <Switch
+                    checked={checked}
+                    onClick={handleMoreDetails}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                />
             </div>
 
-            {moreDetails && (
+            {checked && (
                 <>
                     <label className="label"> Service Tag:
                         <input
