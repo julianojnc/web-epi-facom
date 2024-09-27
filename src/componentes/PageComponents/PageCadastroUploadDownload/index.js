@@ -20,7 +20,7 @@ const UploadDowload = ({ handleFileUpload, handleFileDownload, obj, setSelectedF
                         <input
                             type="file"
                             onChange={(e) => setSelectedFile(e.target.files[0])}
-                            className="input input-marca"
+                            className="input input-marca input-dowload"
                         />
                     </label>
                     <Link className="button button-cadastrar download" type="button" onClick={handleFileUpload}>Upload</Link>

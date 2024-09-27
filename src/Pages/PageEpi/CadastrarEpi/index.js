@@ -215,6 +215,7 @@ const CadastrarEpi = () => {
                             handleFileUpload={handleFileUpload}
                             obj={{ fileName: objEpi.fileName }}
                             setSelectedFile={setSelectedFile}
+                            selectedFile={selectedFile}
                         />
                     )}
 

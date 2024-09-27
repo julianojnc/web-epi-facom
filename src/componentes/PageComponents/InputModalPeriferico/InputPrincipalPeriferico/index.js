@@ -1,13 +1,51 @@
 import { Link } from "react-router-dom";
 import MarcaCheckbox from "../../InputMarcaCheckbox";
-import { alterarEpiPeriferico } from "../../../../Pages/PagePeriferico/api/apiPeriferico";
-import { useState } from "react";
+import { alterarEpiPeriferico, fetchPerifericos } from "../../../../Pages/PagePeriferico/api/apiPeriferico";
+import { useEffect, useState } from "react";
 import ModalSucess from "../../../Modal/ModalSucess";
 
 const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeriferico, objEpiPeriferico, cadastrar, vincular, onClose }) => {
 
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
     const [loadingButton, setLoadingButton] = useState(false);
+    const [perifericos, setPerifericos] = useState([]); // Todos os periféricos
+    const [filtroPerifericos, setFiltroPerifericos] = useState([]); // Lista filtrada de periféricos
+    const [pesquisa, setPesquisa] = useState(""); // Estado para a pesquisa
+    const [pagina, setPagina] = useState(0); // Controle de página para paginação
+    const [showDropdown, setShowDropdown] = useState(false); // DropDown pesquisa
+    const itensPorPagina = 10;
+
+    useEffect(() => {
+        // Função para buscar todos os periféricos ao montar o componente
+        const buscarPerifericos = async () => {
+            try {
+                const data = await fetchPerifericos(0, 1000); // Buscando até 1000 periféricos, ajuste conforme necessário
+                setPerifericos(data.lista); // Armazenando a lista completa de periféricos
+                setFiltroPerifericos(data.lista.slice(0, itensPorPagina)); // Exibindo apenas os 10 primeiros inicialmente
+            } catch (error) {
+                console.error("Erro ao buscar periféricos:", error);
+            }
+        };
+
+        buscarPerifericos();
+    }, []);
+
+    useEffect(() => {
+        // Atualiza a lista filtrada quando a pesquisa mudar
+        const listaFiltrada = perifericos.filter((periferico) =>
+            periferico.nome.toLowerCase().includes(pesquisa.toLowerCase())
+        );
+
+        // Paginação simples
+        const inicio = pagina * itensPorPagina;
+        const fim = inicio + itensPorPagina;
+        setFiltroPerifericos(listaFiltrada.slice(inicio, fim)); // Exibindo apenas os primeiros 10 periféricos filtrados
+    }, [pesquisa, pagina, perifericos]);
+
+    const handlePesquisa = (e) => {
+        setPesquisa(e.target.value); // Atualiza o estado de pesquisa
+        setPagina(0); // Reseta para a primeira página ao pesquisar
+    };
 
     const alterar = async () => {
         if (!objEpiPeriferico.registroDesvinculacao) {
@@ -42,9 +80,30 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
                 <></>
             ) : (
                 <label className="label"> Pesquisar Periféricos:
-                    <input className="input" type="text" placeholder="Pesquisar Periféricos Existentes..." />
+                    <input
+                        className="input"
+                        type="text"
+                        placeholder="Pesquisar Periféricos Existentes..."
+                        value={pesquisa}
+                        onChange={handlePesquisa}
+                        onFocus={() => setShowDropdown(true)}
+                    />
                 </label>
             )}
+
+            {showDropdown && (
+                <ul className="dropdown">
+                    {filtroPerifericos.map((periferico) => (
+                        <li key={periferico.id} onClick={() => {
+                            setObjPeriferico(periferico);
+                            setShowDropdown(false); // Fechar o dropdown ao selecionar um periférico
+                        }}>
+                            {periferico.nome}
+                        </li>
+                    ))}
+                </ul>
+            )
+            }
 
             <input
                 value={objEpi.id || objEpiPeriferico.idEpi.id}
@@ -134,14 +193,16 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
                 </div>
             </div>
 
-            {sucessAnimation && (
-                <ModalSucess
-                    id={objEpiPeriferico.id}
-                    title=""
-                    titleEditar="Periférico Desvinculado!"
-                />
-            )}
-        </div>
+            {
+                sucessAnimation && (
+                    <ModalSucess
+                        id={objEpiPeriferico.id}
+                        title=""
+                        titleEditar="Periférico Desvinculado!"
+                    />
+                )
+            }
+        </div >
     )
 }
 

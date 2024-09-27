@@ -81,8 +81,36 @@ form .input-details {
     background-color: #2e578d;
 }
 
+input[type=file]::file-selector-button {
+    border: none;
+    background: #084cdf;
+    padding: 5px ;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+  }
+
 .container-buttons{
     display: flex;
     min-width: 318px;
     justify-content: space-between;
+}
+
+.dropdown{
+    position: absolute;
+    background-color: lightgray;
+    width: 318px;
+    font-size: 18px;
+}
+
+.dropdown li{
+    cursor: pointer;
+    padding-left: 5px;
+    padding-bottom: 5px;
+    border-bottom: solid gray 0.5px;
+}
+
+.dropdown li:hover{
+    background: gray;
+    color: white;
 }
