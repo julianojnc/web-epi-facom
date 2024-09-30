@@ -3,6 +3,7 @@ import MarcaCheckbox from "../../InputMarcaCheckbox";
 import { alterarEpiPeriferico, fetchPerifericos } from "../../../../Pages/PagePeriferico/api/apiPeriferico";
 import { useEffect, useState } from "react";
 import ModalSucess from "../../../Modal/ModalSucess";
+import iconPeriferico from "../../../../assets/icon-periferico-black.png"
 
 const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeriferico, objEpiPeriferico, cadastrar, vincular, onClose }) => {
 
@@ -32,15 +33,24 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
 
     useEffect(() => {
         // Atualiza a lista filtrada quando a pesquisa mudar
-        const listaFiltrada = perifericos.filter((periferico) =>
-            periferico.nome.toLowerCase().includes(pesquisa.toLowerCase())
-        );
+        const listaFiltrada = perifericos.filter((periferico) => {
+            const nomeFiltrado = (periferico.nome ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+            const patrimonioFiltrado = (periferico.patrimonio ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+            const serviceTagFiltrada = (periferico.serviceTag ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+            const expressCodeFiltrada = (periferico.expressCode ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+
+            // Retorna verdadeiro se algum dos campos corresponder ao termo de pesquisa
+            return nomeFiltrado || patrimonioFiltrado || serviceTagFiltrada || expressCodeFiltrada;
+        });
 
         // Paginação simples
         const inicio = pagina * itensPorPagina;
         const fim = inicio + itensPorPagina;
-        setFiltroPerifericos(listaFiltrada.slice(inicio, fim)); // Exibindo apenas os primeiros 10 periféricos filtrados
-    }, [pesquisa, pagina, perifericos]);
+
+        // Atualiza a lista com os itens paginados
+        setFiltroPerifericos(listaFiltrada.slice(inicio, fim));
+    }, [pesquisa, pagina, perifericos, itensPorPagina]);
+
 
     const handlePesquisa = (e) => {
         setPesquisa(e.target.value); // Atualiza o estado de pesquisa
@@ -98,6 +108,9 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
                             setObjPeriferico(periferico);
                             setShowDropdown(false); // Fechar o dropdown ao selecionar um periférico
                         }}>
+                            <span>
+                                <img src={iconPeriferico} alt="icon"></img>
+                            </span>
                             {periferico.nome}
                         </li>
                     ))}

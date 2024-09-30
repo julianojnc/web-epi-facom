@@ -3,6 +3,7 @@ import ModalSucess from "../../../Modal/ModalSucess";
 import { alterarEpiUsuario, fetchUsers } from "../../../../Pages/PageUsers/api/apiUser";
 import InputMask from 'react-input-mask';
 import { Link } from "react-router-dom";
+import iconUser from "../../../../assets/icon-user-black.png"
 
 const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, objEpi, objEpiUsuarios, vincular, cadastrar }) => {
 
@@ -32,15 +33,22 @@ const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, obj
 
     useEffect(() => {
         // Atualiza a lista filtrada quando a pesquisa mudar
-        const listaFiltrada = usuarios.filter((usuario) =>
-            usuario.nome.toLowerCase().includes(pesquisa.toLowerCase())
-        );
+        const listaFiltrada = usuarios.filter((usuario) => {
+            const nomeFiltrado = (usuario.nome ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+            const emailFiltrado = (usuario.email ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+            const telContatoFiltrado = (usuario.telContato ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+
+            // Retorna verdadeiro se algum dos campos corresponder ao termo de pesquisa
+            return nomeFiltrado || emailFiltrado || telContatoFiltrado;
+        });
 
         // Paginação simples
         const inicio = pagina * itensPorPagina;
         const fim = inicio + itensPorPagina;
-        setFiltroUsuarios(listaFiltrada.slice(inicio, fim)); // Exibindo apenas os primeiros 10 usuarios filtrados
-    }, [pesquisa, pagina, usuarios]);
+
+        // Atualiza a lista com os itens paginados
+        setFiltroUsuarios(listaFiltrada.slice(inicio, fim));
+    }, [pesquisa, pagina, usuarios, itensPorPagina]);
 
     const handlePesquisa = (e) => {
         setPesquisa(e.target.value); // Atualiza o estado de pesquisa
@@ -94,7 +102,9 @@ const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, obj
                             setObjUsuario(usuario);
                             setShowDropdown(false); // Fechar o dropdown ao selecionar um periférico
                         }}>
-                            {usuario.nome}
+                            <span>
+                                <img src={iconUser} alt="icon"></img>
+                            </span> {usuario.nome}
                         </li>
                     ))}
                 </ul>

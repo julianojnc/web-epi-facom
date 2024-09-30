@@ -101,16 +101,30 @@ input[type=file]::file-selector-button {
     background-color: lightgray;
     width: 318px;
     font-size: 18px;
+    border-radius: 20px;
+    padding: 15px 0px 10px 0px;
+    z-index: 9999;
 }
 
 .dropdown li{
     cursor: pointer;
-    padding-left: 5px;
+    padding-left: 15px;
     padding-bottom: 5px;
-    border-bottom: solid gray 0.5px;
+    display: flex;
+    gap: 5px;
 }
 
 .dropdown li:hover{
     background: gray;
     color: white;
+}
+
+.dropdown li span{
+    display: grid;
+    align-content: center;
+    width: 18px;
+}
+
+.dropdown li span img{
+    height: 20px;
 }
