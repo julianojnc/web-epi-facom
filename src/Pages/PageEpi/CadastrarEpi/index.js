@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { cadastrarEpi, fetchEpiById, alterarEpi, excluirEpi, uploadFile, downloadFile, uploadFileEpi, downloadFileEpi } from "../api/apiEpi";
+import { cadastrarEpi, fetchEpiById, alterarEpi, excluirEpi, uploadFileEpi, downloadFileEpi } from "../api/apiEpi";
 import MenuBar from "../../../componentes/MenuBar";
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
 import MarcaCheckbox from "../../../componentes/PageComponents/InputMarcaCheckbox";
@@ -213,7 +213,7 @@ const CadastrarEpi = () => {
                         <UploadDowload
                             handleFileDownload={handleFileDownload}
                             handleFileUpload={handleFileUpload}
-                            obj={{ fileName: objEpi.fileName }}
+                            obj={{ fileName: objEpi.fileName, filePath : objEpi.filePath }}
                             setSelectedFile={setSelectedFile}
                             selectedFile={selectedFile}
                         />

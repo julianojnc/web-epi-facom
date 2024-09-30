@@ -19,7 +19,7 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
         // Função para buscar todos os periféricos ao montar o componente
         const buscarPerifericos = async () => {
             try {
-                const data = await fetchPerifericos(0, 1000); // Buscando até 1000 periféricos, ajuste conforme necessário
+                const data = await fetchPerifericos(0, 9999); // Buscando até 1000 periféricos, ajuste conforme necessário
                 setPerifericos(data.lista); // Armazenando a lista completa de periféricos
                 setFiltroPerifericos(data.lista.slice(0, itensPorPagina)); // Exibindo apenas os 10 primeiros inicialmente
             } catch (error) {

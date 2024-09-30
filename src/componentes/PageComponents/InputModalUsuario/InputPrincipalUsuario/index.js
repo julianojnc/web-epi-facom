@@ -1,13 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalSucess from "../../../Modal/ModalSucess";
-import { alterarEpiUsuario } from "../../../../Pages/PageUsers/api/apiUser";
+import { alterarEpiUsuario, fetchUsers } from "../../../../Pages/PageUsers/api/apiUser";
 import InputMask from 'react-input-mask';
 import { Link } from "react-router-dom";
 
-const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, objEpi, objEpiUsuarios, vincular, cadastrar }) => {
+const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, objEpi, objEpiUsuarios, vincular, cadastrar }) => {
 
+    const [usuarios, setUsuarios] = useState([]);
+    const [filtroUsuarios, setFiltroUsuarios] = useState([]); // Lista filtrada de usuarios
+    const [pesquisa, setPesquisa] = useState(""); // Estado para a pesquisa
+    const [pagina, setPagina] = useState(0); // Controle de página para paginação
+    const [showDropdown, setShowDropdown] = useState(false); // DropDown pesquisa
+    const itensPorPagina = 10;
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
     const [loadingButton, setLoadingButton] = useState(false);
+
+    useEffect(() => {
+        // Função para buscar todos os periféricos ao montar o componente
+        const buscarUsuarios = async () => {
+            try {
+                const data = await fetchUsers(0, 9999); // Buscando até 1000 periféricos, ajuste conforme necessário
+                setUsuarios(data.lista); // Armazenando a lista completa de periféricos
+                setFiltroUsuarios(data.lista.slice(0, itensPorPagina)); // Exibindo apenas os 10 primeiros inicialmente
+            } catch (error) {
+                console.error("Erro ao buscar usuarios:", error);
+            }
+        };
+
+        buscarUsuarios();
+    }, []);
+
+    useEffect(() => {
+        // Atualiza a lista filtrada quando a pesquisa mudar
+        const listaFiltrada = usuarios.filter((usuario) =>
+            usuario.nome.toLowerCase().includes(pesquisa.toLowerCase())
+        );
+
+        // Paginação simples
+        const inicio = pagina * itensPorPagina;
+        const fim = inicio + itensPorPagina;
+        setFiltroUsuarios(listaFiltrada.slice(inicio, fim)); // Exibindo apenas os primeiros 10 usuarios filtrados
+    }, [pesquisa, pagina, usuarios]);
+
+    const handlePesquisa = (e) => {
+        setPesquisa(e.target.value); // Atualiza o estado de pesquisa
+        setPagina(0); // Reseta para a primeira página ao pesquisar
+    };
 
     const alterar = async () => {
         setLoadingButton(true);
@@ -34,13 +72,34 @@ const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, objEpi, objEpiUsua
 
     return (
         <div>
-            {objUser.id || objEpiUsuarios.idUsuario.id > 0? (
+            {objUser.id || objEpiUsuarios.idUsuario.id > 0 ? (
                 <></>
             ) : (
-                <label className="label"> Pesquisar Usuario:
-                    <input className="input" type="text" placeholder="Pesquisar Usuários Existentes..." />
+                <label className="label"> Pesquisar Usuários:
+                    <input
+                        className="input"
+                        type="text"
+                        placeholder="Pesquisar Usuários Existentes..."
+                        value={pesquisa}
+                        onChange={handlePesquisa}
+                        onFocus={() => setShowDropdown(true)}
+                    />
                 </label>
             )}
+
+            {showDropdown && (
+                <ul className="dropdown">
+                    {filtroUsuarios.map((usuario) => (
+                        <li key={usuario.id} onClick={() => {
+                            setObjUsuario(usuario);
+                            setShowDropdown(false); // Fechar o dropdown ao selecionar um periférico
+                        }}>
+                            {usuario.nome}
+                        </li>
+                    ))}
+                </ul>
+            )
+            }
 
             <input
                 value={objEpi.id || objEpiUsuarios.id}

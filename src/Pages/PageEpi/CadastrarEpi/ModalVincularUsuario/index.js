@@ -41,7 +41,7 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
     const [totalRegistros, setTotalRegistros] = useState(0); // Hook para armazenar o total de registros info vinda da api
     const [totalPaginas, setTotalPaginas] = useState(0); // Hook para armazenar o total de paginas info vinda da api
     const [paginaAtual, setPaginaAtual] = useState(0); // Hook para armazenar em qual pagina esta selecionada info vinda da api
-    const [tamanhoPagina] = useState(5); // Hook para dizer quantos registro ira ser mostrado na tela
+    const [tamanhoPagina] = useState(10); // Hook para dizer quantos registro ira ser mostrado na tela
 
     const cadastrarVinculoUsuario = () => {
         setVincularUsuario(true);
@@ -178,6 +178,7 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
 
                             <InputPrincipalUsuario
                                 objUser={objUser}
+                                setObjUsuario={setObjUser}
                                 objEpi={objEpi}
                                 objEpiUsuarios={objEpiUsuario}
                                 vincular={vincular}

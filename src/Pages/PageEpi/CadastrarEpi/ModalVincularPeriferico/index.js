@@ -42,6 +42,7 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
     const [perifericos, setPerifericos] = useState([]);
     const [objPeriferico, setObjPeriferico] = useState(periferico);
     const [epiPerifericos, setEpiPerifericos] = useState([]);
+    const [perifericosFiltrados, setPerifericosFiltrados] = useState([]);
     const [objEpiPeriferico, setObjEpiPeriferico] = useState(epiPeriferico);
     const [carregando, setCarregando] = useState(true); // Hook para mostrar animação de Carregamento
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
@@ -49,29 +50,28 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
     const [totalRegistros, setTotalRegistros] = useState(0); // Hook para armazenar o total de registros info vinda da api
     const [totalPaginas, setTotalPaginas] = useState(0); // Hook para armazenar o total de paginas info vinda da api
     const [paginaAtual, setPaginaAtual] = useState(0); // Hook para armazenar em qual pagina esta selecionada info vinda da api
-    const [tamanhoPagina] = useState(7); // Hook para dizer quantos registro ira ser mostrado na tela
+    const [tamanhoPagina] = useState(8); // Hook para dizer quantos registro ira ser mostrado na tela
 
-    // Carregando Api epi-periferico
+    // Carregando e filtrando Api epi-periferico
     useEffect(() => {
         const fetchAndSetPeriferico = async () => {
-            setCarregando(true); // Ativa o carregamento antes da busca
+            setCarregando(true);
             const { lista, totalRegistros, totalPaginas } = await fetchEpiPerifericos(paginaAtual, tamanhoPagina);
             setEpiPerifericos(lista);
             setTotalRegistros(totalRegistros);
             setTotalPaginas(totalPaginas);
-            setCarregando(false); // Desativa o carregamento após a busca
+
+            // Filtrar periféricos após a busca
+            const filtrados = lista.filter((item) => item.idEpi?.id === objEpi.id);
+            setPerifericosFiltrados(filtrados);
+            setCarregando(false);
         };
         fetchAndSetPeriferico();
-    }, [paginaAtual, tamanhoPagina]);
+    }, [paginaAtual, tamanhoPagina, objEpi]);
 
     const handlePageChange = (newPage) => {
         setPaginaAtual(newPage);
     };
-
-    // Filtro das perifericos com base no objEpi.id
-    const perifericosFiltrados = epiPerifericos.filter((item) => {
-        return (item.idEpi?.id === objEpi.id);
-    });
 
     // cadastrar novo periferico
     const cadastrar = async () => {

@@ -91,7 +91,7 @@ export const excluirPeriferico = async (id) => {
 };
 
 // Carregar Perifericos vinculados a Epi
-export const fetchEpiPerifericos = async (page = 0, size = 7) => {
+export const fetchEpiPerifericos = async (page = 0, size = 10) => {
     try {
         const response = await axios.get(`${API_URL}/epi-periferico?p=${page}&s=${size}`);
         if (response.data && Array.isArray(response.data.lista)) {
