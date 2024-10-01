@@ -7,6 +7,7 @@ import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 import TableUsers from "./TableUsers";
 import Paginacao from "../../componentes/Paginacao";
+import PageNotFound from "../PageNotFound";
 
 // Definindo o fetcher para SWR usando o método fetchUsers com paginação
 const fetcher = (url, page, size) => fetchUsers(page, size);
@@ -26,7 +27,7 @@ const PageUsers = () => {
   // Se ocorrer algum erro na requisição
   if (error) {
     console.error('Erro ao carregar Usuarios:', error);
-    return <div>Erro ao carregar dados.</div>;
+    return <PageNotFound />;
   }
 
   // Carregando dados
