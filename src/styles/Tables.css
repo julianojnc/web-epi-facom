@@ -5,12 +5,16 @@ table {
   width: 100%;
   margin-bottom: 20px;
   font-size: 15px;
+  table-layout: fixed;
 }
 
 th,
 td {
   padding: 8px;
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 th {
@@ -23,13 +27,13 @@ tr:nth-child(even) {
   background-color: lightgray;
 }
 
-tbody tr:hover{
+tbody tr:hover {
   cursor: pointer;
   background-color: gray;
   color: white;
 }
 
-.table-manutencao{
+.table-manutencao {
   max-width: 318px;
   height: 0;
 }
