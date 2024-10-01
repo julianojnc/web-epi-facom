@@ -1,6 +1,7 @@
 import MenuBar from "../../../componentes/MenuBar";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useSWR from 'swr'; // Import SWR
 import { alterarMarca, cadastrarMarcas, excluirMarca, fetchMarcaById } from "../api/apiMarca";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
@@ -15,10 +16,29 @@ const CadastrarMarcas = () => {
         nome: ''
     };
 
-    const [objMarca, setObjMarca] = useState(marca);// Funcao para o cadastro de Marca
+    const [objMarca, setObjMarca] = useState(marca); // Estado para o cadastro de Marca
+
+    // Função fetcher para o SWR
+    const fetcher = async (id) => {
+        const marcaData = await fetchMarcaById(id);
+        return marcaData;
+    };
+
+    // Usando SWR para buscar a marca por ID
+    const { data: marcaData, error } = useSWR(id ? [`fetchMarcaById`, id] : null, () => fetcher(id));
+
+    // Preencher os dados da marca quando carregados
+    if (marcaData && !objMarca.nome) {
+        setObjMarca(marcaData);
+    }
+
+    // Exibir erro, se houver
+    if (error) {
+        console.error('Erro ao buscar a Marca:', error);
+        return <div>Ocorreu um erro ao carregar a marca.</div>;
+    }
 
     const cadastrarOuAlterar = async () => {
-
         if (!objMarca.nome) {
             alert('Por favor, preencha o campo obrigatório: Nome!');
             return;
@@ -47,7 +67,7 @@ const CadastrarMarcas = () => {
         if (confirmDelete) {
             try {
                 await excluirMarca(id);
-                alert('Marca excluído com sucesso!');
+                alert('Marca excluída com sucesso!');
                 navigate('/marcas'); // Redireciona para a lista de Marcas
             } catch (error) {
                 console.error('Erro ao excluir Marca:', error);
@@ -56,19 +76,9 @@ const CadastrarMarcas = () => {
         }
     };
 
-    useEffect(() => {
-        if (id) {
-            const fetchMarca = async () => {
-                const marcaData = await fetchMarcaById(id); // Fetch Epi data by ID
-                setObjMarca(marcaData);
-            };
-            fetchMarca();
-        }
-    }, [id]);
-
     const aoDigitar = (e) => {
         setObjMarca({ ...objMarca, [e.target.name]: e.target.value });
-    }
+    };
 
     return (
         <section>
@@ -111,7 +121,7 @@ const CadastrarMarcas = () => {
                 />
             )}
         </section>
-    )
+    );
 }
 
 export default CadastrarMarcas;

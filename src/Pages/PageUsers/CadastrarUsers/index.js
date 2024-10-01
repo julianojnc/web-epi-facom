@@ -1,6 +1,7 @@
 import MenuBar from "../../../componentes/MenuBar";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useSWR from 'swr'; // Importando SWR
 import { alterarUser, cadastrarUsers, excluirUser, fetchUsersById } from "../api/apiUser";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
@@ -18,10 +19,29 @@ const CadastrarUsers = () => {
         telContato: ''
     };
 
-    const [objUser, setObjUser] = useState(user);// Funcao para o cadastro de Usuarios
+    const [objUser, setObjUser] = useState(user); // Estado para o cadastro de Usuarios
+
+    // Função fetcher para o SWR
+    const fetcher = async (id) => {
+        const userData = await fetchUsersById(id);
+        return userData;
+    };
+
+    // Usando SWR para buscar o usuário por ID
+    const { data: userData, error } = useSWR(id ? [`fetchUsersById`, id] : null, () => fetcher(id));
+
+    // Preencher os dados do usuário quando carregados
+    if (userData && !objUser.nome) {
+        setObjUser(userData);
+    }
+
+    // Exibir erro, se houver
+    if (error) {
+        console.error('Erro ao buscar o Usuário:', error);
+        return <div>Ocorreu um erro ao carregar o usuário.</div>;
+    }
 
     const cadastrarOuAlterar = async () => {
-
         if (!objUser.nome) {
             alert('Por favor, preencha o campo obrigatório: Nome!');
             return;
@@ -40,38 +60,28 @@ const CadastrarUsers = () => {
                 }, 2000);
             }
         } catch (error) {
-            console.error('Erro ao cadastrar/alterar Usuario:', error);
-            alert('Ocorreu um erro ao tentar cadastrar/alterar Usuario.');
+            console.error('Erro ao cadastrar/alterar Usuário:', error);
+            alert('Ocorreu um erro ao tentar cadastrar/alterar Usuário.');
         }
     };
 
     const excluir = async () => {
-        const confirmDelete = window.confirm('Você tem certeza que deseja excluir este Usuario?');
+        const confirmDelete = window.confirm('Você tem certeza que deseja excluir este Usuário?');
         if (confirmDelete) {
             try {
                 await excluirUser(id);
-                alert('Usuario excluído com sucesso!');
-                navigate('/usuarios'); // Redireciona para a lista de Usuarios
+                alert('Usuário excluído com sucesso!');
+                navigate('/usuarios'); // Redireciona para a lista de Usuários
             } catch (error) {
-                console.error('Erro ao excluir Usuario:', error);
-                alert('Ocorreu um erro ao tentar excluir este Usuario.');
+                console.error('Erro ao excluir Usuário:', error);
+                alert('Ocorreu um erro ao tentar excluir este Usuário.');
             }
         }
     };
 
-    useEffect(() => {
-        if (id) {
-            const fetchUsers = async () => {
-                const userData = await fetchUsersById(id); // Fetch Epi data by ID
-                setObjUser(userData);
-            };
-            fetchUsers();
-        }
-    }, [id]);
-
     const aoDigitar = (e) => {
         setObjUser({ ...objUser, [e.target.name]: e.target.value });
-    }
+    };
 
     return (
         <section>
@@ -95,7 +105,8 @@ const CadastrarUsers = () => {
                             name='nome'
                             className="input"
                             type="text"
-                            placeholder="Nome" />
+                            placeholder="Nome"
+                        />
                     </label>
 
                     <label className="label"> Contato:
@@ -117,7 +128,8 @@ const CadastrarUsers = () => {
                             name='email'
                             className="input"
                             type="text"
-                            placeholder="Email" />
+                            placeholder="Email"
+                        />
                     </label>
 
                     <Buttons
@@ -136,7 +148,7 @@ const CadastrarUsers = () => {
                 />
             )}
         </section>
-    )
-}
+    );
+};
 
 export default CadastrarUsers;

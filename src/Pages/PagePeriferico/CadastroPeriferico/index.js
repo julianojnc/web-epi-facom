@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import useSWR from 'swr';
 import MenuBar from "../../../componentes/MenuBar";
 import { useNavigate, useParams } from "react-router-dom";
 import ModalSucess from "../../../componentes/Modal/ModalSucess";
@@ -32,6 +33,26 @@ const CadastrarPeriferico = () => {
     const [objPeriferico, setObjPeriferico] = useState(periferico);// Funcao para o cadastro de Periferico
     const [selectedFile, setSelectedFile] = useState(null); // Para armazenar o arquivo selecionado
 
+    // Função fetcher para o SWR
+    const fetcher = async (id) => {
+        const perifericoData = await fetchPerifericoById(id);
+        return perifericoData;
+    };
+
+    // Configuração do SWR para buscar o Periferico pelo ID
+    const { data: perifericoData, error } = useSWR(id ? [`fetchPerifericoById`, id] : null, () => fetcher(id));
+
+    useEffect(() => {
+        if (perifericoData) {
+            setObjPeriferico(perifericoData); // Preenche os campos quando o dado é carregado
+        }
+    }, [perifericoData]);
+
+    if (error) {
+        console.error('Erro ao buscar o Periferico:', error);
+        return <div>Ocorreu um erro ao carregar o periferico.</div>;
+    }
+    
     const cadastrarOuAlterar = async () => {
         if (!objPeriferico.nome || !objPeriferico.idMarca.id) {
             alert('Por favor, preencha todos os campos obrigatórios: Nome e Marca!');
@@ -99,16 +120,6 @@ const CadastrarPeriferico = () => {
     const aoDigitar = (e) => {
         setObjPeriferico({ ...objPeriferico, [e.target.name]: e.target.value });
     }
-
-    useEffect(() => {
-        if (id) {
-            const fetchPeriferico = async () => {
-                const perifericoData = await fetchPerifericoById(id); // Fetch Epi data by ID
-                setObjPeriferico(perifericoData);
-            };
-            fetchPeriferico();
-        }
-    }, [id]);
 
     const closeModal = () => {
         setManutencaoOpen(false);
