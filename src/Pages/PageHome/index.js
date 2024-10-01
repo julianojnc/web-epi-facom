@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useSWR from 'swr';
 import { fetchEpiUsuario } from "./api";
 import MenuBar from "../../componentes/MenuBar";
 import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
@@ -7,28 +8,33 @@ import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 import TableEpiUsuario from "./TableEpiUsuario";
 import Paginacao from "../../componentes/Paginacao";
 
+// Definindo o fetcher para SWR usando o método fetchEpiUsuario com paginação
+const fetcher = (url, page, size) => fetchEpiUsuario(page, size);
+
 const PageHome = () => {
-    const [epiUsuario, setEpiUsuario] = useState([]);
-    const [carregando, setCarregando] = useState(true);
-    const [totalRegistros, setTotalRegistros] = useState(0);
-    const [totalPaginas, setTotalPaginas] = useState(0);
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [tamanhoPagina] = useState(10);
-    const [searchTerm, setSearchTerm] = useState(''); // Estado para o termo de pesquisa
+    const [searchTerm, setSearchTerm] = useState(''); // Hook para o filtro de pesquisa
 
-    useEffect(() => {
-        const fetchAndSetEpiUsuario = async () => {
-            setCarregando(true);
-            const { lista, totalRegistros, totalPaginas } = await fetchEpiUsuario(paginaAtual, tamanhoPagina);
-            setEpiUsuario(lista);
-            setTotalRegistros(totalRegistros);
-            setTotalPaginas(totalPaginas);
-            setCarregando(false);
-        };
-        fetchAndSetEpiUsuario();
-    }, [paginaAtual, tamanhoPagina]);
+    // Usando SWR para buscar os epi
+    const { data, error, isLoading } = useSWR(
+        ['fetchEpiUsuario', paginaAtual, tamanhoPagina],  // chave única para cache
+        () => fetcher('fetchEpiUsuario', paginaAtual, tamanhoPagina),  // fetcher function
+        { revalidateOnFocus: false, revalidateOnReconnect: true }  // configurações SWR
+    );
 
-    console.log(epiUsuario)
+    // Se ocorrer algum erro na requisição
+    if (error) {
+        console.error('Erro ao carregar Equipamentos:', error);
+        return <div>Erro ao carregar dados.</div>;
+    }
+
+    // Carregando dados
+    if (isLoading || !data) {
+        return <LargeLoading />;
+    }
+
+    const { lista: epiUsuario, totalRegistros, totalPaginas } = data;
 
     // Função para filtrar os dados
     const filter = epiUsuario.filter((item) => {
@@ -51,7 +57,7 @@ const PageHome = () => {
             <MenuBar />
             <div className="content-page">
                 <TitleSearch title="Home" onSearchChange={setSearchTerm} />
-                {carregando || epiUsuario.length === 0 ? (
+                {filter.length === 0 ? (
                     <LargeLoading />
                 ) : (
                     <>

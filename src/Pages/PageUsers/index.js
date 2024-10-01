@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useSWR from 'swr';
 import { fetchUsers } from "./api/apiUser";
 import MenuBar from "../../componentes/MenuBar";
 import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
@@ -7,28 +8,33 @@ import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 import TableUsers from "./TableUsers";
 import Paginacao from "../../componentes/Paginacao";
 
-const PageUsers = () => {
+// Definindo o fetcher para SWR usando o método fetchUsers com paginação
+const fetcher = (url, page, size) => fetchUsers(page, size);
 
-  //Hook 
-  const [users, setUsers] = useState([]);
-  const [carregando, setCarregando] = useState(true);
-  const [totalRegistros, setTotalRegistros] = useState(0);
-  const [totalPaginas, setTotalPaginas] = useState(0);
+const PageUsers = () => {
   const [paginaAtual, setPaginaAtual] = useState(0);
   const [tamanhoPagina] = useState(10);
   const [searchTerm, setSearchTerm] = useState(''); // Hook para o filtro de pesquisa
 
-  useEffect(() => {
-    const fetchAndSetUser = async () => {
-      setCarregando(true);
-      const { lista, totalRegistros, totalPaginas } = await fetchUsers(paginaAtual, tamanhoPagina);
-      setUsers(lista);
-      setTotalRegistros(totalRegistros);
-      setTotalPaginas(totalPaginas);
-      setCarregando(false);
-    };
-    fetchAndSetUser();
-  }, [paginaAtual, tamanhoPagina]);
+  // Usando SWR para buscar os epi
+  const { data, error, isLoading } = useSWR(
+    ['fetchUsers', paginaAtual, tamanhoPagina],  // chave única para cache
+    () => fetcher('fetchUsers', paginaAtual, tamanhoPagina),  // fetcher function
+    { revalidateOnFocus: false, revalidateOnReconnect: true }  // configurações SWR
+  );
+
+  // Se ocorrer algum erro na requisição
+  if (error) {
+    console.error('Erro ao carregar Usuarios:', error);
+    return <div>Erro ao carregar dados.</div>;
+  }
+
+  // Carregando dados
+  if (isLoading || !data) {
+    return <LargeLoading />;
+  }
+
+  const { lista: users, totalRegistros, totalPaginas } = data;
 
   // Filtro de pesquisa
   const filter = users.filter((item) => {
@@ -50,7 +56,7 @@ const PageUsers = () => {
 
         <TitleSearch title="Usuários" onSearchChange={setSearchTerm} />
 
-        {carregando || users.length === 0 ? (
+        {filter.length === 0 ? (
           <LargeLoading />
         ) : (
           <>

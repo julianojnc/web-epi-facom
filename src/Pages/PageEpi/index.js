@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useSWR from 'swr';
 import { fetchEpi } from "./api/apiEpi";
 import MenuBar from "../../componentes/MenuBar";
 import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
@@ -7,27 +8,33 @@ import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 import TableEpi from "./TableEpi";
 import Paginacao from "../../componentes/Paginacao";
 
+// Definindo o fetcher para SWR usando o método fetchEpi com paginação
+const fetcher = (url, page, size) => fetchEpi(page, size);
+
 const PageEpi = () => {
-    const [epi, setEpi] = useState([]); // Hook para armazenar obj info vinda da api
-    const [carregando, setCarregando] = useState(true); // Hook para mostrar animação de Carregamento
-    const [totalRegistros, setTotalRegistros] = useState(0); // Hook para armazenar o total de registros info vinda da api
-    const [totalPaginas, setTotalPaginas] = useState(0); // Hook para armazenar o total de paginas info vinda da api
-    const [paginaAtual, setPaginaAtual] = useState(0); // Hook para armazenar em qual pagina esta selecionada info vinda da api
-    const [tamanhoPagina] = useState(10); // Hook para dizer quantos registro ira ser mostrado na tela
+    const [paginaAtual, setPaginaAtual] = useState(0);
+    const [tamanhoPagina] = useState(10);
     const [searchTerm, setSearchTerm] = useState(''); // Hook para o filtro de pesquisa
 
-    // Carregando Api
-    useEffect(() => {
-        const fetchAndSetEpi = async () => {
-            setCarregando(true); // Ativa o carregamento antes da busca
-            const { lista, totalRegistros, totalPaginas } = await fetchEpi(paginaAtual, tamanhoPagina);
-            setEpi(lista);
-            setTotalRegistros(totalRegistros);
-            setTotalPaginas(totalPaginas);
-            setCarregando(false); // Desativa o carregamento após a busca
-        };
-        fetchAndSetEpi();
-    }, [paginaAtual, tamanhoPagina]);    
+    // Usando SWR para buscar os epi
+    const { data, error, isLoading } = useSWR(
+        ['fetchEpi', paginaAtual, tamanhoPagina],  // chave única para cache
+        () => fetcher('fetchEpi', paginaAtual, tamanhoPagina),  // fetcher function
+        { revalidateOnFocus: false, revalidateOnReconnect: true }  // configurações SWR
+    );
+
+    // Se ocorrer algum erro na requisição
+    if (error) {
+        console.error('Erro ao carregar Equipamentos:', error);
+        return <div>Erro ao carregar dados.</div>;
+    }
+
+    // Carregando dados
+    if (isLoading || !data) {
+        return <LargeLoading />;
+    }
+
+    const { lista: epi, totalRegistros, totalPaginas } = data;
 
     // Filtro de pesquisa
     const filter = epi.filter((item) => {
@@ -49,10 +56,9 @@ const PageEpi = () => {
         <section>
             <MenuBar />
             <div className="content-page">
+                <TitleSearch title="Equipamentos" onSearchChange={setSearchTerm} />
 
-                <TitleSearch title="Equipamentos"  onSearchChange={setSearchTerm}/>
-
-                {carregando || epi.length === 0 ? (
+                {filter.length === 0 ? (
                     <LargeLoading />
                 ) : (
                     <>
