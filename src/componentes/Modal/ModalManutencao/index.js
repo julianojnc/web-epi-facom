@@ -11,6 +11,7 @@ import MediumLoading from "../../LoadingAnimation/MediumLoading"
 import UploadDowload from "../../PageComponents/PageCadastroUploadDownload";
 import useSWR from 'swr';
 import ModalLoading from "../ModalLoading";
+import { CurrencyInput } from "react-currency-mask";
 
 // Definindo o fetcher para SWR usando o método fetchManutencao com paginação
 const fetcher = (url, page, size) => fetchManutencao(page, size);
@@ -37,8 +38,8 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [tamanhoPagina] = useState(10);
 
-     // Atualiza o idEpi ou idPeriferico baseado no isEpi
-     useEffect(() => {
+    // Atualiza o idEpi ou idPeriferico baseado no isEpi
+    useEffect(() => {
         if (objEpiPeriferico && objEpiPeriferico.id) {
             setObjManutencao(prevState => ({
                 ...prevState,
@@ -47,8 +48,8 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                     : { idPeriferico: { id: objEpiPeriferico.id } })
             }));
         }
-    }, [objEpiPeriferico, isEpi]);  
-    
+    }, [objEpiPeriferico, isEpi]);
+
     // Usando SWR para buscar os periféricos vinculados ao EPI
     const { data, error, isLoading, mutate } = useSWR(
         ['fetchManutencao', paginaAtual, tamanhoPagina],
@@ -167,6 +168,18 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
         setObjManutencao({ ...objManutencao, [e.target.name]: e.target.value });
     }
 
+    const aoDigitarValor = (name) => {
+        // Tente converter o valor para número
+        const numericValue = Number(name);
+
+        // Verifique se a conversão foi bem-sucedida
+        if (!isNaN(numericValue)) {
+            setObjManutencao({ ...objManutencao, valor: numericValue });
+        } else {
+            console.error("O valor não é um número:", name);
+        }
+    };
+
     return (
         <Modal>
             <div className="dialog-title">
@@ -213,20 +226,20 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                         />
                     </label>
 
-                    {/*
-                        <label className="label"> Valor:
+                    <label className="label"> Valor:
                         <CurrencyInput
                             value={objManutencao.valor}
                             name="valor"
                             onChange={aoDigitar}
-                            onChangeValue={aoDigitar}
+                            onChangeValue={(value, name, values) => {
+                                aoDigitarValor(name);
+                            }}
                             className="input"
                             placeholder="Valor"
                         />
                     </label>
-                    */}
 
-                    <label className="label">Valor:
+                    {/* <label className="label">Valor:
                         <input
                             value={objManutencao.valor}
                             name="valor"
@@ -234,7 +247,7 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                             className="input"
                             placeholder="Valor"
                             type="number" />
-                    </label>
+                    </label> */}
 
                     <label className="label"> Data Inicio:
                         <input
