@@ -1,16 +1,17 @@
 import { useParams, useNavigate } from "react-router-dom";
-import useSWR from 'swr';
+import { useEffect, useState } from "react";
 import { fetchEpiById, cadastrarEpi, alterarEpi, excluirEpi, uploadFileEpi, downloadFileEpi } from "../api/apiEpi";
-import MenuBar from "../../../componentes/MenuBar";
+import useSWR from 'swr';
+import PageContent from "../../../componentes/PageComponents/PageContent"
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
 import MarcaCheckbox from "../../../componentes/PageComponents/InputMarcaCheckbox";
 import Buttons from "../../../componentes/PageComponents/PageCadastroButtons";
 import ModalManutencao from "../../../componentes/Modal/ModalManutencao";
 import ModalVincularPeriferico from "./ModalVincularPeriferico";
-import ModalSucess from "../../../componentes/Modal/ModalSucess";
 import ModalVincularUsuario from "./ModalVincularUsuario";
+import ModalSucess from "../../../componentes/Modal/ModalSucess";
+import ModalLoading from "../../../componentes/Modal/ModalLoading";
 import UploadDowload from "../../../componentes/PageComponents/PageCadastroUploadDownload";
-import { useEffect, useState } from "react";
 
 const CadastrarEpi = () => {
     const { id } = useParams();
@@ -45,13 +46,22 @@ const CadastrarEpi = () => {
     };
 
     // Configuração do SWR para buscar o EPI pelo ID
-    const { data: epiData, error } = useSWR(id ? [`fetchEpiById`, id] : null, () => fetcher(id));
+    const { data: epiData, error, isLoading } = useSWR(id ? [`fetchEpiById`, id] : null, () => fetcher(id));
 
     useEffect(() => {
         if (epiData) {
             setObjEpi(epiData); // Preenche os campos quando o dado é carregado
         }
     }, [epiData]);
+
+    // Carregando dados
+    if (isLoading || !epiData) {
+        return (
+            <PageContent>
+                <ModalLoading />
+            </PageContent>
+        );
+    }
 
     if (error) {
         console.error('Erro ao buscar o EPI:', error);
@@ -132,111 +142,109 @@ const CadastrarEpi = () => {
     };
 
     return (
-        <section>
-            <MenuBar />
-            <div className="content-page">
-                <CadastroHeader
+        <PageContent>
+            <CadastroHeader
+                id={id}
+                title="Cadastro de Equipamento"
+                titleEditar="Editar Equipamento"
+                hiddenUsuario={false}
+                hiddenPeriferico={false}
+                hiddenManutencao={false}
+                setUsuarioOpen={setUsuarioOpen}
+                setPerifericoOpen={setPerifericoOpen}
+                setManutencaoOpen={setManutencaoOpen}
+            />
+            <form>
+                <label className="label"> Nome:
+                    <input
+                        value={objEpi.nome}
+                        onChange={aoDigitar}
+                        name='nome'
+                        className="input"
+                        type="text"
+                        placeholder="Nome"
+                    />
+                </label>
+
+                <label className="label"> Patrimônio:
+                    <input
+                        value={objEpi.patrimonio}
+                        onChange={aoDigitar}
+                        name='patrimonio'
+                        className="input"
+                        type="text"
+                        placeholder="Patrimônio" />
+                </label>
+
+                <MarcaCheckbox
                     id={id}
-                    title="Cadastro de Equipamento"
-                    titleEditar="Editar Equipamento"
-                    hiddenUsuario={false}
-                    hiddenPeriferico={false}
-                    hiddenManutencao={false}
-                    setUsuarioOpen={setUsuarioOpen}
-                    setPerifericoOpen={setPerifericoOpen}
-                    setManutencaoOpen={setManutencaoOpen}
+                    obj={objEpi}
+                    setObj={setObjEpi}
+                    aoDigitar={aoDigitar}
+                    isEpi={true}
                 />
-                <form>
-                    <label className="label"> Nome:
-                        <input
-                            value={objEpi.nome}
-                            onChange={aoDigitar}
-                            name='nome'
-                            className="input"
-                            type="text"
-                            placeholder="Nome"
-                        />
-                    </label>
 
-                    <label className="label"> Patrimônio:
-                        <input
-                            value={objEpi.patrimonio}
-                            onChange={aoDigitar}
-                            name='patrimonio'
-                            className="input"
-                            type="text"
-                            placeholder="Patrimônio" />
-                    </label>
+                <label className="label"> Local:
+                    <input
+                        value={objEpi.local}
+                        onChange={aoDigitar}
+                        name='local'
+                        className="input"
+                        type="text"
+                        placeholder="Local" />
+                </label>
 
-                    <MarcaCheckbox
-                        id={id}
-                        obj={objEpi}
-                        setObj={setObjEpi}
-                        aoDigitar={aoDigitar}
-                        isEpi={true}
-                    />
+                <label className="label"> Setor:
+                    <input
+                        value={objEpi.setor}
+                        onChange={aoDigitar}
+                        name='setor'
+                        className="input"
+                        type="text"
+                        placeholder="Setor" />
+                </label>
 
-                    <label className="label"> Local:
-                        <input
-                            value={objEpi.local}
-                            onChange={aoDigitar}
-                            name='local'
-                            className="input"
-                            type="text"
-                            placeholder="Local" />
-                    </label>
+                <label className="label"> Data da Compra:
+                    <input
+                        value={objEpi.dataCompra}
+                        onChange={aoDigitar}
+                        name='dataCompra'
+                        className="input"
+                        type="date"
+                        placeholder="Data da Compra" />
+                </label>
 
-                    <label className="label"> Setor:
-                        <input
-                            value={objEpi.setor}
-                            onChange={aoDigitar}
-                            name='setor'
-                            className="input"
-                            type="text"
-                            placeholder="Setor" />
-                    </label>
+                <label className="label"> Data de Vencimento:
+                    <input
+                        value={objEpi.dataGarantia}
+                        onChange={aoDigitar}
+                        name='dataGarantia'
+                        className="input"
+                        type="date"
+                        placeholder="Data de Vencimento da Garantia" />
+                </label>
 
-                    <label className="label"> Data da Compra:
-                        <input
-                            value={objEpi.dataCompra}
-                            onChange={aoDigitar}
-                            name='dataCompra'
-                            className="input"
-                            type="date"
-                            placeholder="Data da Compra" />
-                    </label>
-
-                    <label className="label"> Data de Vencimento:
-                        <input
-                            value={objEpi.dataGarantia}
-                            onChange={aoDigitar}
-                            name='dataGarantia'
-                            className="input"
-                            type="date"
-                            placeholder="Data de Vencimento da Garantia" />
-                    </label>
-
-                    {id > 0 && (
-                        <UploadDowload
-                            handleFileDownload={handleFileDownload}
-                            handleFileUpload={handleFileUpload}
-                            obj={{ fileName: objEpi.fileName, filePath : objEpi.filePath }}
-                            setSelectedFile={setSelectedFile}
-                            selectedFile={selectedFile}
-                        />
-                    )}
-
-                    <Buttons
-                        id={id}
-                        cadastrarOuAlterar={cadastrarOuAlterar}
-                        excluir={excluir}
-                        objEpi={objEpi}
-                        handleFileUpload={handleFileUpload}
+                {id > 0 && (
+                    <UploadDowload
                         handleFileDownload={handleFileDownload}
+                        handleFileUpload={handleFileUpload}
+                        obj={{ fileName: objEpi.fileName, filePath: objEpi.filePath }}
+                        setSelectedFile={setSelectedFile}
+                        selectedFile={selectedFile}
                     />
+                )}
 
-                </form>
-            </div>
+                <Buttons
+                    id={id}
+                    cadastrarOuAlterar={cadastrarOuAlterar}
+                    excluir={excluir}
+                    objEpi={objEpi}
+                    handleFileUpload={handleFileUpload}
+                    handleFileDownload={handleFileDownload}
+                />
+
+            </form>
+
 
             {manutencaoOpen && (
                 <ModalManutencao onClose={closeModal} objEpiPeriferico={objEpi} isEpi="epi" />
@@ -254,7 +262,7 @@ const CadastrarEpi = () => {
                     titleEditar="Equipamento Editado!"
                 />
             )}
-        </section>
+        </PageContent>
     );
 }
 

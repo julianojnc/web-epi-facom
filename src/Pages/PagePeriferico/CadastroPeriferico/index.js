@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
-import useSWR from 'swr';
-import MenuBar from "../../../componentes/MenuBar";
 import { useNavigate, useParams } from "react-router-dom";
-import ModalSucess from "../../../componentes/Modal/ModalSucess";
-import ModalManutencao from "../../../componentes/Modal/ModalManutencao";
+import { useEffect, useState } from "react";
+import { alterarPeriferico, cadastrarPerifericos, downloadFilePeriferico, excluirPeriferico, fetchPerifericoById, uploadFilePeriferico } from "../api/apiPeriferico";
+import useSWR from 'swr';
+import PageContent from '../../../componentes/PageComponents/PageContent'
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
 import MarcaCheckbox from "../../../componentes/PageComponents/InputMarcaCheckbox";
 import Buttons from "../../../componentes/PageComponents/PageCadastroButtons";
-import { alterarPeriferico, cadastrarPerifericos, downloadFilePeriferico, excluirPeriferico, fetchPerifericoById, uploadFilePeriferico } from "../api/apiPeriferico";
+import ModalSucess from "../../../componentes/Modal/ModalSucess";
+import ModalManutencao from "../../../componentes/Modal/ModalManutencao";
+import ModalLoading from "../../../componentes/Modal/ModalLoading";
 import UploadDowload from "../../../componentes/PageComponents/PageCadastroUploadDownload";
 
 const CadastrarPeriferico = () => {
@@ -40,7 +41,7 @@ const CadastrarPeriferico = () => {
     };
 
     // Configuração do SWR para buscar o Periferico pelo ID
-    const { data: perifericoData, error } = useSWR(id ? [`fetchPerifericoById`, id] : null, () => fetcher(id));
+    const { data: perifericoData, error, isLoading } = useSWR(id ? [`fetchPerifericoById`, id] : null, () => fetcher(id));
 
     useEffect(() => {
         if (perifericoData) {
@@ -48,11 +49,20 @@ const CadastrarPeriferico = () => {
         }
     }, [perifericoData]);
 
+    // Carregando dados
+    if (isLoading || !perifericoData) {
+        return (
+            <PageContent>
+                <ModalLoading />
+            </PageContent>
+        );
+    }
+
     if (error) {
         console.error('Erro ao buscar o Periferico:', error);
         return <div>Ocorreu um erro ao carregar o periferico.</div>;
     }
-    
+
     const cadastrarOuAlterar = async () => {
         if (!objPeriferico.nome || !objPeriferico.idMarca.id) {
             alert('Por favor, preencha todos os campos obrigatórios: Nome e Marca!');
@@ -126,88 +136,85 @@ const CadastrarPeriferico = () => {
     };
 
     return (
-        <section>
-            <MenuBar />
-            <div className="content-page">
-                <CadastroHeader
+        <PageContent>
+            <CadastroHeader
+                id={id}
+                title="Cadastro de Periférico"
+                titleEditar="Editar Periférico"
+                hiddenUsuario={true}
+                hiddenPeriferico={true}
+                hiddenManutencao={false}
+                setManutencaoOpen={setManutencaoOpen}
+            />
+
+            <form>
+                <label className="label"> Nome:
+                    <input
+                        value={objPeriferico.nome}
+                        onChange={aoDigitar}
+                        name='nome'
+                        className="input"
+                        type="text"
+                        placeholder="Nome"
+                    />
+                </label>
+
+                <label className="label"> Patrimônio:
+                    <input
+                        value={objPeriferico.patrimonio}
+                        onChange={aoDigitar}
+                        name='patrimonio'
+                        className="input"
+                        type="text"
+                        placeholder="Patrimônio"
+                    />
+                </label>
+
+                <MarcaCheckbox
                     id={id}
-                    title="Cadastro de Periférico"
-                    titleEditar="Editar Periférico"
-                    hiddenUsuario={true}
-                    hiddenPeriferico={true}
-                    hiddenManutencao={false}
-                    setManutencaoOpen={setManutencaoOpen}
+                    obj={objPeriferico}
+                    setObj={setObjPeriferico}
+                    aoDigitar={aoDigitar}
                 />
 
-                <form>
-                    <label className="label"> Nome:
-                        <input
-                            value={objPeriferico.nome}
-                            onChange={aoDigitar}
-                            name='nome'
-                            className="input"
-                            type="text"
-                            placeholder="Nome"
-                        />
-                    </label>
-
-                    <label className="label"> Patrimônio:
-                        <input
-                            value={objPeriferico.patrimonio}
-                            onChange={aoDigitar}
-                            name='patrimonio'
-                            className="input"
-                            type="text"
-                            placeholder="Patrimônio"
-                        />
-                    </label>
-
-                    <MarcaCheckbox
-                        id={id}
-                        obj={objPeriferico}
-                        setObj={setObjPeriferico}
-                        aoDigitar={aoDigitar}
+                <label className="label"> Data Compra:
+                    <input
+                        value={objPeriferico.dataCompra}
+                        onChange={aoDigitar}
+                        name='dataCompra'
+                        className="input"
+                        type="date"
+                        placeholder="Data Compra"
                     />
+                </label>
 
-                    <label className="label"> Data Compra:
-                        <input
-                            value={objPeriferico.dataCompra}
-                            onChange={aoDigitar}
-                            name='dataCompra'
-                            className="input"
-                            type="date"
-                            placeholder="Data Compra"
-                        />
-                    </label>
-
-                    <label className="label"> Data Garantia:
-                        <input
-                            value={objPeriferico.dataGarantia}
-                            onChange={aoDigitar}
-                            name='dataGarantia'
-                            className="input"
-                            type="date"
-                            placeholder="Data Garantia"
-                        />
-                    </label>
-
-                    {/* Funcionalidades para o envio de arquivos e dowloads*/}
-                    {id > 0 && ( // Condição para renderizar o UploadDownload somente quando o id for maior que 0
-                        <UploadDowload
-                            handleFileDownload={handleFileDownload}
-                            handleFileUpload={handleFileUpload}
-                            obj={{ fileName: objPeriferico.fileName }}
-                            setSelectedFile={setSelectedFile}
-                        />
-                    )}
-
-                    <Buttons
-                        id={id}
-                        cadastrarOuAlterar={cadastrarOuAlterar}
-                        excluir={excluir}
+                <label className="label"> Data Garantia:
+                    <input
+                        value={objPeriferico.dataGarantia}
+                        onChange={aoDigitar}
+                        name='dataGarantia'
+                        className="input"
+                        type="date"
+                        placeholder="Data Garantia"
                     />
-                </form>
-            </div>
+                </label>
+
+                {/* Funcionalidades para o envio de arquivos e dowloads*/}
+                {id > 0 && ( // Condição para renderizar o UploadDownload somente quando o id for maior que 0
+                    <UploadDowload
+                        handleFileDownload={handleFileDownload}
+                        handleFileUpload={handleFileUpload}
+                        obj={{ fileName: objPeriferico.fileName }}
+                        setSelectedFile={setSelectedFile}
+                    />
+                )}
+
+                <Buttons
+                    id={id}
+                    cadastrarOuAlterar={cadastrarOuAlterar}
+                    excluir={excluir}
+                />
+            </form>
 
             {manutencaoOpen && (
                 <ModalManutencao
@@ -223,8 +230,7 @@ const CadastrarPeriferico = () => {
                     titleEditar="Periférico Editado!"
                 />
             )}
-
-        </section>
+        </PageContent>
     )
 }
 

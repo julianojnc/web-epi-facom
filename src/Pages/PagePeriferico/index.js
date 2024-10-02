@@ -2,13 +2,13 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import useSWR from 'swr';
 import { fetchPerifericos } from ".//api/apiPeriferico";
-import MenuBar from "../../componentes/MenuBar";
 import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 import TablePeriferico from "./TablePeriferico";
 import Paginacao from "../../componentes/Paginacao";
 import PageNotFound from "../PageNotFound";
 import ModalLoading from "../../componentes/Modal/ModalLoading"
+import PageContent from "../../componentes/PageComponents/PageContent";
 
 // Definindo o fetcher para SWR usando o método fetchPerifericos com paginação
 const fetcher = (url, page, size) => fetchPerifericos(page, size);
@@ -34,7 +34,9 @@ const PagePeriferico = () => {
     // Carregando dados
     if (isLoading || !data) {
         return (
-            <ModalLoading />
+            <PageContent>
+                <ModalLoading />
+            </PageContent>
         );
     }
 
@@ -55,29 +57,23 @@ const PagePeriferico = () => {
     };
 
     return (
-        <section>
-            <MenuBar />
-
-            <div className="content-page">
-                <TitleSearch title="Periféricos" onSearchChange={setSearchTerm} />
-
-                {filter.length === 0 ? (
-                    <LargeLoading />
-                ) : (
-                    <>
-                        <TablePeriferico vetor={filter} />
-                        <Paginacao
-                            paginaAtual={paginaAtual}
-                            totalPaginas={totalPaginas}
-                            totalRegistros={totalRegistros}
-                            onPageChange={handlePageChange}
-                        />
-                    </>
-                )}
-
-                <Link to='/cadastro-perifericos' className="button">Cadastrar</Link>
-            </div>
-        </section>
+        <PageContent>
+            <TitleSearch title="Periféricos" onSearchChange={setSearchTerm} />
+            {filter.length === 0 ? (
+                <LargeLoading />
+            ) : (
+                <>
+                    <TablePeriferico vetor={filter} />
+                    <Paginacao
+                        paginaAtual={paginaAtual}
+                        totalPaginas={totalPaginas}
+                        totalRegistros={totalRegistros}
+                        onPageChange={handlePageChange}
+                    />
+                </>
+            )}
+            <Link to='/cadastro-perifericos' className="button">Cadastrar</Link>
+        </PageContent>
     );
 };
 

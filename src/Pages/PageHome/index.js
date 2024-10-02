@@ -2,13 +2,13 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import useSWR from 'swr';
 import { fetchEpiUsuario } from "./api";
-import MenuBar from "../../componentes/MenuBar";
 import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 import TableEpiUsuario from "./TableEpiUsuario";
 import Paginacao from "../../componentes/Paginacao";
 import PageNotFound from "../PageNotFound";
 import ModalLoading from "../../componentes/Modal/ModalLoading"
+import PageContent from "../../componentes/PageComponents/PageContent";
 
 // Definindo o fetcher para SWR usando o método fetchEpiUsuario com paginação
 const fetcher = (url, page, size) => fetchEpiUsuario(page, size);
@@ -34,7 +34,9 @@ const PageHome = () => {
     // Carregando dados
     if (isLoading || !data) {
         return (
-            <ModalLoading />
+            <PageContent>
+                <ModalLoading />
+            </PageContent>
         );
     }
 
@@ -57,26 +59,23 @@ const PageHome = () => {
     };
 
     return (
-        <section>
-            <MenuBar />
-            <div className="content-page">
-                <TitleSearch title="Home" onSearchChange={setSearchTerm} />
-                {filter.length === 0 ? (
-                    <LargeLoading />
-                ) : (
-                    <>
-                        <TableEpiUsuario vetor={filter} />
-                        <Paginacao
-                            paginaAtual={paginaAtual}
-                            totalPaginas={totalPaginas}
-                            totalRegistros={totalRegistros}
-                            onPageChange={handlePageChange}
-                        />
-                    </>
-                )}
-                <Link to='/cadastro-epi' className="button">Cadastrar</Link>
-            </div>
-        </section>
+        <PageContent>
+            <TitleSearch title="Home" onSearchChange={setSearchTerm} />
+            {filter.length === 0 ? (
+                <LargeLoading />
+            ) : (
+                <>
+                    <TableEpiUsuario vetor={filter} />
+                    <Paginacao
+                        paginaAtual={paginaAtual}
+                        totalPaginas={totalPaginas}
+                        totalRegistros={totalRegistros}
+                        onPageChange={handlePageChange}
+                    />
+                </>
+            )}
+            <Link to='/cadastro-epi' className="button">Cadastrar</Link>
+        </PageContent>
     );
 };
 

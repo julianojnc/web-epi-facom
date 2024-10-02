@@ -1,12 +1,13 @@
-import MenuBar from "../../../componentes/MenuBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
-import useSWR from 'swr'; // Importando SWR
 import { alterarUser, cadastrarUsers, excluirUser, fetchUsersById } from "../api/apiUser";
-import ModalSucess from "../../../componentes/Modal/ModalSucess";
+import useSWR from 'swr';
+import PageContent from "../../../componentes/PageComponents/PageContent";
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
-import Buttons from "../../../componentes/PageComponents/PageCadastroButtons";
+import ModalSucess from "../../../componentes/Modal/ModalSucess";
+import ModalLoading from "../../../componentes/Modal/ModalLoading";
 import InputMask from 'react-input-mask';
+import Buttons from "../../../componentes/PageComponents/PageCadastroButtons";
 
 const CadastrarUsers = () => {
     const { id } = useParams(); // Obtenha o ID da URL
@@ -28,11 +29,20 @@ const CadastrarUsers = () => {
     };
 
     // Usando SWR para buscar o usuário por ID
-    const { data: userData, error } = useSWR(id ? [`fetchUsersById`, id] : null, () => fetcher(id));
+    const { data: userData, error, isLoading } = useSWR(id ? [`fetchUsersById`, id] : null, () => fetcher(id));
 
     // Preencher os dados do usuário quando carregados
     if (userData && !objUser.nome) {
         setObjUser(userData);
+    }
+
+    // Carregando dados
+    if (isLoading || !userData) {
+        return (
+            <PageContent>
+                <ModalLoading />
+            </PageContent>
+        );
     }
 
     // Exibir erro, se houver
@@ -84,61 +94,58 @@ const CadastrarUsers = () => {
     };
 
     return (
-        <section>
-            <MenuBar />
-            <div className="content-page">
+        <PageContent>
 
-                <CadastroHeader
-                    id={id}
-                    title="Cadastro de Usuário"
-                    titleEditar="Editar Usuário"
-                    hiddenPeriferico={true}
-                    hiddenManutencao={true}
-                    hiddenUsuario={true}
-                />
+            <CadastroHeader
+                id={id}
+                title="Cadastro de Usuário"
+                titleEditar="Editar Usuário"
+                hiddenPeriferico={true}
+                hiddenManutencao={true}
+                hiddenUsuario={true}
+            />
 
-                <form>
-                    <label className="label"> Nome:
-                        <input
-                            value={objUser.nome}
-                            onChange={aoDigitar}
-                            name='nome'
-                            className="input"
-                            type="text"
-                            placeholder="Nome"
-                        />
-                    </label>
-
-                    <label className="label"> Contato:
-                        <InputMask
-                            value={objUser.telContato}
-                            onChange={aoDigitar}
-                            name='telContato'
-                            className="input"
-                            type="text"
-                            placeholder="Contato"
-                            mask="(99)99999-9999"
-                        />
-                    </label>
-
-                    <label className="label"> Email:
-                        <input
-                            value={objUser.email}
-                            onChange={aoDigitar}
-                            name='email'
-                            className="input"
-                            type="text"
-                            placeholder="Email"
-                        />
-                    </label>
-
-                    <Buttons
-                        id={id}
-                        cadastrarOuAlterar={cadastrarOuAlterar}
-                        excluir={excluir}
+            <form>
+                <label className="label"> Nome:
+                    <input
+                        value={objUser.nome}
+                        onChange={aoDigitar}
+                        name='nome'
+                        className="input"
+                        type="text"
+                        placeholder="Nome"
                     />
-                </form>
-            </div>
+                </label>
+
+                <label className="label"> Contato:
+                    <InputMask
+                        value={objUser.telContato}
+                        onChange={aoDigitar}
+                        name='telContato'
+                        className="input"
+                        type="text"
+                        placeholder="Contato"
+                        mask="(99)99999-9999"
+                    />
+                </label>
+
+                <label className="label"> Email:
+                    <input
+                        value={objUser.email}
+                        onChange={aoDigitar}
+                        name='email'
+                        className="input"
+                        type="text"
+                        placeholder="Email"
+                    />
+                </label>
+
+                <Buttons
+                    id={id}
+                    cadastrarOuAlterar={cadastrarOuAlterar}
+                    excluir={excluir}
+                />
+            </form>
 
             {sucessAnimation && (
                 <ModalSucess
@@ -147,7 +154,7 @@ const CadastrarUsers = () => {
                     titleEditar="Usuário Editado!"
                 />
             )}
-        </section>
+        </PageContent>
     );
 };
 

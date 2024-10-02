@@ -1,11 +1,12 @@
-import MenuBar from "../../../componentes/MenuBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
-import useSWR from 'swr'; // Import SWR
 import { alterarMarca, cadastrarMarcas, excluirMarca, fetchMarcaById } from "../api/apiMarca";
-import ModalSucess from "../../../componentes/Modal/ModalSucess";
+import useSWR from 'swr';
+import PageContent from "../../../componentes/PageComponents/PageContent"
 import CadastroHeader from "../../../componentes/PageComponents/PageCadastroHeader";
 import Buttons from "../../../componentes/PageComponents/PageCadastroButtons";
+import ModalSucess from "../../../componentes/Modal/ModalSucess";
+import ModalLoading from "../../../componentes/Modal/ModalLoading";
 
 const CadastrarMarcas = () => {
     const { id } = useParams(); // Obtenha o ID da URL
@@ -25,11 +26,20 @@ const CadastrarMarcas = () => {
     };
 
     // Usando SWR para buscar a marca por ID
-    const { data: marcaData, error } = useSWR(id ? [`fetchMarcaById`, id] : null, () => fetcher(id));
+    const { data: marcaData, error, isLoading } = useSWR(id ? [`fetchMarcaById`, id] : null, () => fetcher(id));
 
     // Preencher os dados da marca quando carregados
     if (marcaData && !objMarca.nome) {
         setObjMarca(marcaData);
+    }
+
+    // Carregando dados
+    if (isLoading || !marcaData) {
+        return (
+            <PageContent>
+                <ModalLoading />
+            </PageContent>
+        );
     }
 
     // Exibir erro, se houver
@@ -81,37 +91,34 @@ const CadastrarMarcas = () => {
     };
 
     return (
-        <section>
-            <MenuBar />
-            <div className="content-page">
-                <CadastroHeader
-                    id={id}
-                    title="Cadastro de Marca"
-                    titleEditar="Editar Marca"
-                    hiddenPeriferico={true}
-                    hiddenManutencao={true}
-                    hiddenUsuario={true}
-                />
+        <PageContent>
+            <CadastroHeader
+                id={id}
+                title="Cadastro de Marca"
+                titleEditar="Editar Marca"
+                hiddenPeriferico={true}
+                hiddenManutencao={true}
+                hiddenUsuario={true}
+            />
 
-                <form>
-                    <label className="label"> Nome da Marca:
-                        <input
-                            value={objMarca.nome}
-                            onChange={aoDigitar}
-                            name='nome'
-                            className="input"
-                            type="text"
-                            placeholder="Nome"
-                        />
-                    </label>
-
-                    <Buttons
-                        id={id}
-                        cadastrarOuAlterar={cadastrarOuAlterar}
-                        excluir={excluir}
+            <form>
+                <label className="label"> Nome da Marca:
+                    <input
+                        value={objMarca.nome}
+                        onChange={aoDigitar}
+                        name='nome'
+                        className="input"
+                        type="text"
+                        placeholder="Nome"
                     />
-                </form>
-            </div>
+                </label>
+
+                <Buttons
+                    id={id}
+                    cadastrarOuAlterar={cadastrarOuAlterar}
+                    excluir={excluir}
+                />
+            </form>
 
             {sucessAnimation && (
                 <ModalSucess
@@ -120,7 +127,7 @@ const CadastrarMarcas = () => {
                     titleEditar="Marca Editada!"
                 />
             )}
-        </section>
+        </PageContent>
     );
 }
 

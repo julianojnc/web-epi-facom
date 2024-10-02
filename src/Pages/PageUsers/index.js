@@ -2,13 +2,13 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import useSWR from 'swr';
 import { fetchUsers } from "./api/apiUser";
-import MenuBar from "../../componentes/MenuBar";
 import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 import TableUsers from "./TableUsers";
 import Paginacao from "../../componentes/Paginacao";
 import PageNotFound from "../PageNotFound";
 import ModalLoading from "../../componentes/Modal/ModalLoading"
+import PageContent from "../../componentes/PageComponents/PageContent";
 
 // Definindo o fetcher para SWR usando o método fetchUsers com paginação
 const fetcher = (url, page, size) => fetchUsers(page, size);
@@ -34,7 +34,9 @@ const PageUsers = () => {
   // Carregando dados
   if (isLoading || !data) {
     return (
-      <ModalLoading />
+      <PageContent>
+        <ModalLoading />
+      </PageContent>
     );
   }
 
@@ -54,30 +56,24 @@ const PageUsers = () => {
   };
 
   return (
-    <section>
-      <MenuBar />
-      <div className="content-page">
-
-        <TitleSearch title="Usuários" onSearchChange={setSearchTerm} />
-
-        {filter.length === 0 ? (
-          <LargeLoading />
-        ) : (
-          <>
-            <TableUsers vetor={filter} />
-            <Paginacao
-              paginaAtual={paginaAtual}
-              totalPaginas={totalPaginas}
-              totalRegistros={totalRegistros}
-              onPageChange={handlePageChange}
-            />
-          </>
-        )
-        }
-
-        <Link to='/cadastro-usuarios' className="button">Cadastrar</Link>
-      </div>
-    </section>
+    <PageContent>
+      <TitleSearch title="Usuários" onSearchChange={setSearchTerm} />
+      {filter.length === 0 ? (
+        <LargeLoading />
+      ) : (
+        <>
+          <TableUsers vetor={filter} />
+          <Paginacao
+            paginaAtual={paginaAtual}
+            totalPaginas={totalPaginas}
+            totalRegistros={totalRegistros}
+            onPageChange={handlePageChange}
+          />
+        </>
+      )
+      }
+      <Link to='/cadastro-usuarios' className="button">Cadastrar</Link>
+    </PageContent>
   )
 }
 
