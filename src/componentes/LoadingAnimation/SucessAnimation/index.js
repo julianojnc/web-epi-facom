@@ -1,5 +1,5 @@
 // Animação do Loadin Grande
-const SucessAnimation = ({ onClose }) => {
+const SucessAnimation = () => {
     return (
         <div className="content">
             <svg width="300" height="300">

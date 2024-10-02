@@ -8,6 +8,7 @@ import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 import TablePeriferico from "./TablePeriferico";
 import Paginacao from "../../componentes/Paginacao";
 import PageNotFound from "../PageNotFound";
+import ModalLoading from "../../componentes/Modal/ModalLoading"
 
 // Definindo o fetcher para SWR usando o método fetchPerifericos com paginação
 const fetcher = (url, page, size) => fetchPerifericos(page, size);
@@ -32,7 +33,9 @@ const PagePeriferico = () => {
 
     // Carregando dados
     if (isLoading || !data) {
-        return <LargeLoading />;
+        return (
+            <ModalLoading />
+        );
     }
 
     const { lista: perifericos, totalRegistros, totalPaginas } = data;

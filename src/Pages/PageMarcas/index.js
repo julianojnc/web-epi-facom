@@ -8,6 +8,7 @@ import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 import TableMarcas from './TableMarcas';
 import Paginacao from '../../componentes/Paginacao';
 import PageNotFound from '../PageNotFound';
+import ModalLoading from "../../componentes/Modal/ModalLoading"
 
 // Definindo o fetcher para SWR usando o método fetchMarcas com paginação
 const fetcher = (url, page, size) => fetchMarcas(page, size);
@@ -32,8 +33,10 @@ const PageMarcas = () => {
 
   // Carregando dados
   if (isLoading || !data) {
-    return <LargeLoading />;
-  }
+    return (
+        <ModalLoading />
+    );
+}
 
   const { lista: marcas, totalRegistros, totalPaginas } = data;
 

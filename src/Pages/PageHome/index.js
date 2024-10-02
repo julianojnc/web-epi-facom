@@ -8,6 +8,7 @@ import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 import TableEpiUsuario from "./TableEpiUsuario";
 import Paginacao from "../../componentes/Paginacao";
 import PageNotFound from "../PageNotFound";
+import ModalLoading from "../../componentes/Modal/ModalLoading"
 
 // Definindo o fetcher para SWR usando o método fetchEpiUsuario com paginação
 const fetcher = (url, page, size) => fetchEpiUsuario(page, size);
@@ -32,7 +33,9 @@ const PageHome = () => {
 
     // Carregando dados
     if (isLoading || !data) {
-        return <LargeLoading />;
+        return (
+            <ModalLoading />
+        );
     }
 
     const { lista: epiUsuario, totalRegistros, totalPaginas } = data;

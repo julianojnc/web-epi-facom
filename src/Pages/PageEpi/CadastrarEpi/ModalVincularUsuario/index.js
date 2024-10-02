@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Modal from "../../../../componentes/Modal";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import iconClose from "../../../../assets/icon-close.png"
 import { cadastrarUsers, fetchEpiUser, vincularEpiUser } from "../../../PageUsers/api/apiUser";
 import TableVincularUsuario from "./TableVincularUsuario";
@@ -9,6 +9,11 @@ import Paginacao from "../../../../componentes/Paginacao";
 import MediumLoading from "../../../../componentes/LoadingAnimation/MediumLoading";
 import InputPrincipalUsuario from "../../../../componentes/PageComponents/InputModalUsuario/InputPrincipalUsuario";
 import InputSecundarioUsuario from "../../../../componentes/PageComponents/InputModalUsuario/InputSecundarioUsuario";
+import useSWR from 'swr';
+import ModalLoading from "../../../../componentes/Modal/ModalLoading";
+
+// Definindo o fetcher para SWR usando o método fetchEpiUser com paginação
+const fetcher = (url, page, size) => fetchEpiUser(page, size);
 
 const ModalVincularUsuario = ({ onClose, objEpi }) => {
 
@@ -29,47 +34,46 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
         }
     }
 
-    const [users, setUsers] = useState([]);
     const [objUser, setObjUser] = useState(user); // Função para o cadastro de Usuários
-    const [epiUsuarios, setEpiUsuarios] = useState([]);
     const [objEpiUsuario, setObjEpiUsuario] = useState(epiUsuario);
     const [vincularUsuarioPergunta, setVincularUsuarioPergunta] = useState(true);
     const [vincularUsuario, setVincularUsuario] = useState(false);
     const [inputSecundario, setInputSecundario] = useState(false); // Mostra novos inputs ao selecionar usuario
-    const [carregando, setCarregando] = useState(true); // Hook para mostrar animação de Carregamento
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
-    const [totalRegistros, setTotalRegistros] = useState(0); // Hook para armazenar o total de registros info vinda da api
-    const [totalPaginas, setTotalPaginas] = useState(0); // Hook para armazenar o total de paginas info vinda da api
-    const [paginaAtual, setPaginaAtual] = useState(0); // Hook para armazenar em qual pagina esta selecionada info vinda da api
-    const [tamanhoPagina] = useState(10); // Hook para dizer quantos registro ira ser mostrado na tela
+    const [paginaAtual, setPaginaAtual] = useState(0);
+    const [tamanhoPagina] = useState(10);
 
     const cadastrarVinculoUsuario = () => {
         setVincularUsuario(true);
         setVincularUsuarioPergunta(false);
     };
 
-    // Carregando Api epi-usuario
-    useEffect(() => {
-        const fetchAndSetUser = async () => {
-            setCarregando(true); // Ativa o carregamento antes da busca
-            const { lista, totalRegistros, totalPaginas } = await fetchEpiUser(paginaAtual, tamanhoPagina);
-            setEpiUsuarios(lista);
-            setTotalRegistros(totalRegistros);
-            setTotalPaginas(totalPaginas);
-            setCarregando(false); // Desativa o carregamento após a busca
-        };
-        fetchAndSetUser();
-    }, [paginaAtual, tamanhoPagina]);
+    // Usando SWR para buscar os periféricos vinculados ao EPI
+    const { data, error, isLoading, mutate } = useSWR(
+        ['fetchEpiUser', paginaAtual, tamanhoPagina],
+        () => fetcher('fetchEpiUser', paginaAtual, tamanhoPagina),
+        { revalidateOnFocus: false, revalidateOnReconnect: true }
+    );
+
+    if (error) {
+        console.error('Erro ao carregar usuarios:', error);
+        return null;
+    }
+
+    if (isLoading || !data) {
+        return (
+            <ModalLoading />
+        );
+    }
+
+    const { lista: epiUsuarios, totalRegistros, totalPaginas } = data;
+
+    // Filtrar usuarios vinculados ao EPI
+    const usersFiltrados = epiUsuarios.filter((item) => item.idEpi?.id === objEpi.id);
 
     const handlePageChange = (newPage) => {
         setPaginaAtual(newPage);
     };
-
-    // Filtro das usuarios com base no objEpi.id
-    const usersFiltrados = epiUsuarios.filter((item) => {
-        return (item.idEpi?.id === objEpi.id);
-    });
-
 
     // cadastrar novo usuario
     const cadastrar = async () => {
@@ -90,7 +94,7 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
                 setTimeout(() => { // Tempo de 2segundos é disparado
                     setSucessAnimation(false); // Modal Cadastrado com sucesso é desativada
                     setObjUser(response); // Preenche os inputs com os dados retornados da API
-                    setUsers([...users, response]);
+                    mutate();
                 }, 2000 /* Declarado os 2 segundos */);
             }
         } catch (error) {
@@ -112,6 +116,7 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
                 setTimeout(() => {
                     setSucessAnimation(false);
                     onClose(); // Fecha modal após sucesso
+                    mutate();
                 }, 2000);
             }
         } catch (error) {
@@ -195,7 +200,7 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
                             )}
                         </form>
 
-                        {carregando || usersFiltrados.length === 0 ? (
+                        {isLoading || usersFiltrados.length === 0 ? (
                             <div className="modal-table">
                                 <MediumLoading />
                             </div>

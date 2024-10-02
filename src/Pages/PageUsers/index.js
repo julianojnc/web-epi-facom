@@ -8,6 +8,7 @@ import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 import TableUsers from "./TableUsers";
 import Paginacao from "../../componentes/Paginacao";
 import PageNotFound from "../PageNotFound";
+import ModalLoading from "../../componentes/Modal/ModalLoading"
 
 // Definindo o fetcher para SWR usando o método fetchUsers com paginação
 const fetcher = (url, page, size) => fetchUsers(page, size);
@@ -32,7 +33,9 @@ const PageUsers = () => {
 
   // Carregando dados
   if (isLoading || !data) {
-    return <LargeLoading />;
+    return (
+      <ModalLoading />
+    );
   }
 
   const { lista: users, totalRegistros, totalPaginas } = data;

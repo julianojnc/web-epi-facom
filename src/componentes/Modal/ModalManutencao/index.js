@@ -9,6 +9,11 @@ import iconClose from "../../../assets/icon-close.png"
 import ModalSucess from "../ModalSucess";
 import MediumLoading from "../../LoadingAnimation/MediumLoading"
 import UploadDowload from "../../PageComponents/PageCadastroUploadDownload";
+import useSWR from 'swr';
+import ModalLoading from "../ModalLoading";
+
+// Definindo o fetcher para SWR usando o método fetchManutencao com paginação
+const fetcher = (url, page, size) => fetchManutencao(page, size);
 
 const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
 
@@ -26,41 +31,14 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
         }
     };
 
-    const [manutencoes, setManutencoes] = useState([]);
     const [objManutencao, setObjManutencao] = useState(manutencao);
-    const [carregando, setCarregando] = useState(true); // Hook para mostrar animação de Carregamento
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
-    const [totalRegistros, setTotalRegistros] = useState(0); // Hook para armazenar o total de registros info vinda da api
-    const [totalPaginas, setTotalPaginas] = useState(0); // Hook para armazenar o total de paginas info vinda da api
-    const [paginaAtual, setPaginaAtual] = useState(0); // Hook para armazenar em qual pagina esta selecionada info vinda da api
-    const [tamanhoPagina] = useState(10); // Hook para dizer quantos registro ira ser mostrado na tela
     const [selectedFile, setSelectedFile] = useState(null); // Para armazenar o arquivo selecionado
+    const [paginaAtual, setPaginaAtual] = useState(0);
+    const [tamanhoPagina] = useState(10);
 
-    // Carregando Api
-    useEffect(() => {
-        const fetchAndSetManutencao = async () => {
-            setCarregando(true); // Ativa o carregamento antes da busca
-            const { lista, totalRegistros, totalPaginas } = await fetchManutencao(paginaAtual, tamanhoPagina);
-            setManutencoes(lista);
-            setTotalRegistros(totalRegistros);
-            setTotalPaginas(totalPaginas);
-            setCarregando(false); // Desativa o carregamento após a busca
-        };
-        fetchAndSetManutencao();
-    }, [paginaAtual, tamanhoPagina]);
-
-    const handlePageChange = (newPage) => {
-        setPaginaAtual(newPage);
-    };
-
-    // Filtro das manutenções com base no objEpiPeriferico.id
-    const manutencoesFiltradas = manutencoes.filter((item) => {
-        return (isEpi === "epi" && item.idEpi?.id === objEpiPeriferico.id) ||
-            (isEpi !== "epi" && item.idPeriferico?.id === objEpiPeriferico.id);
-    });
-
-    // Atualiza o idEpi ou idPeriferico baseado no isEpi
-    useEffect(() => {
+     // Atualiza o idEpi ou idPeriferico baseado no isEpi
+     useEffect(() => {
         if (objEpiPeriferico && objEpiPeriferico.id) {
             setObjManutencao(prevState => ({
                 ...prevState,
@@ -69,7 +47,39 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                     : { idPeriferico: { id: objEpiPeriferico.id } })
             }));
         }
-    }, [objEpiPeriferico, isEpi]);
+    }, [objEpiPeriferico, isEpi]);  
+    
+    // Usando SWR para buscar os periféricos vinculados ao EPI
+    const { data, error, isLoading, mutate } = useSWR(
+        ['fetchManutencao', paginaAtual, tamanhoPagina],
+        () => fetcher('fetchManutencao', paginaAtual, tamanhoPagina),
+        { revalidateOnFocus: false, revalidateOnReconnect: true }
+    );
+
+    if (error) {
+        console.error('Erro ao carregar manutencao:', error);
+        return (
+            <></>
+        );
+    }
+
+    if (isLoading || !data) {
+        return (
+            <ModalLoading />
+        );
+    }
+
+    const { lista: manutencoes, totalRegistros, totalPaginas } = data;
+
+    // Filtrar manutencoes vinculadas a EPI e Periferico
+    const manutencoesFiltradas = manutencoes.filter((item) =>
+        (isEpi === "epi" && item.idEpi?.id === objEpiPeriferico.id) ||
+        (isEpi !== "epi" && item.idPeriferico?.id === objEpiPeriferico.id)
+    );
+
+    const handlePageChange = (newPage) => {
+        setPaginaAtual(newPage);
+    };
 
     // cadastrar manutencao
     const cadastrar = async () => {
@@ -101,7 +111,7 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                 setTimeout(() => { // Tempo de 2segundos é disparado
                     setSucessAnimation(false); // Modal Cadastrado com sucesso é desativada
                     setObjManutencao(response); // Preenche os inputs com os dados retornados da API
-                    setManutencoes([...manutencoes, response]);
+                    mutate();
                 }, 2000 /* Declarado os 2 segundos */);
             }
         } catch (error) {
@@ -263,7 +273,7 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                     </div>
                 </form>
 
-                {carregando || manutencoesFiltradas.length === 0 ? (
+                {isLoading || manutencoesFiltradas.length === 0 ? (
                     <div className="modal-table">
                         <MediumLoading />
                     </div>

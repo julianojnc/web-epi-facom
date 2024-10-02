@@ -8,6 +8,7 @@ import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 import TableEpi from "./TableEpi";
 import Paginacao from "../../componentes/Paginacao";
 import PageNotFound from "../PageNotFound";
+import ModalLoading from "../../componentes/Modal/ModalLoading"
 
 // Definindo o fetcher para SWR usando o método fetchEpi com paginação
 const fetcher = (url, page, size) => fetchEpi(page, size);
@@ -32,7 +33,9 @@ const PageEpi = () => {
 
     // Carregando dados
     if (isLoading || !data) {
-        return <LargeLoading />;
+        return (
+            <ModalLoading />
+        );
     }
 
     const { lista: epi, totalRegistros, totalPaginas } = data;

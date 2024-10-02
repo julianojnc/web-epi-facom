@@ -3,12 +3,17 @@ import Modal from "../../../../componentes/Modal"
 import iconClose from "../../../../assets/icon-close.png"
 import TableVincularPeriferico from "./TableVincularPeriferico";
 import { cadastrarPerifericos, fetchEpiPerifericos, vincularEpiPeriferico } from "../../../PagePeriferico/api/apiPeriferico";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ModalSucess from "../../../../componentes/Modal/ModalSucess";
 import Paginacao from "../../../../componentes/Paginacao";
 import MediumLoading from "../../../../componentes/LoadingAnimation/MediumLoading";
 import InputSecundarioPeriferico from "../../../../componentes/PageComponents/InputModalPeriferico/InputSecundarioPeriferico";
 import InputPrincipalPeriferico from "../../../../componentes/PageComponents/InputModalPeriferico/InputPrincipalPeriferico";
+import useSWR from 'swr';
+import ModalLoading from "../../../../componentes/Modal/ModalLoading";
+
+// Definindo o fetcher para SWR usando o método fetchEpiPerifericos com paginação
+const fetcher = (url, page, size) => fetchEpiPerifericos(page, size);
 
 const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
 
@@ -39,35 +44,35 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
         registroDesvinculacao: ""
     };
 
-    const [perifericos, setPerifericos] = useState([]);
     const [objPeriferico, setObjPeriferico] = useState(periferico);
-    const [epiPerifericos, setEpiPerifericos] = useState([]);
-    const [perifericosFiltrados, setPerifericosFiltrados] = useState([]);
     const [objEpiPeriferico, setObjEpiPeriferico] = useState(epiPeriferico);
-    const [carregando, setCarregando] = useState(true); // Hook para mostrar animação de Carregamento
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
     const [inputSecundario, setInputSecundario] = useState(false); // Mostra novos inputs ao selecionar periferico
-    const [totalRegistros, setTotalRegistros] = useState(0); // Hook para armazenar o total de registros info vinda da api
-    const [totalPaginas, setTotalPaginas] = useState(0); // Hook para armazenar o total de paginas info vinda da api
-    const [paginaAtual, setPaginaAtual] = useState(0); // Hook para armazenar em qual pagina esta selecionada info vinda da api
-    const [tamanhoPagina] = useState(8); // Hook para dizer quantos registro ira ser mostrado na tela
+    const [paginaAtual, setPaginaAtual] = useState(0);
+    const [tamanhoPagina] = useState(10);
 
-    // Carregando e filtrando Api epi-periferico
-    useEffect(() => {
-        const fetchAndSetPeriferico = async () => {
-            setCarregando(true);
-            const { lista, totalRegistros, totalPaginas } = await fetchEpiPerifericos(paginaAtual, tamanhoPagina);
-            setEpiPerifericos(lista);
-            setTotalRegistros(totalRegistros);
-            setTotalPaginas(totalPaginas);
+    // Usando SWR para buscar os periféricos vinculados ao EPI
+    const { data, error, isLoading, mutate } = useSWR(
+        ['fetchEpiPerifericos', paginaAtual, tamanhoPagina],
+        () => fetcher('fetchEpiPerifericos', paginaAtual, tamanhoPagina),
+        { revalidateOnFocus: false, revalidateOnReconnect: true }
+    );
 
-            // Filtrar periféricos após a busca
-            const filtrados = lista.filter((item) => item.idEpi?.id === objEpi.id);
-            setPerifericosFiltrados(filtrados);
-            setCarregando(false);
-        };
-        fetchAndSetPeriferico();
-    }, [paginaAtual, tamanhoPagina, objEpi]);
+    if (error) {
+        console.error('Erro ao carregar periféricos:', error);
+        return null;
+    }
+
+    if (isLoading || !data) {
+        return (
+            <ModalLoading />
+        );
+    }
+
+    const { lista: epiPerifericos, totalRegistros, totalPaginas } = data;
+
+    // Filtrar periféricos vinculados ao EPI
+    const perifericosFiltrados = epiPerifericos.filter((item) => item.idEpi?.id === objEpi.id);
 
     const handlePageChange = (newPage) => {
         setPaginaAtual(newPage);
@@ -91,7 +96,7 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
                 setTimeout(() => { // Tempo de 2segundos é disparado
                     setSucessAnimation(false); // Modal Cadastrado com sucesso é desativada
                     setObjPeriferico(response); // Preenche os inputs com os dados retornados da API
-                    setPerifericos([...perifericos, response]);
+                    mutate(); // Recarregar dados
                 }, 2000 /* Declarado os 2 segundos */);
             }
         } catch (error) {
@@ -116,6 +121,7 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
                 setSucessAnimation(true); // Exibe animação de sucesso
                 setTimeout(() => {
                     setSucessAnimation(false);
+                 
                     onClose(); // Fecha modal após sucesso
                 }, 2000);
             }
@@ -201,7 +207,7 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
                     )}
                 </form>
 
-                {carregando || perifericosFiltrados.length === 0 ? (
+                {isLoading || perifericosFiltrados.length === 0 ? (
                     <div className="modal-table">
                         <MediumLoading />
                     </div>

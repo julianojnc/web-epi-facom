@@ -5,6 +5,10 @@
     padding-top: 150px;
 }
 
+.modalLoading{
+    text-align: center;
+}
+
 /*Loading pequeno, usado na listagem de cadastro abaixo de inputs como Marca, Usuario e Periferico*/
 .small {
     padding-top: 10px;
