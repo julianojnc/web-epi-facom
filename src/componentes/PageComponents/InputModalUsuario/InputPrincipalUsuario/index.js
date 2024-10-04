@@ -5,7 +5,7 @@ import InputMask from 'react-input-mask';
 import { Link } from "react-router-dom";
 import iconUser from "../../../../assets/icon-user-black.png"
 
-const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, objEpi, objEpiUsuarios, vincular, cadastrar }) => {
+const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, objEpi, objEpiUsuarios, vincular, cadastrar, loadingButton }) => {
 
     const [usuarios, setUsuarios] = useState([]);
     const [filtroUsuarios, setFiltroUsuarios] = useState([]); // Lista filtrada de usuarios
@@ -14,7 +14,7 @@ const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, obj
     const [showDropdown, setShowDropdown] = useState(false); // DropDown pesquisa
     const itensPorPagina = 10;
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
-    const [loadingButton, setLoadingButton] = useState(false);
+    const [loadingButtons, setLoadingButtons] = useState(false);
 
     useEffect(() => {
         // Função para buscar todos os periféricos ao montar o componente
@@ -56,8 +56,7 @@ const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, obj
     };
 
     const alterar = async () => {
-        setLoadingButton(true);
-
+        setLoadingButtons(true);
         try {
             const response = await alterarEpiUsuario(objEpiUsuarios.id, objEpiUsuarios);
             console.log('Resposta da API:', response);
@@ -74,7 +73,7 @@ const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, obj
             console.error('Erro ao cadastrar/alterar Usuario:', error);
             alert('Ocorreu um erro ao tentar cadastrar/alterar Usuario.');
         } finally {
-            setLoadingButton(false);
+            setLoadingButtons(false);
         }
     };
 
@@ -169,17 +168,19 @@ const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, obj
                 <div className="container-buttons">
                     {objEpiUsuarios.id > 0 ? (
                         (objUser.id || objEpiUsuarios.idUsuario.id > 0) ? (
-                            <Link onClick={alterar} className="button button-cadastrar" disabled={loadingButton}>
-                                {loadingButton ? "Desvinculando..." : "Desvincular"}
+                            <Link onClick={loadingButtons ? "" : alterar} className={loadingButtons ? "button button-cadastrar disable" : "button button-cadastrar"}>
+                                {loadingButtons ? "Desvinculando..." : "Desvincular"}
                             </Link>
                         ) : null
                     ) : (
                         (objUser.id || objEpiUsuarios.idUsuario.id > 0) ? (
-                            <Link onClick={vincular} className="button button-cadastrar" disabled={loadingButton}>
+                            <Link onClick={loadingButton ? "" : vincular} className={loadingButton ? "button button-cadastrar disable" : "button button-cadastrar"}>
                                 {loadingButton ? "Vinculando..." : "Vincular"}
                             </Link>
                         ) : (
-                            <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar Novo</Link>
+                            <Link onClick={loadingButton ? "" : cadastrar} className={loadingButton ? "button button-cadastrar disable" : "button button-cadastrar"}>
+                                {loadingButton ? "Cadastrando..." : "Cadastrar Novo"}
+                            </Link>
                         )
                     )}
                 </div>

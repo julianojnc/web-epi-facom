@@ -5,10 +5,10 @@ import { useEffect, useState } from "react";
 import ModalSucess from "../../../Modal/ModalSucess";
 import iconPeriferico from "../../../../assets/icon-periferico-black.png"
 
-const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeriferico, objEpiPeriferico, cadastrar, vincular, onClose }) => {
+const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeriferico, objEpiPeriferico, cadastrar, vincular, loadingButton, onClose }) => {
 
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
-    const [loadingButton, setLoadingButton] = useState(false);
+    const [loadingButtons, setLoadingButtons] = useState(false);
     const [perifericos, setPerifericos] = useState([]); // Todos os periféricos
     const [filtroPerifericos, setFiltroPerifericos] = useState([]); // Lista filtrada de periféricos
     const [pesquisa, setPesquisa] = useState(""); // Estado para a pesquisa
@@ -62,7 +62,7 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
             alert('Por favor, preencha todos os campos obrigatórios: Registro de Desvinculação!');
             return;
         }
-        setLoadingButton(true);
+        setLoadingButtons(true);
 
         try {
             const response = await alterarEpiPeriferico(objEpiPeriferico.id, objEpiPeriferico);
@@ -80,7 +80,7 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
             console.error('Erro ao cadastrar/alterar Periferico:', error);
             alert('Ocorreu um erro ao tentar cadastrar/alterar Periferico.');
         } finally {
-            setLoadingButton(false);
+            setLoadingButtons(false);
         }
     };
 
@@ -190,17 +190,19 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
                 <div className="container-buttons">
                     {objEpiPeriferico.id > 0 ? (
                         (objPeriferico.id || objEpiPeriferico.idPeriferico.id > 0) ? (
-                            <Link onClick={alterar} className="button button-cadastrar" disabled={loadingButton}>
-                                {loadingButton ? "Desvinculando..." : "Desvincular"}
+                            <Link onClick={loadingButtons ? "" : alterar} className={loadingButtons ? "button button-cadastrar disable" : "button button-cadastrar"}>
+                                {loadingButtons ? "Desvinculando..." : "Desvincular"}
                             </Link>
                         ) : null
                     ) : (
                         (objPeriferico.id || objEpiPeriferico.idPeriferico.id > 0) ? (
-                            <Link onClick={vincular} className="button button-cadastrar" disabled={loadingButton}>
+                            <Link onClick={loadingButton ? "" : vincular} className={loadingButton ? "button button-cadastrar disable" : "button button-cadastrar"}>
                                 {loadingButton ? "Vinculando..." : "Vincular"}
                             </Link>
                         ) : (
-                            <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar Novo</Link>
+                            <Link onClick={loadingButton ? "" : cadastrar} className={loadingButton ? "button button-cadastrar disable" : "button button-cadastrar"}>
+                                {loadingButton ? "Cadastrando..." : "Cadastrar Novo"}
+                            </Link>
                         )
                     )}
                 </div>
@@ -215,7 +217,7 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
                     />
                 )
             }
-        </div >
+        </div>
     )
 }
 

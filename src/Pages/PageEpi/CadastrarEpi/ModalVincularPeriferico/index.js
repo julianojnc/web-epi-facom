@@ -3,7 +3,7 @@ import Modal from "../../../../componentes/Modal"
 import iconClose from "../../../../assets/icon-close.png"
 import TableVincularPeriferico from "./TableVincularPeriferico";
 import { cadastrarPerifericos, fetchEpiPerifericos, vincularEpiPeriferico } from "../../../PagePeriferico/api/apiPeriferico";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalSucess from "../../../../componentes/Modal/ModalSucess";
 import Paginacao from "../../../../componentes/Paginacao";
 import MediumLoading from "../../../../componentes/LoadingAnimation/MediumLoading";
@@ -12,10 +12,24 @@ import InputPrincipalPeriferico from "../../../../componentes/PageComponents/Inp
 import useSWR from 'swr';
 import ModalLoading from "../../../../componentes/Modal/ModalLoading";
 
-// Definindo o fetcher para SWR usando o método fetchEpiPerifericos com paginação
-const fetcher = (url, page, size) => fetchEpiPerifericos(page, size);
+// Função para carregar todas as páginas de perifericos vinculados ao EPI
+const fetchAllPages = async () => {
+    const allData = [];
+    let currentPage = 0;
+    let totalPages = 0;
+    const tamanhoPagina = 10; // Definir tamanho de página conforme necessário
 
-const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
+    do {
+        const result = await fetchEpiPerifericos(currentPage, tamanhoPagina);
+        allData.push(...result.lista); // Adiciona a lista de usuários à coleção completa
+        currentPage += 1;
+        totalPages = result.totalPaginas; // Atualiza o número total de páginas
+    } while (currentPage < totalPages);
+
+    return allData;
+};
+
+const ModalVincularPeriferico = ({ onClose, objEpi }) => {
 
     const periferico = {
         nome: '',
@@ -46,33 +60,44 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
 
     const [objPeriferico, setObjPeriferico] = useState(periferico);
     const [objEpiPeriferico, setObjEpiPeriferico] = useState(epiPeriferico);
+    const [loadingButton, setLoadingButton] = useState(false);
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
     const [inputSecundario, setInputSecundario] = useState(false); // Mostra novos inputs ao selecionar periferico
     const [paginaAtual, setPaginaAtual] = useState(0);
-    const [tamanhoPagina] = useState(10);
 
-    // Usando SWR para buscar os periféricos vinculados ao EPI
-    const { data, error, isLoading, mutate } = useSWR(
-        ['fetchEpiPerifericos', paginaAtual, tamanhoPagina],
-        () => fetcher('fetchEpiPerifericos', paginaAtual, tamanhoPagina),
-        { revalidateOnFocus: false, revalidateOnReconnect: true }
-    );
+    useEffect(() => {
+        if (objEpi && objEpi.id) {
+            setObjEpiPeriferico(prevState => ({
+                ...prevState,
+                idEpi: { id: objEpi.id }
+            }));
+        }
+    }, [objEpi]);
+
+    // Usando SWR para buscar todos os usuários vinculados ao EPI
+    const { data: allEpiPerifericos, error, isLoading, mutate } = useSWR('fetchAllPages', fetchAllPages, {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: true
+    });
 
     if (error) {
-        console.error('Erro ao carregar periféricos:', error);
-        return null;
+        console.error('Erro ao carregar perifericos:', error);
+        return <></>;
     }
 
-    if (isLoading || !data) {
-        return (
-            <ModalLoading />
-        );
+    if (isLoading || !allEpiPerifericos) {
+        return <ModalLoading />;
     }
 
-    const { lista: epiPerifericos, totalRegistros, totalPaginas } = data;
+    // Filtrar usuários vinculados ao EPI atual
+    const epiPerifericosFiltrados = allEpiPerifericos.filter((item) => item.idEpi?.id === objEpi.id);
 
-    // Filtrar periféricos vinculados ao EPI
-    const perifericosFiltrados = epiPerifericos.filter((item) => item.idEpi?.id === objEpi.id);
+    // Filtrar Usuarios vinculados e dividir em páginas
+    const startIndex = paginaAtual * 10; // Posição inicial baseada na página atual
+    const endIndex = startIndex + 10; // Posição final para os 10 itens da página atual
+
+    // Pegando apenas os usuários filtrados para a página atual
+    const epiPerifericosFiltradosPorPagina = epiPerifericosFiltrados.slice(startIndex, endIndex);
 
     const handlePageChange = (newPage) => {
         setPaginaAtual(newPage);
@@ -85,6 +110,8 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
             return;
         }
         console.log('Objeto a ser enviado:', objPeriferico);
+
+        setLoadingButton(true);
         try {
             const response = await cadastrarPerifericos(objPeriferico);
             console.log('Resposta da API:', response);
@@ -93,10 +120,10 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
             } else {
                 // Atualizar o estado com os dados do periferico cadastrado
                 setSucessAnimation(true); // Modal Cadastrado com sucesso é ativada
+                mutate();
                 setTimeout(() => { // Tempo de 2segundos é disparado
                     setSucessAnimation(false); // Modal Cadastrado com sucesso é desativada
                     setObjPeriferico(response); // Preenche os inputs com os dados retornados da API
-                    mutate(); // Recarregar dados
                 }, 2000 /* Declarado os 2 segundos */);
             }
         } catch (error) {
@@ -106,11 +133,15 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
             } else {
                 alert('Ocorreu um erro ao tentar cadastrar Periferico.'); // Mensagem genérica se não houver detalhes
             }
+        } finally {
+            setLoadingButton(false);
         }
     };
 
     // vincular periferico
     const vincular = async () => {
+
+        setLoadingButton(true);
         try {
             const response = await vincularEpiPeriferico(objEpi.id, objPeriferico.id);
             console.log('Resposta da API - Vinculação:', response);
@@ -119,9 +150,9 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
                 alert(response.mensagem);
             } else {
                 setSucessAnimation(true); // Exibe animação de sucesso
+                mutate();
                 setTimeout(() => {
                     setSucessAnimation(false);
-                 
                     onClose(); // Fecha modal após sucesso
                 }, 2000);
             }
@@ -132,6 +163,8 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
             } else {
                 alert('Ocorreu um erro ao tentar vincular o EPI com o periférico.'); // Mensagem genérica se não houver detalhes
             }
+        } finally {
+            setLoadingButton(false);
         }
     };
 
@@ -192,10 +225,10 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
                         objPeriferico={objPeriferico}
                         objEpiPeriferico={objEpiPeriferico}
                         objEpi={objEpi}
-                        id={id}
                         setObjPeriferico={setObjPeriferico}
                         cadastrar={cadastrar}
                         vincular={vincular}
+                        loadingButton={loadingButton}
                         onClose={onClose}
                     />
 
@@ -207,20 +240,20 @@ const ModalVincularPeriferico = ({ onClose, id, objEpi }) => {
                     )}
                 </form>
 
-                {isLoading || perifericosFiltrados.length === 0 ? (
+                {isLoading || epiPerifericosFiltrados.length === 0 ? (
                     <div className="modal-table">
                         <MediumLoading />
                     </div>
                 ) : (
                     <div className="modal-table">
                         <TableVincularPeriferico
-                            vetor={perifericosFiltrados}
+                            vetor={epiPerifericosFiltradosPorPagina}
                             onSelect={handleSelectPeriferico}
                         />
                         <Paginacao
                             paginaAtual={paginaAtual}
-                            totalPaginas={totalPaginas}
-                            totalRegistros={totalRegistros}
+                            totalPaginas={Math.ceil(epiPerifericosFiltrados.length / 10)}
+                            totalRegistros={epiPerifericosFiltrados.length}
                             onPageChange={handlePageChange}
                         />
                     </div>

@@ -49,13 +49,15 @@ const CadastrarPeriferico = () => {
         }
     }, [perifericoData]);
 
-    // Carregando dados
-    if (isLoading || !perifericoData) {
-        return (
-            <PageContent>
-                <ModalLoading />
-            </PageContent>
-        );
+    if (id > 0) {
+        // Carregando dados
+        if (isLoading || !perifericoData) {
+            return (
+                <PageContent>
+                    <ModalLoading />
+                </PageContent>
+            );
+        }
     }
 
     if (error) {

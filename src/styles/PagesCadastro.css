@@ -81,6 +81,11 @@ form .input-details {
     background-color: #2e578d;
 }
 
+.disable{
+    background-color: gray;
+    cursor: default;
+}
+
 input[type=file]::file-selector-button {
     border: none;
     background: #084cdf;

@@ -54,13 +54,15 @@ const CadastrarEpi = () => {
         }
     }, [epiData]);
 
-    // Carregando dados
-    if (isLoading || !epiData) {
-        return (
-            <PageContent>
-                <ModalLoading />
-            </PageContent>
-        );
+    if (id > 0) {
+        // Carregando dados
+        if (isLoading || !epiData) {
+            return (
+                <PageContent>
+                    <ModalLoading />
+                </PageContent>
+            );
+        }
     }
 
     if (error) {
@@ -253,7 +255,7 @@ const CadastrarEpi = () => {
                 <ModalVincularPeriferico onClose={closeModal} objEpi={objEpi} id={id} />
             )}
             {usuarioOpen && (
-                <ModalVincularUsuario onClose={closeModal} objEpi={objEpi} />
+                <ModalVincularUsuario onClose={closeModal} objEpi={objEpi} id={id} />
             )}
             {sucessAnimation && (
                 <ModalSucess
