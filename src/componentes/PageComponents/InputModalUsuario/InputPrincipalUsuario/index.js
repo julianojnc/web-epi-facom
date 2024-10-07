@@ -3,8 +3,8 @@ import useSWR from 'swr';
 import ModalSucess from "../../../Modal/ModalSucess";
 import { alterarEpiUsuario, fetchUsers } from "../../../../Pages/PageUsers/api/apiUser";
 import InputMask from 'react-input-mask';
-import { Link } from "react-router-dom";
 import iconUser from "../../../../assets/icon-user-black.png"
+import ButtonsVincular from "../../PageCadastroButtonsVincular";
 
 // SWR hook para buscar os periféricos
 const fetcher = async () => {
@@ -13,7 +13,6 @@ const fetcher = async () => {
 }
 
 const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, objEpi, objEpiUsuarios, vincular, cadastrar, loadingButton }) => {
-
     const [pesquisa, setPesquisa] = useState(""); // Estado para a pesquisa
     const [pagina, setPagina] = useState(0); // Controle de página para paginação
     const [showDropdown, setShowDropdown] = useState(false); // DropDown pesquisa
@@ -153,27 +152,16 @@ const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, obj
                 />
             </label>
 
-            <div className="container-buttons">
-                <div className="container-buttons">
-                    {objEpiUsuarios.id > 0 ? (
-                        (objUser.id || objEpiUsuarios.idUsuario.id > 0) ? (
-                            <Link onClick={loadingButtons ? "" : alterar} className={loadingButtons ? "button button-cadastrar disable" : "button button-cadastrar"}>
-                                {loadingButtons ? "Desvinculando..." : "Desvincular"}
-                            </Link>
-                        ) : null
-                    ) : (
-                        (objUser.id || objEpiUsuarios.idUsuario.id > 0) ? (
-                            <Link onClick={loadingButton ? "" : vincular} className={loadingButton ? "button button-cadastrar disable" : "button button-cadastrar"}>
-                                {loadingButton ? "Vinculando..." : "Vincular"}
-                            </Link>
-                        ) : (
-                            <Link onClick={loadingButton ? "" : cadastrar} className={loadingButton ? "button button-cadastrar disable" : "button button-cadastrar"}>
-                                {loadingButton ? "Cadastrando..." : "Cadastrar Novo"}
-                            </Link>
-                        )
-                    )}
-                </div>
-            </div>
+            <ButtonsVincular
+                cadastrar={cadastrar}
+                vincular={vincular}
+                alterar={alterar}
+                loadingButtonProp={loadingButtons}
+                loadingButton={loadingButton}
+                obj={objUser}
+                objVinculado={objEpiUsuarios}
+                idItem={objEpiUsuarios.idUsuario.id}
+            />
 
             {sucessAnimation && (
                 <ModalSucess

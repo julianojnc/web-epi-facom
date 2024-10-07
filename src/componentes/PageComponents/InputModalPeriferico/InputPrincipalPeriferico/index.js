@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
 import useSWR from 'swr';
 import MarcaCheckbox from "../../InputMarcaCheckbox";
 import { alterarEpiPeriferico, fetchPerifericos } from "../../../../Pages/PagePeriferico/api/apiPeriferico";
 import { useState } from "react";
 import ModalSucess from "../../../Modal/ModalSucess";
 import iconPeriferico from "../../../../assets/icon-periferico-black.png"
+import ButtonsVincular from "../../PageCadastroButtonsVincular";
 
 // SWR hook para buscar os periféricos
 const fetcher = async () => {
@@ -174,27 +174,16 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
                     placeholder="Data de Retorno" />
             </label>
 
-            <div className="container-buttons">
-                <div className="container-buttons">
-                    {objEpiPeriferico.id > 0 ? (
-                        (objPeriferico.id || objEpiPeriferico.idPeriferico.id > 0) ? (
-                            <Link onClick={loadingButtons ? "" : alterar} className={loadingButtons ? "button button-cadastrar disable" : "button button-cadastrar"}>
-                                {loadingButtons ? "Desvinculando..." : "Desvincular"}
-                            </Link>
-                        ) : null
-                    ) : (
-                        (objPeriferico.id || objEpiPeriferico.idPeriferico.id > 0) ? (
-                            <Link onClick={loadingButton ? "" : vincular} className={loadingButton ? "button button-cadastrar disable" : "button button-cadastrar"}>
-                                {loadingButton ? "Vinculando..." : "Vincular"}
-                            </Link>
-                        ) : (
-                            <Link onClick={loadingButton ? "" : cadastrar} className={loadingButton ? "button button-cadastrar disable" : "button button-cadastrar"}>
-                                {loadingButton ? "Cadastrando..." : "Cadastrar Novo"}
-                            </Link>
-                        )
-                    )}
-                </div>
-            </div>
+            <ButtonsVincular
+                cadastrar={cadastrar}
+                vincular={vincular}
+                alterar={alterar}
+                loadingButtonProp={loadingButtons}
+                loadingButton={loadingButton}
+                obj={objPeriferico}
+                objVinculado={objEpiPeriferico}
+                idItem={objEpiPeriferico.idPeriferico.id}
+            />
 
             {
                 sucessAnimation && (
