@@ -5,6 +5,7 @@ import { alterarEpiUsuario, fetchUsers } from "../../../../Pages/PageUsers/api/a
 import InputMask from 'react-input-mask';
 import iconUser from "../../../../assets/icon-user-black.png"
 import ButtonsVincular from "../../PageCadastroButtonsVincular";
+import InputSearch from "../../InputSearchModal";
 
 // SWR hook para buscar os periféricos
 const fetcher = async () => {
@@ -15,25 +16,24 @@ const fetcher = async () => {
 const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, objEpi, objEpiUsuarios, vincular, cadastrar, loadingButton }) => {
     const [pesquisa, setPesquisa] = useState(""); // Estado para a pesquisa
     const [pagina, setPagina] = useState(0); // Controle de página para paginação
-    const [showDropdown, setShowDropdown] = useState(false); // DropDown pesquisa
     const itensPorPagina = 10;
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
     const [loadingButtons, setLoadingButtons] = useState(false);
 
     // Usando o SWR para buscar periféricos, com fetchUsers como fetcher
-     const { data: usuarios, error } = useSWR('fetchUsers', fetcher);
+    const { data: usuarios, error } = useSWR('fetchUsers', fetcher);
 
-     const listaFiltrada = (usuarios || []).filter((usuario) => {
-         const nomeFiltrado = (usuario.nome ?? '').toLowerCase().includes(pesquisa.toLowerCase());
-         const emailFiltrado = (usuario.patrimonio ?? '').toLowerCase().includes(pesquisa.toLowerCase());
-         const telContatoFiltrada = (usuario.serviceTag ?? '').toLowerCase().includes(pesquisa.toLowerCase());
- 
-         return nomeFiltrado || emailFiltrado || telContatoFiltrada;
-     });
- 
-     const inicio = pagina * itensPorPagina;
-     const fim = inicio + itensPorPagina;
-     const filtroUsuarios = listaFiltrada.slice(inicio, fim);
+    const listaFiltrada = (usuarios || []).filter((usuario) => {
+        const nomeFiltrado = (usuario.nome ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+        const emailFiltrado = (usuario.patrimonio ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+        const telContatoFiltrada = (usuario.serviceTag ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+
+        return nomeFiltrado || emailFiltrado || telContatoFiltrada;
+    });
+
+    const inicio = pagina * itensPorPagina;
+    const fim = inicio + itensPorPagina;
+    const filtroUsuarios = listaFiltrada.slice(inicio, fim);
 
     const handlePesquisa = (e) => {
         setPesquisa(e.target.value); // Atualiza o estado de pesquisa
@@ -63,40 +63,19 @@ const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, obj
     };
 
     if (error) return alert("Erro ao carregar os usuários no campo de Pesquisa!");
-    console.log(error);
 
     return (
         <div>
-            {objUser.id || objEpiUsuarios.idUsuario.id > 0 ? (
-                <></>
-            ) : (
-                <label className="label"> Pesquisar Usuários:
-                    <input
-                        className="input"
-                        type="text"
-                        placeholder="Pesquisar Usuários Existentes..."
-                        value={pesquisa}
-                        onChange={handlePesquisa}
-                        onFocus={() => setShowDropdown(true)}
-                    />
-                </label>
-            )}
-
-            {showDropdown && (
-                <ul className="dropdown">
-                    {filtroUsuarios.map((usuario) => (
-                        <li key={usuario.id} onClick={() => {
-                            setObjUsuario(usuario);
-                            setShowDropdown(false); // Fechar o dropdown ao selecionar um periférico
-                        }}>
-                            <span>
-                                <img src={iconUser} alt="icon"></img>
-                            </span> {usuario.nome}
-                        </li>
-                    ))}
-                </ul>
-            )
-            }
+            <InputSearch
+                obj={objUser.id}
+                objVinculado={objEpiUsuarios.idUsuario.id}
+                pesquisa={pesquisa}
+                placeholder={"Pesquisar Usuários Existentes..."}
+                filtroItem={filtroUsuarios}
+                icon={iconUser}
+                setObj={setObjUsuario}
+                functionPesquisa={handlePesquisa}
+            />
 
             <input
                 value={objEpi.id || objEpiUsuarios.id}

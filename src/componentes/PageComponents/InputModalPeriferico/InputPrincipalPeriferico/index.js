@@ -5,6 +5,7 @@ import { useState } from "react";
 import ModalSucess from "../../../Modal/ModalSucess";
 import iconPeriferico from "../../../../assets/icon-periferico-black.png"
 import ButtonsVincular from "../../PageCadastroButtonsVincular";
+import InputSearch from '../../InputSearchModal';
 
 // SWR hook para buscar os periféricos
 const fetcher = async () => {
@@ -18,7 +19,6 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
     const [loadingButtons, setLoadingButtons] = useState(false);
     const [pesquisa, setPesquisa] = useState(""); // Estado para a pesquisa
     const [pagina, setPagina] = useState(0); // Controle de página para paginação
-    const [showDropdown, setShowDropdown] = useState(false); // DropDown pesquisa
     const itensPorPagina = 10;
 
      // Usando o SWR para buscar periféricos, com fetchPerifericos como fetcher
@@ -70,41 +70,19 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
     };
 
     if (error) return alert("Erro ao carregar os periféricos no campo de Pesquisa!");
-    console.log(error);
 
     return (
         <div>
-            {objPeriferico.id || objEpiPeriferico.idPeriferico.id > 0 ? (
-                <></>
-            ) : (
-                <label className="label"> Pesquisar Periféricos:
-                    <input
-                        className="input"
-                        type="text"
-                        placeholder="Pesquisar Periféricos Existentes..."
-                        value={pesquisa}
-                        onChange={handlePesquisa}
-                        onFocus={() => setShowDropdown(true)}
-                    />
-                </label>
-            )}
-
-            {showDropdown && (
-                <ul className="dropdown">
-                    {filtroPerifericos.map((periferico) => (
-                        <li key={periferico.id} onClick={() => {
-                            setObjPeriferico(periferico);
-                            setShowDropdown(false); // Fechar o dropdown ao selecionar um periférico
-                        }}>
-                            <span>
-                                <img src={iconPeriferico} alt="icon"></img>
-                            </span>
-                            {periferico.nome}
-                        </li>
-                    ))}
-                </ul>
-            )
-            }
+            <InputSearch
+                obj={objPeriferico.id}
+                objVinculado={objEpiPeriferico.idPeriferico.id}
+                pesquisa={pesquisa}
+                placeholder={"Pesquisar Periféricos Existentes..."}
+                filtroItem={filtroPerifericos}
+                icon={iconPeriferico}
+                setObj={setObjPeriferico}
+                functionPesquisa={handlePesquisa}
+            />
 
             <input
                 value={objEpi.id || objEpiPeriferico.idEpi.id}
