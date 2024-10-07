@@ -13,8 +13,22 @@ import useSWR from 'swr';
 import ModalLoading from "../ModalLoading";
 import { CurrencyInput } from "react-currency-mask";
 
-// Definindo o fetcher para SWR usando o método fetchManutencao com paginação
-const fetcher = (url, page, size) => fetchManutencao(page, size);
+// Função para carregar todas as páginas de manutencao vinculados ao EPI ou Periferico
+const fetchAllPages = async () => {
+    const allData = [];
+    let currentPage = 0;
+    let totalPages = 0;
+    const tamanhoPagina = 10; // Definir tamanho de página conforme necessário
+
+    do {
+        const result = await fetchManutencao(currentPage, tamanhoPagina);
+        allData.push(...result.lista); // Adiciona a lista de usuários à coleção completa
+        currentPage += 1;
+        totalPages = result.totalPaginas; // Atualiza o número total de páginas
+    } while (currentPage < totalPages);
+
+    return allData;
+};
 
 const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
 
@@ -36,7 +50,6 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
     const [selectedFile, setSelectedFile] = useState(null); // Para armazenar o arquivo selecionado
     const [paginaAtual, setPaginaAtual] = useState(0);
-    const [tamanhoPagina] = useState(10);
 
     // Atualiza o idEpi ou idPeriferico baseado no isEpi
     useEffect(() => {
@@ -50,33 +63,33 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
         }
     }, [objEpiPeriferico, isEpi]);
 
-    // Usando SWR para buscar os periféricos vinculados ao EPI
-    const { data, error, isLoading, mutate } = useSWR(
-        ['fetchManutencao', paginaAtual, tamanhoPagina],
-        () => fetcher('fetchManutencao', paginaAtual, tamanhoPagina),
-        { revalidateOnFocus: false, revalidateOnReconnect: true }
-    );
+    // Usando SWR para buscar todos os usuários vinculados ao EPI
+    const { data: allManutencoes, error, isLoading, mutate } = useSWR('fetchAllPages', fetchAllPages, {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: true
+    });
 
     if (error) {
-        console.error('Erro ao carregar manutencao:', error);
-        return (
-            <></>
-        );
+        console.error('Erro ao carregar manutencoes:', error);
+        return <></>;
     }
 
-    if (isLoading || !data) {
-        return (
-            <ModalLoading />
-        );
+    if (isLoading || !allManutencoes) {
+        return <ModalLoading />;
     }
-
-    const { lista: manutencoes, totalRegistros, totalPaginas } = data;
 
     // Filtrar manutencoes vinculadas a EPI e Periferico
-    const manutencoesFiltradas = manutencoes.filter((item) =>
+    const manutencoesFiltradas = allManutencoes.filter((item) =>
         (isEpi === "epi" && item.idEpi?.id === objEpiPeriferico.id) ||
         (isEpi !== "epi" && item.idPeriferico?.id === objEpiPeriferico.id)
     );
+
+    // Filtrar manutencoes vinculados e dividir em páginas
+    const startIndex = paginaAtual * 10; // Posição inicial baseada na página atual
+    const endIndex = startIndex + 10; // Posição final para os 10 itens da página atual
+
+    // Pegando apenas os usuários filtrados para a página atual
+    const manutencoesFiltradasPorPagina = manutencoesFiltradas.slice(startIndex, endIndex);
 
     const handlePageChange = (newPage) => {
         setPaginaAtual(newPage);
@@ -293,13 +306,13 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                 ) : (
                     <div className="modal-table">
                         <TableManutencao
-                            vetor={manutencoesFiltradas}
+                            vetor={manutencoesFiltradasPorPagina}
                             onSelect={handleSelectManutencao}
                         />
                         <Paginacao
                             paginaAtual={paginaAtual}
-                            totalPaginas={totalPaginas}
-                            totalRegistros={totalRegistros}
+                            totalPaginas={Math.ceil(manutencoesFiltradas.length / 10)}
+                            totalRegistros={manutencoesFiltradas.length}
                             onPageChange={handlePageChange}
                         />
                     </div>

@@ -140,12 +140,10 @@ const ModalVincularPeriferico = ({ onClose, objEpi }) => {
 
     // vincular periferico
     const vincular = async () => {
-
         setLoadingButton(true);
         try {
             const response = await vincularEpiPeriferico(objEpi.id, objPeriferico.id);
             console.log('Resposta da API - Vinculação:', response);
-
             if (response.mensagem) {
                 alert(response.mensagem);
             } else {
