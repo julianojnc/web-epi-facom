@@ -1,16 +1,15 @@
-import { Link } from "react-router-dom";
-import Modal from "../../../../componentes/Modal"
-import iconClose from "../../../../assets/icon-close.png"
-import TableVincularPeriferico from "./TableVincularPeriferico";
-import { cadastrarPerifericos, fetchEpiPerifericos, vincularEpiPeriferico } from "../../../PagePeriferico/api/apiPeriferico";
+import useSWR from 'swr';
 import { useEffect, useState } from "react";
-import ModalSucess from "../../../../componentes/Modal/ModalSucess";
+import { cadastrarPerifericos, fetchEpiPerifericos, vincularEpiPeriferico } from "../../../PagePeriferico/api/apiPeriferico";
+import TableVincularPeriferico from "./TableVincularPeriferico";
 import Paginacao from "../../../../componentes/Paginacao";
-import MediumLoading from "../../../../componentes/LoadingAnimation/MediumLoading";
+import Modal from "../../../../componentes/Modal"
 import InputSecundarioPeriferico from "../../../../componentes/PageComponents/InputModalPeriferico/InputSecundarioPeriferico";
 import InputPrincipalPeriferico from "../../../../componentes/PageComponents/InputModalPeriferico/InputPrincipalPeriferico";
-import useSWR from 'swr';
+import ModalSucess from "../../../../componentes/Modal/ModalSucess";
+import MediumLoading from "../../../../componentes/LoadingAnimation/MediumLoading";
 import ModalLoading from "../../../../componentes/Modal/ModalLoading";
+import HeaderModal from "../../../../componentes/PageComponents/HeaderModalVincular";
 
 // Função para carregar todas as páginas de perifericos vinculados ao EPI
 const fetchAllPages = async () => {
@@ -206,15 +205,9 @@ const ModalVincularPeriferico = ({ onClose, objEpi }) => {
 
     return (
         <Modal>
-            <div className="dialog-title">
-                <h1>VINCULAR PERIFÉRICO</h1>
-
-                <Link title="Fechar Modal" onClick={() => onClose()}>
-                    <span>
-                        <img src={iconClose} alt="icon"></img>
-                    </span>
-                </Link>
-            </div>
+            <HeaderModal
+                title={"VINCULAR PERIFÉRICO"}
+                onClose={onClose} />
 
             <div className="dialog-content">
                 <form className={inputSecundario === true ? "form-periferico" : ""}>

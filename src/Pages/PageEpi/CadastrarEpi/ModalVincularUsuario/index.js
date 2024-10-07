@@ -1,16 +1,16 @@
+import useSWR from 'swr';
+import { useEffect, useState } from "react";
+import { cadastrarUsers, fetchEpiUser, vincularEpiUser } from "../../../PageUsers/api/apiUser";
 import { Link } from "react-router-dom";
 import Modal from "../../../../componentes/Modal";
-import { useEffect, useState } from "react";
-import iconClose from "../../../../assets/icon-close.png";
-import { cadastrarUsers, fetchEpiUser, vincularEpiUser } from "../../../PageUsers/api/apiUser";
 import TableVincularUsuario from "./TableVincularUsuario";
-import ModalSucess from "../../../../componentes/Modal/ModalSucess";
 import Paginacao from "../../../../componentes/Paginacao";
+import ModalSucess from "../../../../componentes/Modal/ModalSucess";
 import MediumLoading from "../../../../componentes/LoadingAnimation/MediumLoading";
 import InputPrincipalUsuario from "../../../../componentes/PageComponents/InputModalUsuario/InputPrincipalUsuario";
 import InputSecundarioUsuario from "../../../../componentes/PageComponents/InputModalUsuario/InputSecundarioUsuario";
-import useSWR from 'swr';
 import ModalLoading from "../../../../componentes/Modal/ModalLoading";
+import HeaderModal from "../../../../componentes/PageComponents/HeaderModalVincular";
 
 // Função para carregar todas as páginas de usuários vinculados ao EPI
 const fetchAllPages = async () => {
@@ -51,8 +51,8 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
     const [objUser, setObjUser] = useState(user); // Função para o cadastro de Usuários
     const [objEpiUsuario, setObjEpiUsuario] = useState(epiUsuario);
     const [loadingButton, setLoadingButton] = useState(false);
-    const [vincularUsuarioPergunta, setVincularUsuarioPergunta] = useState(true);
-    const [vincularUsuario, setVincularUsuario] = useState(false);
+    const [vincularUsuarioPergunta, setVincularUsuarioPergunta] = useState(objEpi.id > 0 ? false : true);
+    const [vincularUsuario, setVincularUsuario] = useState(objEpi.id > 0 ? true : false);
     const [inputSecundario, setInputSecundario] = useState(false); // Mostra novos inputs ao selecionar usuario
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
     const [paginaAtual, setPaginaAtual] = useState(0);
@@ -188,15 +188,9 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
             )}
             {vincularUsuario && (
                 <>
-                    <div className="dialog-title">
-                        <h1>Vincular Usuário</h1>
-
-                        <Link title="Fechar Modal" onClick={onClose}>
-                            <span>
-                                <img src={iconClose} alt="icon" />
-                            </span>
-                        </Link>
-                    </div>
+                    <HeaderModal
+                        title={"VINCULAR USUÁRIO"}
+                        onClose={onClose} />
 
                     <div className="dialog-content">
                         <form className={inputSecundario === true ? "form-periferico" : ""}>

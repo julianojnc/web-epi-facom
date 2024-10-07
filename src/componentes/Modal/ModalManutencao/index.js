@@ -1,17 +1,16 @@
-import { Link } from "react-router-dom"
+import useSWR from 'swr';
 import { useEffect, useState } from "react"
 import { cadastrarManutencao, downloadFileManutencao, fetchManutencao, uploadFileManutencao } from "./api/apiManutencao";
-// import { CurrencyInput } from 'react-currency-mask';
+import { CurrencyInput } from "react-currency-mask";
 import Modal from ".."
 import TableManutencao from "./TableManutencao"
 import Paginacao from "../../Paginacao"
-import iconClose from "../../../assets/icon-close.png"
 import ModalSucess from "../ModalSucess";
 import MediumLoading from "../../LoadingAnimation/MediumLoading"
 import UploadDowload from "../../PageComponents/PageCadastroUploadDownload";
-import useSWR from 'swr';
 import ModalLoading from "../ModalLoading";
-import { CurrencyInput } from "react-currency-mask";
+import HeaderModal from "../../PageComponents/HeaderModalVincular";
+import { Link } from 'react-router-dom';
 
 // Função para carregar todas as páginas de manutencao vinculados ao EPI ou Periferico
 const fetchAllPages = async () => {
@@ -195,15 +194,9 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
 
     return (
         <Modal>
-            <div className="dialog-title">
-                <h1>REGISTRO DE MANUTENÇÃO</h1>
-
-                <Link title="Fechar Modal" onClick={() => onClose()}>
-                    <span>
-                        <img src={iconClose} alt="icon"></img>
-                    </span>
-                </Link>
-            </div>
+        <HeaderModal
+                title={"REGISTRO DE MANUTENÇÃO"}
+                onClose={onClose} />
 
             <div className="dialog-content">
                 <form>
@@ -251,16 +244,6 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                             placeholder="Valor"
                         />
                     </label>
-
-                    {/* <label className="label">Valor:
-                        <input
-                            value={objManutencao.valor}
-                            name="valor"
-                            onChange={aoDigitar}
-                            className="input"
-                            placeholder="Valor"
-                            type="number" />
-                    </label> */}
 
                     <label className="label"> Data Inicio:
                         <input
