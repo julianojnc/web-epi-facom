@@ -1,14 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useSWR from 'swr';
 import ModalSucess from "../../../Modal/ModalSucess";
 import { alterarEpiUsuario, fetchUsers } from "../../../../Pages/PageUsers/api/apiUser";
 import InputMask from 'react-input-mask';
 import { Link } from "react-router-dom";
 import iconUser from "../../../../assets/icon-user-black.png"
 
+// SWR hook para buscar os periféricos
+const fetcher = async () => {
+    const response = await fetchUsers(0, 9999); // Limite de itens conforme necessário
+    return response.lista;
+}
+
 const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, objEpi, objEpiUsuarios, vincular, cadastrar, loadingButton }) => {
 
-    const [usuarios, setUsuarios] = useState([]);
-    const [filtroUsuarios, setFiltroUsuarios] = useState([]); // Lista filtrada de usuarios
     const [pesquisa, setPesquisa] = useState(""); // Estado para a pesquisa
     const [pagina, setPagina] = useState(0); // Controle de página para paginação
     const [showDropdown, setShowDropdown] = useState(false); // DropDown pesquisa
@@ -16,39 +21,20 @@ const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, obj
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
     const [loadingButtons, setLoadingButtons] = useState(false);
 
-    useEffect(() => {
-        // Função para buscar todos os periféricos ao montar o componente
-        const buscarUsuarios = async () => {
-            try {
-                const data = await fetchUsers(0, 9999); // Buscando até 1000 periféricos, ajuste conforme necessário
-                setUsuarios(data.lista); // Armazenando a lista completa de periféricos
-                setFiltroUsuarios(data.lista.slice(0, itensPorPagina)); // Exibindo apenas os 10 primeiros inicialmente
-            } catch (error) {
-                console.error("Erro ao buscar usuarios:", error);
-            }
-        };
+    // Usando o SWR para buscar periféricos, com fetchUsers como fetcher
+     const { data: usuarios, error } = useSWR('fetchUsers', fetcher);
 
-        buscarUsuarios();
-    }, []);
-
-    useEffect(() => {
-        // Atualiza a lista filtrada quando a pesquisa mudar
-        const listaFiltrada = usuarios.filter((usuario) => {
-            const nomeFiltrado = (usuario.nome ?? '').toLowerCase().includes(pesquisa.toLowerCase());
-            const emailFiltrado = (usuario.email ?? '').toLowerCase().includes(pesquisa.toLowerCase());
-            const telContatoFiltrado = (usuario.telContato ?? '').toLowerCase().includes(pesquisa.toLowerCase());
-
-            // Retorna verdadeiro se algum dos campos corresponder ao termo de pesquisa
-            return nomeFiltrado || emailFiltrado || telContatoFiltrado;
-        });
-
-        // Paginação simples
-        const inicio = pagina * itensPorPagina;
-        const fim = inicio + itensPorPagina;
-
-        // Atualiza a lista com os itens paginados
-        setFiltroUsuarios(listaFiltrada.slice(inicio, fim));
-    }, [pesquisa, pagina, usuarios, itensPorPagina]);
+     const listaFiltrada = (usuarios || []).filter((usuario) => {
+         const nomeFiltrado = (usuario.nome ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+         const emailFiltrado = (usuario.patrimonio ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+         const telContatoFiltrada = (usuario.serviceTag ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+ 
+         return nomeFiltrado || emailFiltrado || telContatoFiltrada;
+     });
+ 
+     const inicio = pagina * itensPorPagina;
+     const fim = inicio + itensPorPagina;
+     const filtroUsuarios = listaFiltrada.slice(inicio, fim);
 
     const handlePesquisa = (e) => {
         setPesquisa(e.target.value); // Atualiza o estado de pesquisa
@@ -76,6 +62,9 @@ const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, obj
             setLoadingButtons(false);
         }
     };
+
+    if (error) return alert("Erro ao carregar os usuários no campo de Pesquisa!");
+    console.log(error);
 
     return (
         <div>

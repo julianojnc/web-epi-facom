@@ -1,56 +1,41 @@
 import { Link } from "react-router-dom";
+import useSWR from 'swr';
 import MarcaCheckbox from "../../InputMarcaCheckbox";
 import { alterarEpiPeriferico, fetchPerifericos } from "../../../../Pages/PagePeriferico/api/apiPeriferico";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ModalSucess from "../../../Modal/ModalSucess";
 import iconPeriferico from "../../../../assets/icon-periferico-black.png"
+
+// SWR hook para buscar os periféricos
+const fetcher = async () => {
+    const response = await fetchPerifericos(0, 9999); // Limite de itens conforme necessário
+    return response.lista;
+}
 
 const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeriferico, objEpiPeriferico, cadastrar, vincular, loadingButton, onClose }) => {
 
     const [sucessAnimation, setSucessAnimation] = useState(false); // Modal Cadastrado com Sucesso
     const [loadingButtons, setLoadingButtons] = useState(false);
-    const [perifericos, setPerifericos] = useState([]); // Todos os periféricos
-    const [filtroPerifericos, setFiltroPerifericos] = useState([]); // Lista filtrada de periféricos
     const [pesquisa, setPesquisa] = useState(""); // Estado para a pesquisa
     const [pagina, setPagina] = useState(0); // Controle de página para paginação
     const [showDropdown, setShowDropdown] = useState(false); // DropDown pesquisa
     const itensPorPagina = 10;
 
-    useEffect(() => {
-        // Função para buscar todos os periféricos ao montar o componente
-        const buscarPerifericos = async () => {
-            try {
-                const data = await fetchPerifericos(0, 9999); // Buscando até 1000 periféricos, ajuste conforme necessário
-                setPerifericos(data.lista); // Armazenando a lista completa de periféricos
-                setFiltroPerifericos(data.lista.slice(0, itensPorPagina)); // Exibindo apenas os 10 primeiros inicialmente
-            } catch (error) {
-                console.error("Erro ao buscar periféricos:", error);
-            }
-        };
+     // Usando o SWR para buscar periféricos, com fetchPerifericos como fetcher
+     const { data: perifericos, error } = useSWR('fetchPerifericos', fetcher);
 
-        buscarPerifericos();
-    }, []);
-
-    useEffect(() => {
-        // Atualiza a lista filtrada quando a pesquisa mudar
-        const listaFiltrada = perifericos.filter((periferico) => {
-            const nomeFiltrado = (periferico.nome ?? '').toLowerCase().includes(pesquisa.toLowerCase());
-            const patrimonioFiltrado = (periferico.patrimonio ?? '').toLowerCase().includes(pesquisa.toLowerCase());
-            const serviceTagFiltrada = (periferico.serviceTag ?? '').toLowerCase().includes(pesquisa.toLowerCase());
-            const expressCodeFiltrada = (periferico.expressCode ?? '').toLowerCase().includes(pesquisa.toLowerCase());
-
-            // Retorna verdadeiro se algum dos campos corresponder ao termo de pesquisa
-            return nomeFiltrado || patrimonioFiltrado || serviceTagFiltrada || expressCodeFiltrada;
-        });
-
-        // Paginação simples
-        const inicio = pagina * itensPorPagina;
-        const fim = inicio + itensPorPagina;
-
-        // Atualiza a lista com os itens paginados
-        setFiltroPerifericos(listaFiltrada.slice(inicio, fim));
-    }, [pesquisa, pagina, perifericos, itensPorPagina]);
-
+     const listaFiltrada = (perifericos || []).filter((periferico) => {
+         const nomeFiltrado = (periferico.nome ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+         const patrimonioFiltrado = (periferico.patrimonio ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+         const serviceTagFiltrada = (periferico.serviceTag ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+         const expressCodeFiltrada = (periferico.expressCode ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+ 
+         return nomeFiltrado || patrimonioFiltrado || serviceTagFiltrada || expressCodeFiltrada;
+     });
+ 
+     const inicio = pagina * itensPorPagina;
+     const fim = inicio + itensPorPagina;
+     const filtroPerifericos = listaFiltrada.slice(inicio, fim);
 
     const handlePesquisa = (e) => {
         setPesquisa(e.target.value); // Atualiza o estado de pesquisa
@@ -83,6 +68,9 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
             setLoadingButtons(false);
         }
     };
+
+    if (error) return alert("Erro ao carregar os periféricos no campo de Pesquisa!");
+    console.log(error);
 
     return (
         <div>
