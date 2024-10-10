@@ -15,10 +15,10 @@ const TableVincularUsuario = ({ vetor, onSelect }) => {
                 {vetor.map((obj) => (
                     <tr key={obj.id} onClick={() => onSelect(obj)}>
                         <td>{obj.id}</td>
-                        <td>{obj.idUsuario.nome}</td>
-                        <td>{obj.idUsuario.telContato}</td>
-                        <td>{obj.idUsuario.email}</td>
-                        <td>{obj.idUsuario.isVinculado === 1 ? 'SIM' : 'NÃO'}</td>
+                        <td>{obj.idUsuario?.nome ? obj.idUsuario.nome : 'Nome não disponível'}</td>
+                        <td>{obj.idUsuario?.telContato ? obj.idUsuario.telContato : 'TelContato não disponível'}</td>
+                        <td>{obj.idUsuario?.email ? obj.idUsuario.email : 'Email não disponível'}</td>
+                        <td>{(obj.idUsuario?.isVinculado ? obj.idUsuario.isVinculado : 'Vinculação não disponível') === 1 ? 'SIM' : 'NÃO'}</td>
                     </tr>
                 ))}
             </tbody>

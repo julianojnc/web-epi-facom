@@ -15,10 +15,10 @@ const TableVincularPeriferico = ({ vetor, onSelect }) => {
                 {vetor.map((obj) => (
                     <tr key={obj.id} onClick={() => onSelect(obj)}>
                         <td>{obj.id}</td>
-                        <td>{obj.idPeriferico.nome}</td>
-                        <td>{obj.idPeriferico.patrimonio}</td>
-                        <td>{obj.dataVinculacao}</td>
-                        <td>{obj.idPeriferico.isVinculado === 1 ? 'SIM' : 'NÃO'}</td>
+                        <td>{obj.idPeriferico?.nome ? obj.idPeriferico.nome : 'Nome não disponível'}</td>
+                        <td>{obj.idPeriferico?.patrimonio ? obj.idPeriferico.patrimonio : 'Patrimônio não disponível'}</td>
+                        <td>{obj.dataVinculacao ? obj.dataVinculacao : 'DataVinculacao não disponível'}</td>
+                        <td>{(obj.idPeriferico?.isVinculado ? obj.idPeriferico.isVinculado : 'Vinculação não disponível') === 1 ? 'SIM' : 'NÃO'}</td>
                     </tr>
                 ))}
             </tbody>
