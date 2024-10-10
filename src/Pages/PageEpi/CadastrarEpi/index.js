@@ -86,7 +86,6 @@ const CadastrarEpi = () => {
                 setTimeout(() => {
                     setSucessAnimation(false);
                     if (!id) navigate(`/cadastro-epi/${response.id}`);
-                    setUsuarioOpen(true);
                 }, 2000);
             }
         } catch (error) {
