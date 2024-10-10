@@ -215,24 +215,29 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
                             )}
                         </form>
 
-                        {isLoading || epiUsersFiltrados.length === 0 ? (
+                        {isLoading ? (
                             <div className="modal-table">
                                 <MediumLoading />
                             </div>
                         ) : (
-                            <div className="modal-table">
-                                <TableVincularUsuario
-                                    vetor={epiUsersFiltradosPorPagina}
-                                    onSelect={handleSelectUsuario}
-                                />
-                                <Paginacao
-                                    paginaAtual={paginaAtual}
-                                    totalPaginas={Math.ceil(epiUsersFiltrados.length / 10)}
-                                    totalRegistros={epiUsersFiltrados.length}
-                                    onPageChange={handlePageChange}
-                                />
-
-                            </div>
+                            epiUsersFiltrados.length === 0 ? (
+                                <div className="modal-table">
+                                    <p className='modal-table-mensager'>Não há usuários vinculados a este equipamento!</p>
+                                </div>
+                            ) : (
+                                <div className="modal-table">
+                                    <TableVincularUsuario
+                                        vetor={epiUsersFiltradosPorPagina}
+                                        onSelect={handleSelectUsuario}
+                                    />
+                                    <Paginacao
+                                        paginaAtual={paginaAtual}
+                                        totalPaginas={Math.ceil(epiUsersFiltrados.length / 10)}
+                                        totalRegistros={epiUsersFiltrados.length}
+                                        onPageChange={handlePageChange}
+                                    />
+                                </div>
+                            )
                         )}
                     </div>
 

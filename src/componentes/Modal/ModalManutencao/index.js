@@ -194,7 +194,7 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
 
     return (
         <Modal>
-        <HeaderModal
+            <HeaderModal
                 title={"REGISTRO DE MANUTENÇÃO"}
                 onClose={onClose} />
 
@@ -282,23 +282,29 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                     </div>
                 </form>
 
-                {isLoading || manutencoesFiltradas.length === 0 ? (
+                {isLoading ? (
                     <div className="modal-table">
                         <MediumLoading />
                     </div>
                 ) : (
-                    <div className="modal-table">
-                        <TableManutencao
-                            vetor={manutencoesFiltradasPorPagina}
-                            onSelect={handleSelectManutencao}
-                        />
-                        <Paginacao
-                            paginaAtual={paginaAtual}
-                            totalPaginas={Math.ceil(manutencoesFiltradas.length / 10)}
-                            totalRegistros={manutencoesFiltradas.length}
-                            onPageChange={handlePageChange}
-                        />
-                    </div>
+                    manutencoesFiltradas.length === 0 ? (
+                        <div className="modal-table">
+                            <p className='modal-table-mensager'>Não há Manutenções vinculadas a este equipamento!</p>
+                        </div>
+                    ) : (
+                        <div className="modal-table">
+                            <TableManutencao
+                                vetor={manutencoesFiltradasPorPagina}
+                                onSelect={handleSelectManutencao}
+                            />
+                            <Paginacao
+                                paginaAtual={paginaAtual}
+                                totalPaginas={Math.ceil(manutencoesFiltradas.length / 10)}
+                                totalRegistros={manutencoesFiltradas.length}
+                                onPageChange={handlePageChange}
+                            />
+                        </div>
+                    )
                 )}
             </div>
 

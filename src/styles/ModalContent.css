@@ -31,6 +31,13 @@
     flex-wrap: wrap;
 }
 
+.modal-table .modal-table-mensager{
+    font-size: 20px;
+    text-align: center;
+    font-weight: bold;
+    padding-top: 25%;
+}
+
 .modal-loading-table{
     display: flex;
     justify-content: center;

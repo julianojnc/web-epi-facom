@@ -231,23 +231,29 @@ const ModalVincularPeriferico = ({ onClose, objEpi }) => {
                     )}
                 </form>
 
-                {isLoading || epiPerifericosFiltrados.length === 0 ? (
+                {isLoading ? (
                     <div className="modal-table">
                         <MediumLoading />
                     </div>
                 ) : (
-                    <div className="modal-table">
-                        <TableVincularPeriferico
-                            vetor={epiPerifericosFiltradosPorPagina}
-                            onSelect={handleSelectPeriferico}
-                        />
-                        <Paginacao
-                            paginaAtual={paginaAtual}
-                            totalPaginas={Math.ceil(epiPerifericosFiltrados.length / 10)}
-                            totalRegistros={epiPerifericosFiltrados.length}
-                            onPageChange={handlePageChange}
-                        />
-                    </div>
+                    epiPerifericosFiltrados.length === 0 ? (
+                        <div className="modal-table">
+                                    <p className='modal-table-mensager'>Não há periféricos vinculados a este equipamento!</p>
+                                </div>
+                    ) : (
+                        <div className="modal-table">
+                            <TableVincularPeriferico
+                                vetor={epiPerifericosFiltradosPorPagina}
+                                onSelect={handleSelectPeriferico}
+                            />
+                            <Paginacao
+                                paginaAtual={paginaAtual}
+                                totalPaginas={Math.ceil(epiPerifericosFiltrados.length / 10)}
+                                totalRegistros={epiPerifericosFiltrados.length}
+                                onPageChange={handlePageChange}
+                            />
+                        </div>
+                    )
                 )}
             </div>
 
