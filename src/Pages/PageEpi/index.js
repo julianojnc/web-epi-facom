@@ -2,13 +2,12 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import useSWR from 'swr';
 import { fetchEpi } from "./api/apiEpi";
-import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 import TableEpi from "./TableEpi";
-import Paginacao from "../../componentes/Paginacao";
 import PageNotFound from "../PageNotFound";
 import ModalLoading from "../../componentes/Modal/ModalLoading"
 import PageContent from "../../componentes/PageComponents/PageContent";
+import LoadingTable from "../../componentes/PageComponents/PagePrincipalLoadingTables";
 
 // Definindo o fetcher para SWR usando o método fetchEpi com paginação
 const fetcher = (url, page, size) => fetchEpi(page, size);
@@ -61,19 +60,19 @@ const PageEpi = () => {
     return (
         <PageContent>
             <TitleSearch title="Equipamentos" onSearchChange={setSearchTerm} />
-            {filter.length === 0 ? (
-                <LargeLoading />
-            ) : (
-                <>
-                    <TableEpi vetor={filter} />
-                    <Paginacao
-                        paginaAtual={paginaAtual}
-                        totalPaginas={totalPaginas}
-                        totalRegistros={totalRegistros}
-                        onPageChange={handlePageChange}
-                    />
-                </>
-            )}
+
+            <LoadingTable
+                isLoading={isLoading}
+                pageName={"periféricos"}
+                paginaAtual={paginaAtual}
+                totalPaginas={totalPaginas}
+                totalRegistros={totalRegistros}
+                handlePageChange={handlePageChange}
+                filter={filter}
+            >
+                <TableEpi vetor={filter} />
+            </LoadingTable>
+
             <Link to='/cadastro-epi' className="button">Cadastrar</Link>
         </PageContent>
     );

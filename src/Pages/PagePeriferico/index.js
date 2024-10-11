@@ -2,13 +2,12 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import useSWR from 'swr';
 import { fetchPerifericos } from ".//api/apiPeriferico";
-import LargeLoading from "../../componentes/LoadingAnimation/LargeLoading";
 import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 import TablePeriferico from "./TablePeriferico";
-import Paginacao from "../../componentes/Paginacao";
 import PageNotFound from "../PageNotFound";
 import ModalLoading from "../../componentes/Modal/ModalLoading"
 import PageContent from "../../componentes/PageComponents/PageContent";
+import LoadingTable from "../../componentes/PageComponents/PagePrincipalLoadingTables";
 
 // Definindo o fetcher para SWR usando o método fetchPerifericos com paginação
 const fetcher = (url, page, size) => fetchPerifericos(page, size);
@@ -59,19 +58,19 @@ const PagePeriferico = () => {
     return (
         <PageContent>
             <TitleSearch title="Periféricos" onSearchChange={setSearchTerm} />
-            {filter.length === 0 ? (
-                <LargeLoading />
-            ) : (
-                <>
-                    <TablePeriferico vetor={filter} />
-                    <Paginacao
-                        paginaAtual={paginaAtual}
-                        totalPaginas={totalPaginas}
-                        totalRegistros={totalRegistros}
-                        onPageChange={handlePageChange}
-                    />
-                </>
-            )}
+
+            <LoadingTable
+                isLoading={isLoading}
+                pageName={"periféricos"}
+                paginaAtual={paginaAtual}
+                totalPaginas={totalPaginas}
+                totalRegistros={totalRegistros}
+                handlePageChange={handlePageChange}
+                filter={filter}
+            >
+                <TablePeriferico vetor={filter} />
+            </LoadingTable>
+
             <Link to='/cadastro-perifericos' className="button">Cadastrar</Link>
         </PageContent>
     );

@@ -87,12 +87,7 @@ form .input-details {
 }
 
 input[type=file]::file-selector-button {
-    border: none;
-    background: #084cdf;
-    padding: 5px ;
-    border-radius: 10px;
-    color: #fff;
-    cursor: pointer;
+    display: none;
   }
 
 .container-buttons{
