@@ -61,7 +61,7 @@ const PagePeriferico = () => {
 
             <LoadingTable
                 isLoading={isLoading}
-                pageName={"marcas"}
+                pageName={"periféricos"}
                 paginaAtual={paginaAtual}
                 totalPaginas={totalPaginas}
                 totalRegistros={totalRegistros}
