@@ -63,7 +63,7 @@ const PageEpi = () => {
 
             <LoadingTable
                 isLoading={isLoading}
-                pageName={"periféricos"}
+                pageName={"equipamentos"}
                 paginaAtual={paginaAtual}
                 totalPaginas={totalPaginas}
                 totalRegistros={totalRegistros}

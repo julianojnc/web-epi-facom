@@ -63,7 +63,7 @@ const PageHome = () => {
 
             <LoadingTable
                 isLoading={isLoading}
-                pageName={"periféricos"}
+                pageName={"usuários vinculados a nenhum equipamento"}
                 paginaAtual={paginaAtual}
                 totalPaginas={totalPaginas}
                 totalRegistros={totalRegistros}
