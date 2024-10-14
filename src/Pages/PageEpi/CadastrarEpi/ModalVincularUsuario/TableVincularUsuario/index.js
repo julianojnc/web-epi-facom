@@ -18,7 +18,9 @@ const TableVincularUsuario = ({ vetor, onSelect }) => {
                         <td>{obj.idUsuario?.nome ? obj.idUsuario.nome : 'Nome não disponível'}</td>
                         <td>{obj.idUsuario?.telContato ? obj.idUsuario.telContato : 'TelContato não disponível'}</td>
                         <td>{obj.idUsuario?.email ? obj.idUsuario.email : 'Email não disponível'}</td>
-                        <td>{(obj.idUsuario?.isVinculado ? obj.idUsuario.isVinculado : 'Vinculação não disponível') === 1 ? 'SIM' : 'NÃO'}</td>
+                        <td>
+                            {obj.dataFim ? 'NÃO' : 'SIM'}
+                        </td>
                     </tr>
                 ))}
             </tbody>

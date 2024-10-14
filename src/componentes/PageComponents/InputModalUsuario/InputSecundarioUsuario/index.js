@@ -4,12 +4,12 @@ import { Switch } from "@mui/material";
 const InputSecundarioUsuario = ({ aoDigitar, objEpiUsuario }) => {
 
     // Inicializa o estado do Switch baseado no valor de isVinculado (true se for 1, false se for 0)
-    const [checked, setChecked] = useState(objEpiUsuario.idUsuario.isVinculado === 1);
-
+    const [checked, setChecked] = useState(!objEpiUsuario.dataFim);
+    
     // Sincroniza o valor de checked com o valor de isVinculado de objEpiPeriferico
     useEffect(() => {
-        setChecked(objEpiUsuario.idUsuario.isVinculado === 1);
-    }, [objEpiUsuario.idUsuario.isVinculado]);
+        setChecked(!objEpiUsuario.dataFim);
+    }, [objEpiUsuario.dataFim]);
 
     const handleChange = (event) => {
         const newValue = event.target.checked;
@@ -27,7 +27,6 @@ const InputSecundarioUsuario = ({ aoDigitar, objEpiUsuario }) => {
         });
     };
 
-    console.log(objEpiUsuario)
     return (
         <div>
             <div className="marca-checkbox">
@@ -48,6 +47,33 @@ const InputSecundarioUsuario = ({ aoDigitar, objEpiUsuario }) => {
                     inputProps={{ 'aria-label': 'controlled' }}
                 />
             </div>
+
+            <label className="label"> Data Vinculação:
+                <input
+                    value={objEpiUsuario.dataInicio}
+                    onChange={aoDigitar}
+                    name='dataInicio'
+                    className="input"
+                    type="date"
+                />
+            </label>
+
+            {
+                !checked && (
+                    <>
+                        <label className="label"> Data Desvinculação:
+                            <input
+                                value={objEpiUsuario.dataFim}
+                                onChange={aoDigitar}
+                                name='dataFim'
+                                className="input"
+                                type="date"
+                                disabled
+                            />
+                        </label>
+                    </>
+                )
+            }
         </div>
     )
 }

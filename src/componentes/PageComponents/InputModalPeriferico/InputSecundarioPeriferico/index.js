@@ -4,15 +4,11 @@ import { Switch } from "@mui/material";
 const InputSecundarioPeriferico = ({ aoDigitar, objEpiPeriferico }) => {
 
     // Inicializa o estado do Switch baseado no valor de isVinculado (true se for 1, false se for 0)
-    const [checked, setChecked] = useState(
-        !objEpiPeriferico.dataDesvinculacao // verifica se dataDesvinculacao está vazio
-    );
+    const [checked, setChecked] = useState(!objEpiPeriferico.dataDesvinculacao);
     
     // Sincroniza o valor de checked com o valor de isVinculado de objEpiPeriferico
     useEffect(() => {
-        setChecked(
-            !objEpiPeriferico.dataDesvinculacao
-        );
+        setChecked(!objEpiPeriferico.dataDesvinculacao);
     }, [objEpiPeriferico.dataDesvinculacao]);
 
     const handleChange = (event) => {

@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 
-const ButtonsVincular = ({ cadastrar, alterar, vincular, loadingButtonProp, loadingButton, objVinculado, obj, idItem }) => {
+const ButtonsVincular = ({ cadastrar, desvincular, vincular, loadingButtonProp, loadingButton, objVinculado, obj, idItem }) => {
     return(
         <div className="container-buttons">
                 <div className="container-buttons">
                     {objVinculado.id > 0 ? (
                         (obj.id || idItem > 0) ? (
-                            <Link onClick={loadingButton ? "" : alterar} className={loadingButton ? "button button-cadastrar disable" : "button button-cadastrar"}>
+                            <Link onClick={loadingButton ? "" : desvincular} className={loadingButton ? "button button-cadastrar disable" : "button button-cadastrar"}>
                                 {loadingButton ? "Desvinculando..." : "Desvincular"}
                             </Link>
                         ) : null

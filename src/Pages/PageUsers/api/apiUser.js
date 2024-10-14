@@ -104,10 +104,10 @@ export const vincularEpiUser = async (idEpi, idUsuario) => {
     }
 };
 
-// Alterar
-export const alterarEpiUsuario = async (id, epiUsuario) => {
+// Desvincular
+export const desvincularEpiUsuario = async (id, epiUsuario) => {
     try {
-        const response = await axios.put(`${API_URL}/epi-usuario/${id}`, epiUsuario, {
+        const response = await axios.patch(`${API_URL}/epi-usuario/${id}/desvincula`, epiUsuario, {
             headers: {
                 'Content-type': 'application/json',
                 'Accept': 'application/json',

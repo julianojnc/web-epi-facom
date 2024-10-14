@@ -45,7 +45,9 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
             id: "",
             nome: "",
             isVinculado: "",
-        }
+        },
+        dataInicio: "",
+        dataFim : ""
     };
 
     const [objUser, setObjUser] = useState(user); // Função para o cadastro de Usuários
@@ -164,6 +166,8 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
                 telContato: usuarioSelecionado?.idUsuario?.telContato || "",
                 isVinculado: usuarioSelecionado?.idUsuario?.isVinculado || false,
             },
+            dataInicio: usuarioSelecionado.dataInicio || "",
+            dataFim: usuarioSelecionado.dataFim || "",
         });
 
         setInputSecundario(true);

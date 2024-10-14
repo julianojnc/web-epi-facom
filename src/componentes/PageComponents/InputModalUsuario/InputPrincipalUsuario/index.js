@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useSWR from 'swr';
 import ModalSucess from "../../../Modal/ModalSucess";
-import { alterarEpiUsuario, fetchUsers } from "../../../../Pages/PageUsers/api/apiUser";
+import { desvincularEpiUsuario, fetchUsers } from "../../../../Pages/PageUsers/api/apiUser";
 import InputMask from 'react-input-mask';
 import iconUser from "../../../../assets/icon-user-black.png"
 import ButtonsVincular from "../../PageCadastroButtonsVincular";
@@ -40,10 +40,10 @@ const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, obj
         setPagina(0); // Reseta para a primeira página ao pesquisar
     };
 
-    const alterar = async () => {
+    const desvincular = async () => {
         setLoadingButtons(true);
         try {
-            const response = await alterarEpiUsuario(objEpiUsuarios.id, objEpiUsuarios);
+            const response = await desvincularEpiUsuario(objEpiUsuarios.id, objEpiUsuarios);
             console.log('Resposta da API:', response);
             if (response.mensagem) {
                 alert(response.mensagem);
@@ -55,8 +55,8 @@ const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, obj
                 }, 2000);
             }
         } catch (error) {
-            console.error('Erro ao cadastrar/alterar Usuario:', error);
-            alert('Ocorreu um erro ao tentar cadastrar/alterar Usuario.');
+            console.error('Erro ao desvincular Usuario:', error);
+            alert('Ocorreu um erro ao tentar desvincular Usuario.');
         } finally {
             setLoadingButtons(false);
         }
@@ -134,7 +134,7 @@ const InputPrincipalUsuario = ({ aoDigitar, onClose, objUser, setObjUsuario, obj
             <ButtonsVincular
                 cadastrar={cadastrar}
                 vincular={vincular}
-                alterar={alterar}
+                desvincular={desvincular}
                 loadingButtonProp={loadingButton}
                 loadingButton={loadingButtons}
                 obj={objUser}

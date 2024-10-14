@@ -155,9 +155,9 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
             <ButtonsVincular
                 cadastrar={cadastrar}
                 vincular={vincular}
-                alterar={alterar}
-                loadingButtonProp={loadingButton}
-                loadingButton={loadingButtons}
+                desvincular={alterar}
+                loadingButtonProp={loadingButtons}
+                loadingButton={loadingButton}
                 obj={objPeriferico}
                 objVinculado={objEpiPeriferico}
                 idItem={objEpiPeriferico.idPeriferico.id}
