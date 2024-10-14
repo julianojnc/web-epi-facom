@@ -18,7 +18,9 @@ const TableVincularPeriferico = ({ vetor, onSelect }) => {
                         <td>{obj.idPeriferico?.nome ? obj.idPeriferico.nome : 'Nome não disponível'}</td>
                         <td>{obj.idPeriferico?.patrimonio ? obj.idPeriferico.patrimonio : 'Patrimônio não disponível'}</td>
                         <td>{obj.dataVinculacao ? obj.dataVinculacao : 'DataVinculacao não disponível'}</td>
-                        <td>{(obj.idPeriferico?.isVinculado ? obj.idPeriferico.isVinculado : 'Vinculação não disponível') === 1 ? 'SIM' : 'NÃO'}</td>
+                        <td>
+                            {obj.dataDesvinculacao ? 'NÃO' : 'SIM'}
+                        </td>
                     </tr>
                 ))}
             </tbody>
