@@ -132,10 +132,10 @@ export const vincularEpiPeriferico = async (idEpi, idPeriferico) => {
     }
 };
 
-// Alterar
-export const alterarEpiPeriferico = async (id, epiPeriferico) => {
+// Desvincular
+export const desvincularEpiPeriferico = async (id, epiPeriferico) => {
     try {
-        const response = await axios.put(`${API_URL}/epi-periferico/${id}`, epiPeriferico, {
+        const response = await axios.patch(`${API_URL}/epi-periferico/${id}/desvincula`, epiPeriferico, {
             headers: {
                 'Content-type': 'application/json',
                 'Accept': 'application/json',

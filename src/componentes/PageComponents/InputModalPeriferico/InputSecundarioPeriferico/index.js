@@ -63,20 +63,20 @@ const InputSecundarioPeriferico = ({ aoDigitar, objEpiPeriferico }) => {
                     <>
                         <label className="label"> Data Desvinculação:
                             <input
-                                value={objEpiPeriferico.dataDesvinculacao}
+                                value={objEpiPeriferico.data || objEpiPeriferico.dataDesvinculacao}
                                 onChange={aoDigitar}
-                                name='dataDesvinculacao'
+                                name='data'
                                 className="input"
                                 type="date"
-                                disabled
+                                disabled={objEpiPeriferico.dataDesvinculacao}
                             />
                         </label>
 
                         <label className="label"> Registro Desvinculação:
                             <textarea
-                                value={objEpiPeriferico.registroDesvinculacao}
+                                value={objEpiPeriferico.registro || objEpiPeriferico.registroDesvinculacao}
                                 onChange={aoDigitar}
-                                name='registroDesvinculacao'
+                                name='registro'
                                 className="input"
                                 rows='4'
                                 placeholder="Qual o Motivo da Desvinculação..." />

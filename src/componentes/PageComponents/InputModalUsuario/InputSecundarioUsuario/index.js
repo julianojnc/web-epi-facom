@@ -68,7 +68,7 @@ const InputSecundarioUsuario = ({ aoDigitar, objEpiUsuario }) => {
                                 name='dataFim'
                                 className="input"
                                 type="date"
-                                disabled
+                                disabled={objEpiUsuario.dataFim}
                             />
                         </label>
                     </>

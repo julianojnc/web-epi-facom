@@ -1,6 +1,6 @@
 import useSWR from 'swr';
 import MarcaCheckbox from "../../InputMarcaCheckbox";
-import { alterarEpiPeriferico, fetchPerifericos } from "../../../../Pages/PagePeriferico/api/apiPeriferico";
+import { desvincularEpiPeriferico, fetchPerifericos } from "../../../../Pages/PagePeriferico/api/apiPeriferico";
 import { useState } from "react";
 import ModalSucess from "../../../Modal/ModalSucess";
 import iconPeriferico from "../../../../assets/icon-periferico-black.png"
@@ -21,36 +21,36 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
     const [pagina, setPagina] = useState(0); // Controle de página para paginação
     const itensPorPagina = 10;
 
-     // Usando o SWR para buscar periféricos, com fetchPerifericos como fetcher
-     const { data: perifericos, error } = useSWR('fetchPerifericos', fetcher);
+    // Usando o SWR para buscar periféricos, com fetchPerifericos como fetcher
+    const { data: perifericos, error } = useSWR('fetchPerifericos', fetcher);
 
-     const listaFiltrada = (perifericos || []).filter((periferico) => {
-         const nomeFiltrado = (periferico.nome ?? '').toLowerCase().includes(pesquisa.toLowerCase());
-         const patrimonioFiltrado = (periferico.patrimonio ?? '').toLowerCase().includes(pesquisa.toLowerCase());
-         const serviceTagFiltrada = (periferico.serviceTag ?? '').toLowerCase().includes(pesquisa.toLowerCase());
-         const expressCodeFiltrada = (periferico.expressCode ?? '').toLowerCase().includes(pesquisa.toLowerCase());
- 
-         return nomeFiltrado || patrimonioFiltrado || serviceTagFiltrada || expressCodeFiltrada;
-     });
- 
-     const inicio = pagina * itensPorPagina;
-     const fim = inicio + itensPorPagina;
-     const filtroPerifericos = listaFiltrada.slice(inicio, fim);
+    const listaFiltrada = (perifericos || []).filter((periferico) => {
+        const nomeFiltrado = (periferico.nome ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+        const patrimonioFiltrado = (periferico.patrimonio ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+        const serviceTagFiltrada = (periferico.serviceTag ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+        const expressCodeFiltrada = (periferico.expressCode ?? '').toLowerCase().includes(pesquisa.toLowerCase());
+
+        return nomeFiltrado || patrimonioFiltrado || serviceTagFiltrada || expressCodeFiltrada;
+    });
+
+    const inicio = pagina * itensPorPagina;
+    const fim = inicio + itensPorPagina;
+    const filtroPerifericos = listaFiltrada.slice(inicio, fim);
 
     const handlePesquisa = (e) => {
         setPesquisa(e.target.value); // Atualiza o estado de pesquisa
         setPagina(0); // Reseta para a primeira página ao pesquisar
     };
 
-    const alterar = async () => {
-        if (!objEpiPeriferico.registroDesvinculacao) {
+    const desvincular = async () => {
+        if (!objEpiPeriferico.registro) {
             alert('Por favor, preencha todos os campos obrigatórios: Registro de Desvinculação!');
             return;
         }
         setLoadingButtons(true);
 
         try {
-            const response = await alterarEpiPeriferico(objEpiPeriferico.id, objEpiPeriferico);
+            const response = await desvincularEpiPeriferico(objEpiPeriferico.id, objEpiPeriferico);
             console.log('Resposta da API:', response);
             if (response.mensagem) {
                 alert(response.mensagem);
@@ -62,8 +62,8 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
                 }, 2000);
             }
         } catch (error) {
-            console.error('Erro ao cadastrar/alterar Periferico:', error);
-            alert('Ocorreu um erro ao tentar cadastrar/alterar Periferico.');
+            console.error('Erro ao desvincular Periferico:', error);
+            alert('Ocorreu um erro ao tentar desvincular Periferico.');
         } finally {
             setLoadingButtons(false);
         }
@@ -155,7 +155,7 @@ const InputPrincipalPeriferico = ({ aoDigitar, objEpi, objPeriferico, setObjPeri
             <ButtonsVincular
                 cadastrar={cadastrar}
                 vincular={vincular}
-                desvincular={alterar}
+                desvincular={desvincular}
                 loadingButtonProp={loadingButtons}
                 loadingButton={loadingButton}
                 obj={objPeriferico}
