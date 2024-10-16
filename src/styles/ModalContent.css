@@ -4,6 +4,23 @@
     margin-bottom: 10px;
 }
 
+.dialog-title div{
+    display: flex;
+    width: 318px;
+    justify-content: space-between;
+}
+
+.dialog-title div span{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.dialog-title div span:hover{
+    transform: scale(1.1);
+}
+
 .dialog-content{
     display: flex;
     justify-content: space-between;

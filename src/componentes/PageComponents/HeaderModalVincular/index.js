@@ -1,10 +1,23 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import iconClose from "../../../assets/icon-close.png"
+import iconLinkIr from "../../../assets/icon-link-ir.png"
 
-const HeaderModal = ({ title, onClose }) => {
+const HeaderModal = ({ title, onClose, id, url }) => {
+    const navigate = useNavigate();
+
     return (
         <div className="dialog-title">
-            <h1>{title}</h1>
+            <div>
+                <h1>{title}</h1>
+
+                {id ? (
+                    <span title={url}>
+                        <img src={iconLinkIr} alt="iconLinkIr" onClick={() => navigate(url)}></img>
+                    </span>
+                ) : (
+                    <></>
+                )}
+            </div>
 
             <Link title="Fechar Modal" onClick={() => onClose()}>
                 <span>

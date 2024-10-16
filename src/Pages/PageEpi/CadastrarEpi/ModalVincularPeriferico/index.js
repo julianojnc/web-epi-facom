@@ -207,7 +207,10 @@ const ModalVincularPeriferico = ({ onClose, objEpi }) => {
         <Modal>
             <HeaderModal
                 title={"VINCULAR PERIFÉRICO"}
-                onClose={onClose} />
+                onClose={onClose}
+                id={objEpiPeriferico.idPeriferico.id}
+                url={`/cadastro-perifericos/${objEpiPeriferico.idPeriferico.id}`}
+            />
 
             <div className="dialog-content">
                 <form className={inputSecundario === true ? "form-periferico" : ""}>
@@ -238,8 +241,8 @@ const ModalVincularPeriferico = ({ onClose, objEpi }) => {
                 ) : (
                     epiPerifericosFiltrados.length === 0 ? (
                         <div className="modal-table">
-                                    <p className='modal-table-mensager'>Não há periféricos vinculados a este equipamento!</p>
-                                </div>
+                            <p className='modal-table-mensager'>Não há periféricos vinculados a este equipamento!</p>
+                        </div>
                     ) : (
                         <div className="modal-table">
                             <TableVincularPeriferico

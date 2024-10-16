@@ -47,7 +47,7 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
             isVinculado: "",
         },
         dataInicio: "",
-        dataFim : ""
+        dataFim: ""
     };
 
     const [objUser, setObjUser] = useState(user); // Função para o cadastro de Usuários
@@ -194,7 +194,10 @@ const ModalVincularUsuario = ({ onClose, objEpi }) => {
                 <>
                     <HeaderModal
                         title={"VINCULAR USUÁRIO"}
-                        onClose={onClose} />
+                        onClose={onClose}
+                        id={objEpiUsuario.idUsuario.id}
+                        url={`/cadastro-usuarios/${objEpiUsuario.idUsuario.id}`}
+                    />
 
                     <div className="dialog-content">
                         <form className={inputSecundario === true ? "form-periferico" : ""}>
