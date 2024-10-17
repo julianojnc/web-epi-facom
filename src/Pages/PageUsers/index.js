@@ -43,9 +43,9 @@ const PageUsers = () => {
   // Filtro de pesquisa
   const filter = users.filter((item) => {
     return (
-      item.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.telContato.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.email.toLowerCase().includes(searchTerm.toLowerCase())
+      (item.nome ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.telContato ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.email ?? '').toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
 

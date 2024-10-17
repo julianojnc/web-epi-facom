@@ -43,12 +43,12 @@ const PageEpi = () => {
     // Filtro de pesquisa
     const filter = epi.filter((item) => {
         return (
-            item.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.patrimonio.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.local.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.setor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.expressCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.serviceTag.toLowerCase().includes(searchTerm.toLowerCase())
+            (item.nome ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (item.patrimonio ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (item.local ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (item.setor ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (item.expressCode ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (item.serviceTag ?? '').toLowerCase().includes(searchTerm.toLowerCase())
         );
     });
 

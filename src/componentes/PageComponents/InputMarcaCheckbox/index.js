@@ -108,7 +108,7 @@ const MarcaCheckbox = ({ id, obj, setObj, objEpiPeriferico, aoDigitar, isEpi }) 
                                 {filterData(marcas, searchMarca, ['nome'])
                                     .filter(obj => obj.nome.toLowerCase() !== searchMarca.toLowerCase()) // Filtra para não mostrar a marca selecionada
                                     .map((obj, indice) => (
-                                        <ul key={indice} onClick={() => handleSelection('marca', obj)}>
+                                        <ul key={indice} className="dropdown" onClick={() => handleSelection('marca', obj)}>
                                             <li>
                                                 <p>{obj.nome}</p>
                                             </li>

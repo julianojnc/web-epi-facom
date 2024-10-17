@@ -42,7 +42,7 @@ const PageMarcas = () => {
 
   const filter = marcas.filter((item) => {
     return (
-      item.nome.toLowerCase().includes(searchTerm.toLowerCase())
+      (item.nome ?? '').toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
 

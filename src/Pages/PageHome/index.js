@@ -43,12 +43,12 @@ const PageHome = () => {
     // Função para filtrar os dados em todos os registros carregados
     const filter = epiUsuario.filter((item) => {
         return (
-            item.idEpi.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.idEpi.patrimonio.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.idEpi.local.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.idUsuario.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.idUsuario.telContato.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.idUsuario.email.toLowerCase().includes(searchTerm.toLowerCase())
+            (item.idEpi.nome ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (item.idEpi.patrimonio ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (item.idEpi.local ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (item.idUsuario.nome ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (item.idUsuario.telContato ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (item.idUsuario.email ?? '').toLowerCase().includes(searchTerm.toLowerCase())
         );
     });
 
