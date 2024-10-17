@@ -10,7 +10,7 @@ import PageContent from "../../componentes/PageComponents/PageContent";
 import LoadingTable from "../../componentes/PageComponents/PagePrincipalLoadingTables";
 
 // Definindo o fetcher para SWR usando o método fetchPerifericos com paginação
-const fetcher = (url, page, size) => fetchPerifericos(page, size);
+const fetcher = () => fetchPerifericos(0, 9999);
 
 const PagePeriferico = () => {
     const [paginaAtual, setPaginaAtual] = useState(0);
@@ -18,11 +18,10 @@ const PagePeriferico = () => {
     const [searchTerm, setSearchTerm] = useState(''); // Hook para o filtro de pesquisa
 
     // Usando SWR para buscar os periféricos
-    const { data, error, isLoading } = useSWR(
-        ['fetchPerifericos', paginaAtual, tamanhoPagina],  // chave única para cache
-        () => fetcher('fetchPerifericos', paginaAtual, tamanhoPagina),  // fetcher function
-        { revalidateOnFocus: false, revalidateOnReconnect: true }  // configurações SWR
-    );
+    const { data, error, isLoading } = useSWR('fetchPerifericos', fetcher, {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: true
+    });
 
     // Se ocorrer algum erro na requisição
     if (error) {
@@ -39,17 +38,21 @@ const PagePeriferico = () => {
         );
     }
 
-    const { lista: perifericos, totalRegistros, totalPaginas } = data;
+    const { lista: perifericos } = data;
 
     // Filtro de pesquisa
     const filter = perifericos.filter((item) => {
         return (
-            (item.nome ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (item.patrimonio ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (item.serviceTag ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (item.expressCode ?? '').toLowerCase().includes(searchTerm.toLowerCase())
+            item.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.patrimonio.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.serviceTag.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.expressCode.toLowerCase().includes(searchTerm.toLowerCase())
         );
     });
+
+    const inicio = paginaAtual * tamanhoPagina;
+    const fim = inicio + tamanhoPagina;
+    const itensPaginados = filter.slice(inicio, fim);
 
     const handlePageChange = (newPage) => {
         setPaginaAtual(newPage);
@@ -61,14 +64,14 @@ const PagePeriferico = () => {
 
             <LoadingTable
                 isLoading={isLoading}
-                pageName={"periféricos"}
+                mensagemRetorno={"Nenhum periférico encontrado!"}
                 paginaAtual={paginaAtual}
-                totalPaginas={totalPaginas}
-                totalRegistros={totalRegistros}
+                totalPaginas={Math.ceil(filter.length / tamanhoPagina)}
+                totalRegistros={filter.length}
                 handlePageChange={handlePageChange}
-                filter={filter}
+                filter={itensPaginados}
             >
-                <TablePeriferico vetor={filter} />
+                <TablePeriferico vetor={itensPaginados} />
             </LoadingTable>
 
             <Link to='/cadastro-perifericos' className="button">Cadastrar</Link>

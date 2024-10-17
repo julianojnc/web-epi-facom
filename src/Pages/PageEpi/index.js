@@ -10,7 +10,7 @@ import PageContent from "../../componentes/PageComponents/PageContent";
 import LoadingTable from "../../componentes/PageComponents/PagePrincipalLoadingTables";
 
 // Definindo o fetcher para SWR usando o método fetchEpi com paginação
-const fetcher = (url, page, size) => fetchEpi(page, size);
+const fetcher = () => fetchEpi(0, 9999);
 
 const PageEpi = () => {
     const [paginaAtual, setPaginaAtual] = useState(0);
@@ -18,11 +18,10 @@ const PageEpi = () => {
     const [searchTerm, setSearchTerm] = useState(''); // Hook para o filtro de pesquisa
 
     // Usando SWR para buscar os epi
-    const { data, error, isLoading } = useSWR(
-        ['fetchEpi', paginaAtual, tamanhoPagina],  // chave única para cache
-        () => fetcher('fetchEpi', paginaAtual, tamanhoPagina),  // fetcher function
-        { revalidateOnFocus: false, revalidateOnReconnect: true }  // configurações SWR
-    );
+    const { data, error, isLoading } = useSWR('fetchEpi', fetcher, {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: true
+    });
 
     // Se ocorrer algum erro na requisição
     if (error) {
@@ -39,19 +38,23 @@ const PageEpi = () => {
         );
     }
 
-    const { lista: epi, totalRegistros, totalPaginas } = data;
+    const { lista: epi } = data;
 
     // Filtro de pesquisa
     const filter = epi.filter((item) => {
         return (
-            (item.nome ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (item.patrimonio ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (item.local ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (item.setor ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (item.serviceTag ?? '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (item.expressCode ?? '').toLowerCase().includes(searchTerm.toLowerCase())
+            item.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.patrimonio.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.local.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.setor.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.expressCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.serviceTag.toLowerCase().includes(searchTerm.toLowerCase())
         );
     });
+
+    const inicio = paginaAtual * tamanhoPagina;
+    const fim = inicio + tamanhoPagina;
+    const itensPaginados = filter.slice(inicio, fim);
 
     const handlePageChange = (newPage) => {
         setPaginaAtual(newPage);
@@ -63,14 +66,14 @@ const PageEpi = () => {
 
             <LoadingTable
                 isLoading={isLoading}
-                pageName={"equipamentos"}
+                mensagemRetorno={"Nenhum equipamento encontrado!"}
                 paginaAtual={paginaAtual}
-                totalPaginas={totalPaginas}
-                totalRegistros={totalRegistros}
+                totalPaginas={Math.ceil(filter.length / tamanhoPagina)}
+                totalRegistros={filter.length}
                 handlePageChange={handlePageChange}
-                filter={filter}
+                filter={itensPaginados}
             >
-                <TableEpi vetor={filter} />
+                <TableEpi vetor={itensPaginados} />
             </LoadingTable>
 
             <Link to='/cadastro-epi' className="button">Cadastrar</Link>

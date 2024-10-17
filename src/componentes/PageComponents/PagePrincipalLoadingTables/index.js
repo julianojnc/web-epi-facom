@@ -1,7 +1,7 @@
 import Paginacao from "../../Paginacao";
 import LargeLoading from "../../LoadingAnimation/LargeLoading";
 
-const LoadingTable = ({ children, isLoading, filter, pageName, paginaAtual, totalPaginas, totalRegistros, handlePageChange }) => {
+const LoadingTable = ({ children, isLoading, filter, mensagemRetorno, paginaAtual, totalPaginas, totalRegistros, handlePageChange }) => {
     return (
         <>
             {
@@ -10,7 +10,7 @@ const LoadingTable = ({ children, isLoading, filter, pageName, paginaAtual, tota
                 ) : (
                     filter.length === 0 ? (
                         <div>
-                            <p>Não há {pageName} cadastrados!</p>
+                            <p>{mensagemRetorno}</p>
                         </div>
                     ) : (
                         <>

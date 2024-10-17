@@ -5,24 +5,23 @@ import { fetchEpiUsuario } from "./api";
 import TitleSearch from "../../componentes/PageComponents/PagePrincipalHeader";
 import TableEpiUsuario from "./TableEpiUsuario";
 import PageNotFound from "../PageNotFound";
-import ModalLoading from "../../componentes/Modal/ModalLoading"
+import ModalLoading from "../../componentes/Modal/ModalLoading";
 import PageContent from "../../componentes/PageComponents/PageContent";
 import LoadingTable from "../../componentes/PageComponents/PagePrincipalLoadingTables";
 
-// Definindo o fetcher para SWR usando o método fetchEpiUsuario com paginação
-const fetcher = (url, page, size) => fetchEpiUsuario(page, size);
+// Definindo o fetcher para SWR usando o método fetchEpiUsuario
+const fetcher = () => fetchEpiUsuario(0, 9999);
 
 const PageHome = () => {
     const [paginaAtual, setPaginaAtual] = useState(0);
     const [tamanhoPagina] = useState(10);
-    const [searchTerm, setSearchTerm] = useState(''); // Hook para o filtro de pesquisa
+    const [searchTerm, setSearchTerm] = useState('');  // Hook para o filtro de pesquisa
 
-    // Usando SWR para buscar os epi
-    const { data, error, isLoading } = useSWR(
-        ['fetchEpiUsuario', paginaAtual, tamanhoPagina],  // chave única para cache
-        () => fetcher('fetchEpiUsuario', paginaAtual, tamanhoPagina),  // fetcher function
-        { revalidateOnFocus: false, revalidateOnReconnect: true }  // configurações SWR
-    );
+    // Usando SWR para buscar todos os epi
+    const { data, error, isLoading } = useSWR('fetchEpiUsuario', fetcher, {
+        revalidateOnFocus: false,
+        revalidateOnReconnect: true
+    });
 
     // Se ocorrer algum erro na requisição
     if (error) {
@@ -39,9 +38,9 @@ const PageHome = () => {
         );
     }
 
-    const { lista: epiUsuario, totalRegistros, totalPaginas } = data;
+    const { lista: epiUsuario } = data;
 
-    // Função para filtrar os dados
+    // Função para filtrar os dados em todos os registros carregados
     const filter = epiUsuario.filter((item) => {
         return (
             item.idEpi.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -53,6 +52,11 @@ const PageHome = () => {
         );
     });
 
+    // Controle de paginação - fatiando os itens de acordo com a página atual
+    const inicio = paginaAtual * tamanhoPagina;
+    const fim = inicio + tamanhoPagina;
+    const itensPaginados = filter.slice(inicio, fim);
+
     const handlePageChange = (newPage) => {
         setPaginaAtual(newPage);
     };
@@ -63,14 +67,14 @@ const PageHome = () => {
 
             <LoadingTable
                 isLoading={isLoading}
-                pageName={"usuários vinculados a nenhum equipamento"}
+                mensagemRetorno={"Nenhum usuário vinculado ao equipamento foi encontrado!"}
                 paginaAtual={paginaAtual}
-                totalPaginas={totalPaginas}
-                totalRegistros={totalRegistros}
+                totalPaginas={Math.ceil(filter.length / tamanhoPagina)}  // Calcula as páginas com base no filtro
+                totalRegistros={filter.length}
                 handlePageChange={handlePageChange}
-                filter={filter}
+                filter={itensPaginados}  // Usando os itens paginados
             >
-                <TableEpiUsuario vetor={filter} />
+                <TableEpiUsuario vetor={itensPaginados} />
             </LoadingTable>
 
             <Link to='/cadastro-epi' className="button">Cadastrar</Link>
