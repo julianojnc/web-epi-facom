@@ -9,7 +9,6 @@ import CadastrarUsers from './Pages/PageUsers/CadastrarUsers';
 import PagePeriferico from './Pages/PagePeriferico';
 import CadastrarPeriferico from './Pages/PagePeriferico/CadastroPeriferico';
 import PageHome from './Pages/PageHome';
-import Testes from './Pages/PageTestes';
 
 function RoutersApp() {
   return (
@@ -28,7 +27,6 @@ function RoutersApp() {
         <Route path='/marcas' element={<PageMarcas />} />
         <Route path='/cadastro-marcas' element={<CadastrarMarcas />} />
         <Route path='/cadastro-marcas/:id' element={<CadastrarMarcas />} />
-        <Route path='/testes/funcionalidades' element={<Testes />} />
         <Route path='*' element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>
