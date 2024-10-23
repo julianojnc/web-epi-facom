@@ -274,12 +274,16 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
                             handleFileUpload={handleFileUpload}
                             obj={{ fileName: objManutencao.fileName }}
                             setSelectedFile={setSelectedFile}
+                            folder="manutencao-nfe"
                         />
                     )}
 
-                    <div className="container-buttons">
-                        <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar</Link>
-                    </div>
+                    {objManutencao.id > 0 ? (<></>)
+                        :
+                        (<div className="container-buttons">
+                            <Link onClick={cadastrar} className="button button-cadastrar">Cadastrar</Link>
+                        </div>)
+                    }
                 </form>
 
                 {isLoading ? (

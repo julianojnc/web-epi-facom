@@ -232,6 +232,7 @@ const CadastrarEpi = () => {
                         obj={{ fileName: objEpi.fileName, filePath: objEpi.filePath }}
                         setSelectedFile={setSelectedFile}
                         selectedFile={selectedFile}
+                        folder="eqp-nfe"
                     />
                 )}
 

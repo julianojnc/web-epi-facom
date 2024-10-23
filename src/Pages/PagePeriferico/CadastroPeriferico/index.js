@@ -208,6 +208,7 @@ const CadastrarPeriferico = () => {
                         handleFileUpload={handleFileUpload}
                         obj={{ fileName: objPeriferico.fileName }}
                         setSelectedFile={setSelectedFile}
+                        folder="periferico-nfe"
                     />
                 )}
 

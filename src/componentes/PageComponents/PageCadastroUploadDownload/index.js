@@ -1,6 +1,13 @@
 import { Link } from "react-router-dom";
 
-const UploadDowload = ({ handleFileUpload, handleFileDownload, obj, setSelectedFile }) => {
+const SERVER_FILE = process.env.REACT_APP_FILE_SERVER_KEY;
+
+const UploadDowload = ({ handleFileUpload, handleFileDownload, obj, setSelectedFile, folder }) => {
+
+    const handleNfeClick = () => {
+        window.open(`${SERVER_FILE}${folder}/${obj.fileName}`, "_blank");
+    };
+
     return (
         <>
             {/* Botão de download do arquivo, caso exista */}
@@ -10,6 +17,7 @@ const UploadDowload = ({ handleFileUpload, handleFileDownload, obj, setSelectedF
                         <input
                             className="input input-marca"
                             value={obj.fileName}
+                            onClick={handleNfeClick}
                         />
                     </label>
                     <Link className="button button-cadastrar download" type="button" onClick={handleFileDownload}>Baixar Nfe</Link>
