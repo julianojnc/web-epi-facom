@@ -135,7 +135,7 @@ const CadastrarEpi = () => {
 
     const handleFileDownload = async () => {
         try {
-            await downloadFileEpi(id);
+            await downloadFileEpi(id, objEpi.fileName);
         } catch (error) {
             console.error('Erro ao fazer download:', error);
             alert('Ocorreu um erro ao tentar baixar o arquivo.');

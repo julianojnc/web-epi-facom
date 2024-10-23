@@ -122,7 +122,7 @@ const CadastrarPeriferico = () => {
     // Função para lidar com o download do arquivo
     const handleFileDownload = async () => {
         try {
-            await downloadFilePeriferico(id); // Chama a função de download
+            await downloadFilePeriferico(id, objPeriferico.fileName); // Chama a função de download
         } catch (error) {
             console.error('Erro ao fazer download:', error);
             alert('Ocorreu um erro ao tentar baixar o arquivo.');

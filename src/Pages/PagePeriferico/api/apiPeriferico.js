@@ -164,7 +164,7 @@ export const uploadFilePeriferico = async (id, formData) => {
 };
 
 // Função para download de arquivo
-export const downloadFilePeriferico = async (id) => {
+export const downloadFilePeriferico = async (id, name) => {
     try {
         const response = await axios.get(`${API_URL}/periferico/${id}/downloadFile`, {
             responseType: 'blob',
@@ -173,7 +173,7 @@ export const downloadFilePeriferico = async (id) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'arquivo.pdf'); // Nome do arquivo
+        link.setAttribute('download', `${name}`); // Nome do arquivo
         document.body.appendChild(link);
         link.click();
     } catch (error) {

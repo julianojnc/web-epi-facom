@@ -107,7 +107,7 @@ export const uploadFileEpi = async (id, formData) => {
 };
 
 // Função para download de arquivo
-export const downloadFileEpi = async (id) => {
+export const downloadFileEpi = async (id, name) => {
     try {
         const response = await axios.get(`${API_URL}/epi/${id}/downloadFile`, {
             responseType: 'blob',
@@ -116,7 +116,7 @@ export const downloadFileEpi = async (id) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'arquivo.pdf'); // Nome do arquivo
+        link.setAttribute('download', `${name}`); // Nome do arquivo
         document.body.appendChild(link);
         link.click();
     } catch (error) {

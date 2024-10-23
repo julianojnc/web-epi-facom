@@ -169,7 +169,7 @@ const ModalManutencao = ({ onClose, objEpiPeriferico, isEpi }) => {
     // Função para lidar com o download do arquivo
     const handleFileDownload = async () => {
         try {
-            await downloadFileManutencao(objManutencao.id); // Chama a função de download
+            await downloadFileManutencao(objManutencao.id, objManutencao.fileName); // Chama a função de download
         } catch (error) {
             console.error('Erro ao fazer download:', error);
             alert('Ocorreu um erro ao tentar baixar o arquivo.');
